@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Calendar, Clock, FileText, PlusCircle, Award, BookOpen, TrendingUp, X, Copy, Check } from "lucide-react";
-import { apiCall } from "../api/api";
+import { apiCall } from "../../api/api";
 import { Link } from "react-router-dom";
 
 export default function TeacherDashboard() {

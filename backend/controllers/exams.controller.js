@@ -1,5 +1,7 @@
 import { Exam } from "../models/exam.model.js";
+import { ExamSubmission } from "../models/examSubmission.model.js";
 import { QuestionPaper } from "../models/questions.model.js"; 
+import { Student } from "../models/student.model.js";
 import { User } from "../models/user.model.js"; 
 import { v4 as uuidv4 } from "uuid";
 
@@ -50,6 +52,158 @@ const createExam = async (req, res) => {
     }
 }
 
+const validateCode = async (req, res) => {
+    try {
+        const { examCode } = req.body;
+        if(!examCode || examCode.trim() === "") {
+            return res.status(400).json({ message: "Please enter a valid code" });
+        }
+
+        const examDetails = await Exam.findOne({ examCode }).select("-questionPaper -createdBy -createdAt");
+        if(!examDetails){
+            return res.status(400).json({ message: "Exam code is invalid" });
+        }
+        
+        return res.status(200).json({ message: "Code validated successfully", examDetails })
+
+    } catch (error) {
+        console.log("Error in validating exam-code: ", error);
+        return res.status(500).json({ message: "Something went wrong" })
+    }
+}
+
+
+const storeStudentDetails = async (req, res) => {
+    try {
+        const { fullName, rollNumber, collegeId, session, batch, examId } = req.body;
+
+        if (!examId) {
+            return res.status(400).json({ message: "Check the exam code again" });
+        }
+
+        if ([fullName, rollNumber, collegeId, session, batch].some(field => !field || field.trim() === "")) {
+            return res.status(400).json({ message: "All fields are required" });
+        }
+
+        const exam = await Exam.findById(examId);
+        if (!exam) {
+            return res.status(404).json({ message: "Exam does not exist" });
+        }
+
+        const formattedRoll = rollNumber.trim().toUpperCase();
+        const formattedCollegeId = collegeId.trim().toUpperCase();
+
+        let student = await Student.findOne({ rollNumber: formattedRoll, collegeId: formattedCollegeId });
+
+        const token = `${formattedCollegeId}-${uuidv4().split("-")[0].toUpperCase()}-${Date.now().toString().slice(-4)}`;
+
+        if (!student) {
+            student = await Student.create({
+                name: fullName.trim().toLowerCase(),
+                rollNumber: formattedRoll,
+                collegeId: formattedCollegeId,
+                session,
+                batch,
+                token,
+                examsAttempted: []
+            });
+        } else {
+            const existingSubmission = await ExamSubmission.findOne({ studentId: student._id, examId });
+            if (existingSubmission) {
+                return res.status(400).json({ message: "Student already registered for this exam" });
+            }
+        }
+
+        const questionPaper = await QuestionPaper.findOne({ examId }).select("questions");
+        if (!questionPaper) {
+            return res.status(404).json({ message: "Question paper not found" });
+        }
+
+        return res.status(200).json({
+            success: true,
+            message: "Student details submitted successfully",
+            student,
+            token,
+            question: questionPaper
+        });
+
+    } catch (error) {
+        console.error("Error in storing the student data:", error);
+        return res.status(500).json({ message: "Something went wrong" });
+    }
+};
+
+
+const submitAnswers = async (req, res) => {
+    try {
+        const { answers, examId, token, studentDetail } = req.body;
+
+        if (!answers || !examId || !token) {
+            return res.status(400).json({ message: "Unauthorized" });
+        }
+
+        const student = await Student.findOne({
+            rollNumber: studentDetail.rollNumber.trim().toUpperCase(),
+            collegeId: studentDetail.collegeId.trim().toUpperCase()
+        });
+
+        if (!student || student.token !== token) {
+            return res.status(400).json({ message: "Unauthorized" });
+        }
+
+        student.token = '';
+        await student.save();
+
+        const exam = await Exam.findById(examId);
+        if (!exam) {
+            return res.status(404).json({ message: "Exam does not exist" });
+        }
+
+        //check exam timing
+        // if (exam.endTime && Date.now() > new Date(exam.endTime)) {
+        //     return res.status(400).json({ message: "Exam has already ended" });
+        // }
+
+        const existing = await ExamSubmission.findOne({ studentId: student._id, examId });
+        if (existing) {
+            return res.status(400).json({ message: "You have already submitted this exam" });
+        }
+
+        const teacherId = exam.createdBy;
+
+        const submission = await ExamSubmission.create({
+            studentId: student._id,
+            examId,
+            teacherId,
+            answers: answers.map(ans => ({
+                questionId: ans.questionId,
+                answerText: ans.answer,
+                marks: ans.marks || 0
+            }))
+        });
+
+
+        await Student.findByIdAndUpdate(student._id, {
+            $push: { examsAttempted: submission._id }
+        });
+
+        return res.status(200).json({
+            message: "Answers submitted successfully",
+            submission
+        });
+
+    } catch (error) {
+        console.error("Error in submitting the answers:", error);
+        return res.status(500).json({
+            message: "Could not submit the answers, please try again"
+        });
+    }
+};
+
+
 export {
-    createExam
+    createExam,
+    validateCode,
+    storeStudentDetails,
+    submitAnswers
 }

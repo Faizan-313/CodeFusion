@@ -1,10 +1,14 @@
 import React from "react";
-import ExamInstructions from "../components/ExamInstruction";
+import ExamInstructions from "../../components/ExamInstruction"
 import { toast } from "react-hot-toast";
+import { useExam } from "../../context/ExamContext";
+import { useNavigate } from "react-router-dom";
 
 function StartExam() {
     const [openCodeWindow, setOpenCodeWindow] = React.useState(false);
     const [examCode, setExamCode] = React.useState("");
+    const { validateExamCode } = useExam();
+    const navigate = useNavigate();
 
     const checkCheckBox = () => {
         const checkbox = document.getElementById("instructionsAck");
@@ -20,13 +24,21 @@ function StartExam() {
         setOpenCodeWindow(true);
     }
 
-    const handleEnterExam = () => {
+    const handleEnterExam = async () => {
         if(!examCode.trim()){
             toast.error("Please enter a valid exam code.");
             return;
         }
-        //exam entry logic here
-        toast.success("Entering exam...");
+        const res = await validateExamCode(examCode.trim());
+        if(res.success){
+            toast.success("Code validated!");
+            toast.dismiss();
+            navigate("/exam/student/details");
+            return;
+        }else{
+            toast.error("Invalid exam code. Please try again.");
+            return;
+        }
     }
 
     return (

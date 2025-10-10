@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Plus, Trash2, Save, Send, Clock, Calendar, FileText, Code, CheckSquare, Check, Edit2, AlertCircle, FileLock2 } from "lucide-react";
 import toast from "react-hot-toast";
-import { apiCall } from "../api/api";
+import { apiCall } from "../../api/api";
 import { useNavigate } from "react-router-dom";
 
 export default function CreateExam() {
@@ -238,6 +238,7 @@ export default function CreateExam() {
             case "code": return <Code className="w-4 h-4" />;
             case "text": return <FileText className="w-4 h-4" />;
             case "mcq": return <CheckSquare className="w-4 h-4" />;
+            case "diagram": return <Calendar className="w-4 h-4" />;
             default: return <FileText className="w-4 h-4" />;
         }
     };
@@ -252,7 +253,7 @@ export default function CreateExam() {
                         </div>
                         <div>
                             <h4 className="font-bold text-gray-800 text-lg">Question {index + 1}</h4>
-                            <span className="text-sm text-gray-500">({q.type === "mcq" ? "Multiple Choice" : q.type === "code" ? "Code Question" : "Text Answer"})</span>
+                            <span className="text-sm text-gray-500">({q.type === "mcq" ? "Multiple Choice" : q.type === "code" ? "Code Question" : q.type === "diagram" ? "Diagram based" : "Text Answer"})</span>
                         </div>
                     </div>
                     <div className="flex gap-2">
@@ -343,6 +344,7 @@ export default function CreateExam() {
                             >
                                 <option value="code">Code Question</option>
                                 <option value="text">Text Answer</option>
+                                <option value="diagram">Diagram based</option>
                                 <option value="mcq">Multiple Choice</option>
                             </select>
                         </div>
