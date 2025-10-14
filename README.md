@@ -19,30 +19,6 @@ Built using modern technologies such as **React.js, Node.js, MongoDB**. CodeFusi
 
 ---
 
-## 🏗️ System Architecture
-
-Student Client (React.js)
-│
-├── Code Editor CodeMirror
-├── Diagram Canvas 
-├── Text Editor
-│
-└── AI Proctoring Module 
-↓
-Central Server (Node.js + Express)
-│
-├── Authentication & Exam Management
-├── Socket.io (Real-time Alerts)
-├── AI Processing
-└── MongoDB (Data Storage)
-│
-└── Instructor Dashboard (React.js)
-├── Live Alerts
-├── Student Monitoring
-└── Real-time Actions
-
----
-
 ## ⚙️ Tech Stack
 
 | Layer | Technology Used |
