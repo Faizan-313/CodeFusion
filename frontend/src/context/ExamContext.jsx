@@ -15,7 +15,6 @@ export function ExamProvider({ children }) {
     const [loading, setLoading] = useState(false);
     const [studentDetails, setStudentDetails] = useState(null);
     const [questionPaper, setQuestionPaper] = useState(null); 
-    const [token, setToken] = useState(null);
 
     //Restore exam details if present
     useEffect(() => {
@@ -60,7 +59,6 @@ export function ExamProvider({ children }) {
             if(res.status === 200){
                 setStudentDetails(res.data.student);
                 setQuestionPaper(res.data.question);
-                setToken(res.data.token);
                 return { success: true };
             }
         } catch (error) {
@@ -78,7 +76,6 @@ export function ExamProvider({ children }) {
         validateExamCode,
         submitStudentDetails,
         questionPaper,
-        token,
         studentDetails,
         loading,
     };

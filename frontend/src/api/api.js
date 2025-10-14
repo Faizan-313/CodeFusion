@@ -18,8 +18,6 @@ export const apiCall = async (url, method, options = {}) => {
                     {},
                     { withCredentials: true }
                 );
-                console.log("l")
-
                 if (refreshTokenRes.status === 200) {
                     // Retry original request
                     return await axios({

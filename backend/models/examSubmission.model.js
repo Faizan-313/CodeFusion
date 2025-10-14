@@ -16,11 +16,25 @@ const ExamSubmissionSchema = new mongoose.Schema({
         ref: "Student",
         required: true,
     },
+    evaluatorsComments: {
+        type: String,
+        default: "",
+    },
+    evaluateStatus: {
+        type: String,
+        enum : ["Pending", "Evaluated"],
+        default: "Pending"
+    },
     answers: [
         {
         questionId: {
             type: mongoose.Schema.Types.ObjectId,
             ref: "Question",
+            required: true,
+        },
+        questionType: {
+            type: String,
+            enum: ["mcq", "code", "text", "diagram"],
             required: true,
         },
         answerText: String,

@@ -13,7 +13,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 function ExamSection() {
-    const { exam, studentDetails, token, questionPaper } = useExam();
+    const { exam, studentDetails, questionPaper } = useExam();
     const [questions, setQuestions] = useState([]);
     const [answers, setAnswers] = useState({});
     const [selectedLanguages, setSelectedLanguages] = useState({});
@@ -86,6 +86,7 @@ function ExamSection() {
             if (!isSubmitted) {
                 toast.error("⚠️ Tab switching detected! This may be reported.");
             }
+            //TO DO: report to backend and on the backend store the incident and if he does it mutiple times, stop the exam and report to admin
         };
 
         const handleBeforeUnload = (e) => {
@@ -136,7 +137,7 @@ function ExamSection() {
             // Send to backend API
             const response = await axios.post(`
                 ${import.meta.env.VITE_API_URL}/api/v1/exams/submit`, 
-                { answers: finalAnswers, examId: exam._id, token, studentDetail: {
+                { answers: finalAnswers, examId: exam._id, studentDetail: {
                         id: studentDetails._id,
                         rollNumber: studentDetails.rollNumber,
                         collegeId: studentDetails.collegeId
@@ -154,8 +155,7 @@ function ExamSection() {
         } catch (error) {
             console.error('Error submitting exam:', error);
             toast.error("Failed to submit exam. Please try again.");
-            //allow resubmission in case of any problem
-            setIsSubmitted(false);
+            setIsSubmitted(true);
         }
     };
 
@@ -267,14 +267,6 @@ function ExamSection() {
                         </div>
                         <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">Exam Submitted Successfully!</h2>
                         <p className="text-gray-600 dark:text-gray-300">Your answers have been recorded. You may now close this window.</p>
-
-                        {/* Debug: Show submitted answers */}
-                        <div className="mt-8 p-4 bg-gray-100 dark:bg-gray-700 rounded-lg text-left">
-                            <h3 className="text-lg font-semibold mb-2">Submitted Answers (Debug):</h3>
-                            <pre className="text-sm whitespace-pre-wrap">
-                                {JSON.stringify(answers, null, 2)}
-                            </pre>
-                        </div>
                     </div>
                 ) : (
                     <div className="space-y-6">
@@ -367,14 +359,6 @@ function ExamSection() {
                                             questionId={q._id}
                                             onAnswerChange={handleAnswerChange}
                                         />
-                                        {/* Show preview of diagram answer if exists */}
-                                        {answers[q._id] && (
-                                            <div className="mt-4 p-3 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-700 rounded-lg">
-                                                <p className="text-sm text-green-700 dark:text-green-300 font-medium">
-                                                    ✓ Diagram saved ({answers[q._id].substring(0, 50)}...)
-                                                </p>
-                                            </div>
-                                        )}
                                     </div>
                                 )}
                             </div>

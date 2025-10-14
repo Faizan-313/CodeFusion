@@ -95,8 +95,6 @@ const storeStudentDetails = async (req, res) => {
 
         let student = await Student.findOne({ rollNumber: formattedRoll, collegeId: formattedCollegeId });
 
-        const token = `${formattedCollegeId}-${uuidv4().split("-")[0].toUpperCase()}-${Date.now().toString().slice(-4)}`;
-
         if (!student) {
             student = await Student.create({
                 name: fullName.trim().toLowerCase(),
@@ -104,7 +102,6 @@ const storeStudentDetails = async (req, res) => {
                 collegeId: formattedCollegeId,
                 session,
                 batch,
-                token,
                 examsAttempted: []
             });
         } else {
@@ -119,11 +116,14 @@ const storeStudentDetails = async (req, res) => {
             return res.status(404).json({ message: "Question paper not found" });
         }
 
+        //link students to exams
+        exam.students.push(student._id);
+        await exam.save();
+
         return res.status(200).json({
             success: true,
             message: "Student details submitted successfully",
             student,
-            token,
             question: questionPaper
         });
 
@@ -136,9 +136,9 @@ const storeStudentDetails = async (req, res) => {
 
 const submitAnswers = async (req, res) => {
     try {
-        const { answers, examId, token, studentDetail } = req.body;
+        const { answers, examId, studentDetail } = req.body;
 
-        if (!answers || !examId || !token) {
+        if (!answers || !examId) {
             return res.status(400).json({ message: "Unauthorized" });
         }
 
@@ -147,12 +147,9 @@ const submitAnswers = async (req, res) => {
             collegeId: studentDetail.collegeId.trim().toUpperCase()
         });
 
-        if (!student || student.token !== token) {
+        if (!student) {
             return res.status(400).json({ message: "Unauthorized" });
         }
-
-        student.token = '';
-        await student.save();
 
         const exam = await Exam.findById(examId);
         if (!exam) {
@@ -170,6 +167,7 @@ const submitAnswers = async (req, res) => {
         }
 
         const teacherId = exam.createdBy;
+        
 
         const submission = await ExamSubmission.create({
             studentId: student._id,
@@ -178,7 +176,8 @@ const submitAnswers = async (req, res) => {
             answers: answers.map(ans => ({
                 questionId: ans.questionId,
                 answerText: ans.answer,
-                marks: ans.marks || 0
+                marks: ans.marks || 0,
+                questionType: ans.type
             }))
         });
 
