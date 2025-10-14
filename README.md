@@ -82,16 +82,16 @@ npm run dev
 ```
 ## 👥 Authors & Contributors
 
-Peer Faizan   :	Project Lead / Full Stack Developer,	System architecture, backend APIs, and frontend integration.
-Mohsin Ashraf :	AI Engineer	Proctoring model and UI/UX Designer
-Waseem Shabir :	UI/UX Designer, Frontend design and responsiveness and AI Engineer
+Peer Faizan   :	Project Lead / Full Stack Developer,	System architecture, backend APIs, and frontend integration. |
+Mohsin Ashraf :	AI Engineer	Proctoring model and UI/UX Designer |
+Waseem Shabir :	UI/UX Designer, Frontend design and responsiveness and AI Engineer |
 
-📜 License
+## 📜 License
 This project is licensed under the MIT License — see the LICENSE file for details.
 
-🏁 Conclusion
+## 🏁 Conclusion
 CodeFusion is a next-generation online programming examination system that blends security, flexibility, and AI intelligence.
-By providing a unified platform for multi-format exams and real-time monitoring, it advances the future of fair, scalable, and smart remote assessments.
+By providing a unified platform for multi-format exams and real-time monitoring, it advances the future of fair, scalable, and smart remote assessments. |
 
 ⭐ If you find this project inspiring, don’t forget to star the repo!
 
