@@ -72,16 +72,16 @@ cd codefusion/backend
 npm install
 
 # 3. Start the backend
-npm run server
+npm run dev
 
 # 4. In another terminal, start the frontend
 cd ../frontend
 npm install
-npm start
+npm run dev
 
 ```
-👥 Authors & Contributors
-Name	Role	Responsibility
+## 👥 Authors & Contributors
+
 Peer Faizan   :	Project Lead / Full Stack Developer,	System architecture, backend APIs, and frontend integration.
 Mohsin Ashraf :	AI Engineer	Proctoring model and UI/UX Designer
 Waseem Shabir :	UI/UX Designer, Frontend design and responsiveness and AI Engineer
