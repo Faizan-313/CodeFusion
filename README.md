@@ -79,11 +79,12 @@ cd ../frontend
 npm install
 npm start
 
+```
 👥 Authors & Contributors
 Name	Role	Responsibility
-Peer Faizan	Project Lead / Full Stack Developer	System architecture, backend APIs, and frontend integration
-Mohsin Ashraf	AI Engineer	Proctoring model and UI/UX Designer
-Waseem Shabir	UI/UX Designer	Frontend design and responsiveness, AI Engineer
+Peer Faizan   :	Project Lead / Full Stack Developer,	System architecture, backend APIs, and frontend integration.
+Mohsin Ashraf :	AI Engineer	Proctoring model and UI/UX Designer
+Waseem Shabir :	UI/UX Designer, Frontend design and responsiveness and AI Engineer
 
 📜 License
 This project is licensed under the MIT License — see the LICENSE file for details.
