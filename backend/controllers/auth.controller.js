@@ -5,7 +5,7 @@ const isProduction = process.env.NODE_ENV === "production";
 
 const options = {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
+    secure: isProduction,
     maxAge: 7 * 24 * 60 * 60 * 1000
 }
 
@@ -50,7 +50,7 @@ const login = async (req, res)=>{
             return res.status(500).json({ message: "Something went wrong" })
         }
         const { accessToken, refreshToken } = tokens;
-        const loggedInUser = await User.findById(user._id).select( "-password -refreshToken" )
+        const loggedInUser = await User.findById(user._id).select( "-password -refreshToken -examsCreated -createdAt -updatedAt" )
 
         return res.status(200)
             .cookie("accessToken", accessToken, options)
@@ -138,12 +138,12 @@ const refreshAccessToken = async (req, res)=>{
         if( tokens.error ){
             return res.status(500).json({ message: tokens.error })
         }
-        const { accessToken, newRefreshToken } = tokens
+        const { accessToken, refreshToken } = tokens
         
         return res.status(200)
             .cookie( "accessToken",  accessToken, options)
-            .cookie( "refreshToken", newRefreshToken, options )
-            .json({ accessToken, refreshToken: newRefreshToken})
+            .cookie( "refreshToken", refreshToken, options )
+            .json({ accessToken, refreshToken: refreshToken})
 
     } catch (error) {
         console.log( "error in refreshing access token", error )
