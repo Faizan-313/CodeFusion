@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import {
     ArrowLeft, Save, Loader2,
-    MessageSquare, RotateCcw, FileText, CheckCircle, Image as ImageIcon
+    MessageSquare, AlertCircle, FileText, CheckCircle, Image as ImageIcon
 } from "lucide-react";
 import { useParams, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
@@ -249,11 +249,10 @@ function ViewPaper() {
                                 {question.options.map((option, idx) => (
                                     <div
                                         key={option._id || idx}
-                                        className={`p-2 rounded text-sm ${
-                                            selectedOption === option._id || selectedOption === option
+                                        className={`p-2 rounded text-sm ${selectedOption === option._id || selectedOption === option
                                                 ? "bg-green-300 dark:bg-green-300/40 border border-indigo-400 dark:border-indigo-600"
                                                 : "bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300"
-                                        }`}
+                                            }`}
                                     >
                                         <span className="font-medium">({String.fromCharCode(65 + idx)})</span> {option}
                                     </div>
@@ -529,30 +528,25 @@ function ViewPaper() {
                             <div className="space-y-5">
                                 <div>
                                     <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                                        Marks Obtained <span className="text-red-500">*</span>
+                                        Total Marks Obtained <span className="text-red-500">*</span>
                                     </label>
                                     <div className="relative">
                                         <input
-                                            type="number"
+                                            type="text"
                                             value={totalObtainedMarks}
-                                            onChange={(e) => {
-                                                setMarks(e.target.value);
-                                                setValidated(false);
-                                            }}
-                                            placeholder="0"
-                                            min="0"
-                                            max={maxMarks}
-                                            step="0.5"
-                                            disabled={submitting}
-                                            className="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg
-                                            bg-white/70 dark:bg-gray-700 text-gray-900 dark:text-gray-100
-                                            placeholder-gray-400 focus:ring-2 focus:ring-indigo-500 
-                                            focus:border-transparent outline-none transition disabled:opacity-50"
+                                            readOnly
+                                            className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg
+                                            bg-gray-100 dark:bg-gray-600 text-gray-900 dark:text-gray-100 font-medium text-lg
+                                            cursor-not-allowed"
                                         />
                                         <span className="absolute right-3 top-2.5 text-gray-500 dark:text-gray-400 font-medium text-sm">
                                             / {maxMarks}
                                         </span>
                                     </div>
+                                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-1.5 flex items-center gap-1">
+                                        <AlertCircle className="w-3 h-3" />
+                                        Automatically calculated from individual question marks
+                                    </p>
                                 </div>
 
                                 <div>
