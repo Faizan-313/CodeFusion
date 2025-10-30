@@ -3,7 +3,8 @@ import {
     createExam,
     validateCode,
     storeStudentDetails,
-    submitAnswers
+    submitAnswers,
+    getExamData
 } from "../controllers/exams.controller.js"
 import authenticateToken from "../middlewares/auth.middleware.js";
 
@@ -13,5 +14,6 @@ router.post("/create", authenticateToken, createExam);
 router.post("/validate-code", validateCode);
 router.post("/submit-student-details", storeStudentDetails);
 router.post("/submit", submitAnswers);
+router.get("/:examId", getExamData);
 
 export default router;

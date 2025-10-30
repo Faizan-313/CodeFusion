@@ -36,7 +36,7 @@ function StartExam() {
             navigate("/exam/student/details");
             return;
         }else{
-            toast.error("Invalid exam code. Please try again.");
+            toast.error(res.error);
             return;
         }
     }

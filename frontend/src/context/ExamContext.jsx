@@ -46,7 +46,7 @@ export function ExamProvider({ children }) {
             }
         } catch (error) {
             console.log("Error in validating exam code:", error);
-            return { success: false };
+            return { success: false, error: error.response?.data?.message };
         } finally {
             setLoading(false);
         }
@@ -63,8 +63,7 @@ export function ExamProvider({ children }) {
             }
         } catch (error) {
             console.log("Error in submitting student details: ", error);
-            toast.error(error?.response?.data?.message)
-            return { success: false };
+            return { success: false, error: error?.response?.data?.message };
         }finally{
             setLoading(false);
         }

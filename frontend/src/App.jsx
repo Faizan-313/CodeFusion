@@ -18,6 +18,7 @@ import ExamSection from "./pages/student/ExamSection";
 import ThankYou from "./pages/ThankYou";
 import Evalvate from "./pages/teacher/Evalvate";
 import ViewPaper from "./pages/teacher/ViewPaper";
+import MonitorExam from "./pages/teacher/MonitorExam";
 
 function MainLayout() {
   return (
@@ -50,6 +51,7 @@ function AppContent() {
         <Route path="/dashboard" element={<TeacherDashboard />} />
         <Route path="/teacher/evaluation/:examId" element={<Evalvate />} />
         <Route path="/teacher/evalvate/:examId/:studentId" element={<ViewPaper />} />
+        <Route path="/teacher/monitor/:examId" element={<MonitorExam />} />
       </Route>
 
       <Route element={<MinimalLayout />}>
