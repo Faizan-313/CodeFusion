@@ -78,7 +78,7 @@ const StudentDetailsFilling = () => {
             return;
         }else{
             toast.dismiss();
-            toast.error("Could not submit the details.");
+            toast.error(res.error);
             return;
         }
     }

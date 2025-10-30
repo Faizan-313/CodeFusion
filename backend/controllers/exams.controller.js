@@ -63,6 +63,13 @@ const validateCode = async (req, res) => {
         if(!examDetails){
             return res.status(400).json({ message: "Exam code is invalid" });
         }
+
+        const now = new Date();
+        const examEndTime = new Date(examDetails.endTime);
+
+        if(examEndTime < now){
+            return res.status(410).json({ message: "This exam has ended and is no longer accessible." });
+        }
         
         return res.status(200).json({ message: "Code validated successfully", examDetails })
 
@@ -107,7 +114,7 @@ const storeStudentDetails = async (req, res) => {
         } else {
             const existingSubmission = await ExamSubmission.findOne({ studentId: student._id, examId });
             if (existingSubmission) {
-                return res.status(400).json({ message: "Student already registered for this exam" });
+                return res.status(400).json({ message: "Student is already registered for this exam" });
             }
         }
 
@@ -199,10 +206,32 @@ const submitAnswers = async (req, res) => {
     }
 };
 
+const getExamData = async (req, res)=>{
+    try {
+        const { examId } = req.params;
+        if (!examId) {
+            return res.status(400).json({ message: "Exam ID is required" });
+        }
+
+        const exam = await Exam.findById(examId);
+
+        if (!exam) {
+            return res.status(404).json({ message: "Exam not found" });
+        }
+
+        return res.status(200).json(exam);
+    } catch (error) {
+        console.log("Error in getting a praticular exam data: ", error);
+        return res.status(500).json({ message: "Something went wrong" })
+    }
+}
+
+
 
 export {
     createExam,
     validateCode,
     storeStudentDetails,
-    submitAnswers
+    submitAnswers,
+    getExamData
 }

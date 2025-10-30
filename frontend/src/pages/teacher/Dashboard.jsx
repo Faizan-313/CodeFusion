@@ -7,7 +7,7 @@ import { Link, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import { useTeacher } from "../../context/TeacherContext";
 
-// Helper function for exam status - MUST BE BEFORE COMPONENTS
+//function of exam status
 const getExamStatusHelper = (startTime, endTime) => {
     const now = new Date();
     const start = new Date(startTime);
@@ -211,6 +211,7 @@ function ExamCard({ exam, onViewDetails, onEvaluate, onCopyCode, copiedCode }) {
     const status = getExamStatusHelper(exam.startTime, exam.endTime);
     const questionCount = exam.questions?.length || 0;
     const isCompleted = status.label === "Completed";
+    const navigate = useNavigate();
 
     return (
         <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-200 dark:border-gray-700 group">
@@ -307,6 +308,16 @@ function ExamCard({ exam, onViewDetails, onEvaluate, onCopyCode, copiedCode }) {
                         View Details
                         <ChevronRight size={16} className="group-hover:translate-x-0.5 transition" />
                     </button>
+                    {status.label === "Live" && (
+                        <button
+                            onClick={() => navigate(`/teacher/monitor/${exam._id}`)}
+                            className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-pink-500 to-red-600 hover:from-pink-600 hover:to-red-700 text-white py-2.5 rounded-lg transition-all font-semibold text-sm group-hover:shadow-lg"
+                        >
+                            <Users size={16} />
+                            Monitor Exam
+                        </button>
+                    )}
+
 
                     {isCompleted && (
                         <button

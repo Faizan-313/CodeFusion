@@ -31,7 +31,7 @@ function Signin() {
         try {
             const res = await login(formData.email, formData.password)
             if (res.success) {
-                navigate("/")
+                navigate("/dashboard")
             }
         } catch (error) {
             toast.error("Something went wrong. Please try again.");
