@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt"
 
-const UserSchema = new mongoose.Schema({
+const TeacherSchema = new mongoose.Schema({
     name: {
         type: String,
         required: true
@@ -30,18 +30,18 @@ const UserSchema = new mongoose.Schema({
     timestamps: true
 });
 
-UserSchema.pre("save", async function (next){
+TeacherSchema.pre("save", async function (next){
     if(this.isModified("password")){
         this.password = await bcrypt.hash(this.password, 10);
     }
     next();
 });
 
-UserSchema.methods.isPasswordCorrect = async function (password){
+TeacherSchema.methods.isPasswordCorrect = async function (password){
     return await bcrypt.compare(password, this.password);
 }
 
-UserSchema.methods.generateAccessToken = function(){
+TeacherSchema.methods.generateAccessToken = function(){
     return jwt.sign(
         {
             _id: this._id,
@@ -54,7 +54,7 @@ UserSchema.methods.generateAccessToken = function(){
     )
 }
 
-UserSchema.methods.generateRefreshToken = function(){
+TeacherSchema.methods.generateRefreshToken = function(){
     return jwt.sign(
         {
             _id: this._id
@@ -66,4 +66,4 @@ UserSchema.methods.generateRefreshToken = function(){
     )
 }
 
-export const User = mongoose.model("User", UserSchema);
+export const User = mongoose.model("Teacher", TeacherSchema);

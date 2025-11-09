@@ -2,6 +2,7 @@ import { Exam } from "../models/exam.model.js";
 import { ExamSubmission } from "../models/examSubmission.model.js";
 import { QuestionPaper } from "../models/questions.model.js";
 import { Student } from "../models/student.model.js";
+import { Violation } from "../models/violation.model.js";
 
 
 const dashboardData = async (req, res) => {
@@ -53,7 +54,7 @@ const studentList = async (req, res) => {
     try {
         const { examId } = req.query;
         if (!examId) {
-        return res.status(400).json({ message: "Exam ID is required." });
+            return res.status(400).json({ message: "Exam ID is required." });
         }
 
         //Find students who have attempted this exam
@@ -64,7 +65,7 @@ const studentList = async (req, res) => {
                     path: "examsAttempted",
                     match: { examId }, // filter submissions related to this exam
                     populate: {
-                    path: "examId",
+                        path: "examId",
                 },
         })
         .select("name rollNumber collegeId batch session examsAttempted");
@@ -93,37 +94,102 @@ const studentList = async (req, res) => {
     }
 };
 
-const evaluatedPaper = async (req, res)=>{
+
+const evaluatedPaper = async (req, res) => {
     try {
-        const { examId, studentId, totalScore, evaluatorsComments, answers } = req.body;
-        //check for input correctness
-        if(!examId || !studentId || !totalScore || !answers || answers.length === 0){
-            return res.status(400).json({ message: "Invalid Data" })
+        const {
+            examId,
+            studentId,
+            totalScore,
+            evaluatorComments,
+            answers, 
+        } = req.body.data || req.body;
+
+        if (!examId || !studentId || totalScore == null || !Array.isArray(answers)) {
+            return res.status(400).json({ message: "Invalid data received" });
         }
 
-        //find the examsubmission form the database for this student
         const studentSubmission = await ExamSubmission.findOne({ examId, studentId });
-        if(!studentSubmission){
-            return res.status(404).json({ message: "No submission present" });
+        if (!studentSubmission) {
+            return res.status(404).json({ message: "No submission found" });
         }
-        
-        //store the evaluated results
-        studentSubmission.answers = answers;
+
+        // Update answers with evaluated marks
+        studentSubmission.answers = studentSubmission.answers.map((ans) => {
+            const updated = answers.find(
+                (a) => String(a.questionId) === String(ans.questionId)
+            );
+            if (updated) {
+                ans.marksObtained = updated.marksObtained || 0;
+            }
+            return ans;
+        });
+
         studentSubmission.totalScore = totalScore;
-        studentSubmission.evaluatorsComments = evaluatorsComments || "";
+        studentSubmission.evaluatorComments = evaluatorComments || "";
         studentSubmission.evaluateStatus = "Evaluated";
+
         await studentSubmission.save();
 
-        //return success
-        return res.status(200).json({ message: "Done" });
+        return res.status(200).json({
+            message: "Evaluation saved successfully",
+            updatedSubmission: studentSubmission,
+        });
     } catch (error) {
-        console.log("Error in storing evaluated paper: ", error);
+        console.error("Error in storing evaluated paper:", error);
         return res.status(500).json({ message: "Something went wrong" });
     }
-}
+};
+
+
+const getStudent = async (req, res) => {
+    try {
+        const studentId = req.query.studentId || req.params.studentId || req.body.studentId;
+
+        if (!studentId) {
+            return res.status(400).json({ message: "Student ID is missing" });
+        }
+
+        let student = await Student.findById(studentId)
+            .populate({
+                path: "examsAttempted",
+                populate: {
+                    path: "examId",
+                },
+            })
+            .lean();
+
+        if (!student) {
+            student = await Student.findOne({
+                $or: [{ studentId: studentId }, { rollNumber: studentId }],
+            })
+            .populate({
+                path: "examsAttempted",
+                populate: {
+                    path: "examId",
+                },
+            })
+            .lean();
+        }
+
+        if (!student) {
+            return res.status(404).json({ message: "Student not found" });
+        }
+
+        const violations = await Violation.find({ studentId: student._id }).select("violations");
+        student.violations = violations || [];
+
+        return res.status(200).json({ student });
+    } catch (error) {
+        console.error("Error fetching student:", error);
+        return res.status(500).json({ message: "Something went wrong" });
+    }
+};
+
 
 export {
     dashboardData,
     studentList,
-    evaluatedPaper
+    evaluatedPaper,
+    getStudent
 }

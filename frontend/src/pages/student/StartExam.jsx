@@ -1,5 +1,5 @@
 import React from "react";
-import ExamInstructions from "../../components/ExamInstruction"
+import ExamInstructions from "./components/ExamInstruction"
 import { toast } from "react-hot-toast";
 import { useExam } from "../../context/ExamContext";
 import { useNavigate } from "react-router-dom";

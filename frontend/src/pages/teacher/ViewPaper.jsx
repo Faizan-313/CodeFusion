@@ -1,13 +1,17 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import {
     ArrowLeft, Save, Loader2,
-    MessageSquare, AlertCircle, FileText, CheckCircle, Image as ImageIcon
+    MessageSquare, AlertCircle, FileText, Image as ImageIcon,
+    AlertTriangle, Monitor, MousePointer, Keyboard, Maximize, Eye,
+    ChevronDown, ChevronUp
 } from "lucide-react";
 import { useParams, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import { apiCall } from "../../api/api";
-import { useTeacher } from "../../context/TeacherContext";
+import { useExam } from "../../context/ExamContext";
+import MarksInput from "./components/MarksInput.jsx";
 
+// Utility Functions
 const sanitizeAndFormatAnswer = (answer) => {
     if (!answer) return "";
 
@@ -28,33 +32,146 @@ const sanitizeAndFormatAnswer = (answer) => {
     return text;
 };
 
+const formatViolationType = (type) => {
+    const violationMap = {
+        "TAB_SWITCH": "Tab Switch",
+        "WINDOW_BLUR": "Window Blur",
+        "DEVTOOLS_OPENED": "DevTools Opened",
+        "RIGHT_CLICK_ATTEMPT": "Right Click",
+        "BLOCKED_SHORTCUT": "Blocked Shortcut",
+        "FULLSCREEN_EXIT": "Fullscreen Exit",
+    };
+    
+    const normalizedType = type?.toUpperCase();
+    return violationMap[normalizedType] || type;
+};
+
+const getViolationIcon = (type) => {
+    const iconProps = { className: "w-4 h-4" };
+    const normalizedType = type?.toUpperCase();
+
+    const iconMap = {
+        "TAB_SWITCH": <Monitor {...iconProps} />,
+        "WINDOW_BLUR": <Monitor {...iconProps} />,
+        "DEVTOOLS_OPENED": <MousePointer {...iconProps} />,
+        "RIGHT_CLICK_ATTEMPT": <MousePointer {...iconProps} />,
+        "BLOCKED_SHORTCUT": <Keyboard {...iconProps} />,
+        "FULLSCREEN_EXIT": <Maximize {...iconProps} />,
+    };
+
+    return iconMap[normalizedType] || <AlertTriangle {...iconProps} />;
+};
+
+const getViolationColor = (type) => {
+    const normalizedType = type?.toUpperCase();
+
+    const colorMap = {
+        "TAB_SWITCH": "bg-blue-100 text-blue-800 dark:bg-blue-900/40 dark:text-blue-300 border-blue-200 dark:border-blue-700",
+        "WINDOW_BLUR": "bg-blue-100 text-blue-800 dark:bg-blue-900/40 dark:text-blue-300 border-blue-200 dark:border-blue-700",
+        "DEVTOOLS_OPENED": "bg-red-100 text-red-800 dark:bg-red-900/40 dark:text-red-300 border-red-200 dark:border-red-700",
+        "RIGHT_CLICK_ATTEMPT": "bg-orange-100 text-orange-800 dark:bg-orange-900/40 dark:text-orange-300 border-orange-200 dark:border-orange-700",
+        "BLOCKED_SHORTCUT": "bg-orange-100 text-orange-800 dark:bg-orange-900/40 dark:text-orange-300 border-orange-200 dark:border-orange-700",
+        "FULLSCREEN_EXIT": "bg-purple-100 text-purple-800 dark:bg-purple-900/40 dark:text-purple-300 border-purple-200 dark:border-purple-700",
+    };
+
+    return colorMap[normalizedType] || "bg-gray-100 text-gray-800 dark:bg-gray-900/40 dark:text-gray-300 border-gray-200 dark:border-gray-700";
+};
+
+// API Function
+const fetchStudent = async (studentId) => {
+    try {
+        const response = await apiCall(
+            `${import.meta.env.VITE_API_URL}/api/v1/teacher/exam/student?studentId=${studentId}`,
+            "GET"
+        );
+
+        if (response.status === 200) {
+            return response.data.student;
+        }
+        
+        throw new Error("Failed to fetch student data");
+    } catch (error) {
+        console.error("Error fetching student data:", error);
+        throw error;
+    }
+};
+
 function ViewPaper() {
     const { studentId, examId } = useParams();
     const navigate = useNavigate();
-    const { students, exams, fetchExams, fetchStudents } = useTeacher();
-
-    useEffect(() => {
-        if (examId) {
-            fetchStudents(examId);
-        }
-        fetchExams();
-    }, [examId]);
-
+    const { fetchParticularExamDetails, particularExamDetails } = useExam();
+    
+    const [student, setStudent] = useState(null);
     const [marks, setMarks] = useState("");
     const [comments, setComments] = useState("");
-    const [validated, setValidated] = useState(false);
     const [submitting, setSubmitting] = useState(false);
     const [localExamAttempt, setLocalExamAttempt] = useState(null);
+    const [showViolations, setShowViolations] = useState(false);
+    const [loading, setLoading] = useState(true);
 
-    const exam = exams.find(e => e._id === examId);
-    const student = students.find(s => s._id === studentId);
+    const exam = particularExamDetails;
 
-    const examAttempt = student?.examsAttempted?.find(attempt =>
-        typeof attempt.examId === 'object'
-            ? attempt.examId._id === examId
-            : attempt.examId === examId
-    );
+    // Memoized Values
+    const examAttempt = useMemo(() => {
+        if (!student?.examsAttempted) return null;
+        
+        return student.examsAttempted.find(attempt =>
+            typeof attempt.examId === 'object'
+                ? attempt.examId._id === examId
+                : attempt.examId === examId
+        );
+    }, [student, examId]);
 
+    const examViolations = useMemo(() => {
+        return student?.violations?.[0]?.violations || [];
+    }, [student]);
+
+    const maxMarks = useMemo(() => exam?.totalMarks || 100, [exam]);
+
+    const totalObtainedMarks = useMemo(() => {
+        if (!localExamAttempt?.answers) return 0;
+        
+        return localExamAttempt.answers.reduce(
+            (sum, ans) => sum + (parseFloat(ans.marksObtained) || 0),
+            0
+        );
+    }, [localExamAttempt]);
+
+    // Load Data Effect
+    useEffect(() => {
+        const loadData = async () => {
+            if (!examId || !studentId) {
+                toast.error("Missing exam or student ID");
+                navigate(-1);
+                return;
+            }
+
+            try {
+                setLoading(true);
+                
+                const [studentData] = await Promise.all([
+                    fetchStudent(studentId),
+                    fetchParticularExamDetails(examId)
+                ]);
+
+                if (studentData) {
+                    setStudent(studentData);
+                } else {
+                    throw new Error("Failed to load student data");
+                }
+            } catch (err) {
+                console.error("Error in loadData:", err);
+                toast.error("Failed to load data");
+                navigate(-1);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        loadData();
+    }, [examId, studentId]);
+
+    // Initialize Local Exam Attempt
     useEffect(() => {
         if (examAttempt) {
             setLocalExamAttempt(JSON.parse(JSON.stringify(examAttempt)));
@@ -63,7 +180,8 @@ function ViewPaper() {
         }
     }, [examAttempt]);
 
-    const handleValidation = () => {
+    // Handlers
+    const handleValidation = useCallback(() => {
         const marksNum = parseFloat(marks);
 
         if (marks === "") {
@@ -76,41 +194,37 @@ function ViewPaper() {
             return false;
         }
 
-        const maxMarks = exam?.totalMarks || 100;
         if (marksNum < 0 || marksNum > maxMarks) {
             toast.error(`Marks must be between 0 and ${maxMarks}`);
             return false;
         }
 
-        setValidated(true);
         return true;
-    };
+    }, [marks, maxMarks]);
 
-    const handleSubmit = async () => {
-        if (!handleValidation()) {
-            return;
-        }
+    const handleSubmit = useCallback(async () => {
+        if (!handleValidation()) return;
 
         try {
             setSubmitting(true);
 
-            const totalScore = localExamAttempt.answers.reduce(
-                (sum, ans) => sum + parseFloat(ans.marksObtained || 0),
-                0
-            );
+            const evaluatedAnswers = localExamAttempt.answers.map(ans => ({
+                questionId: ans.questionId,
+                marksObtained: parseFloat(ans.marksObtained) || 0
+            }));
+
+            const totalScore = evaluatedAnswers.reduce((sum, ans) => sum + ans.marksObtained, 0);
 
             const response = await apiCall(
                 `${import.meta.env.VITE_API_URL}/api/v1/teacher/evaluate-paper`,
                 "POST",
                 {
                     data: {
-                        examAttemptId: localExamAttempt._id,
                         examId,
                         studentId,
                         totalScore,
                         evaluatorComments: comments,
-                        evaluatedAt: new Date(),
-                        answers: localExamAttempt.answers,
+                        answers: evaluatedAnswers,
                     },
                 }
             );
@@ -120,40 +234,33 @@ function ViewPaper() {
                 setTimeout(() => {
                     navigate(`/teacher/evaluation/${examId}`, { replace: true });
                 }, 1500);
+            } else {
+                throw new Error(response.data?.message || "Failed to submit evaluation");
             }
         } catch (error) {
             console.error("Error submitting evaluation:", error);
             toast.error(error.response?.data?.message || "Failed to submit evaluation");
+        } finally {
             setSubmitting(false);
         }
-    };
+    }, [handleValidation, localExamAttempt, examId, studentId, comments, navigate]);
 
-    if (!exam || !student || !localExamAttempt) {
-        return (
-            <div className="pt-20 min-h-screen bg-gradient-to-b from-gray-100 to-gray-200 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center">
-                <div className="flex flex-col items-center gap-3">
-                    <Loader2 className="w-8 h-8 text-indigo-600 animate-spin" />
-                    <p className="text-gray-600 dark:text-gray-300">Loading exam paper...</p>
-                </div>
-            </div>
-        );
-    }
+    // Render Functions
+    const renderStudentAnswer = useCallback((question, studentAnswer) => {
+        const hasAnswer = studentAnswer?.answerText?.trim();
 
-    const maxMarks = exam.totalMarks || 100;
-    const studentAnswers = localExamAttempt.answers || [];
-    const totalObtainedMarks = studentAnswers.reduce(
-        (sum, ans) => sum + parseFloat(ans.marksObtained || 0),
-        0
-    );
-
-    const renderStudentAnswer = (question, studentAnswer) => {
-        if (!studentAnswer) {
+        if (!hasAnswer) {
             return (
                 <div className="bg-gray-50 dark:bg-gray-700/50 border border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-4">
                     <p className="text-sm text-gray-500 dark:text-gray-400 flex items-center gap-2">
                         <FileText className="w-4 h-4" />
                         No answer provided
                     </p>
+                    <MarksInput
+                        question={question}
+                        studentAnswer={studentAnswer}
+                        setLocalExamAttempt={setLocalExamAttempt}
+                    />
                 </div>
             );
         }
@@ -164,7 +271,7 @@ function ViewPaper() {
                     <p className="text-xs font-semibold text-blue-800 dark:text-blue-300">
                         STUDENT'S DIAGRAM
                     </p>
-                    {studentAnswer.answerText && studentAnswer.answerText.startsWith("data:image") ? (
+                    {studentAnswer.answerText?.startsWith("data:image") ? (
                         <div className="flex flex-col gap-2">
                             <img
                                 src={studentAnswer.answerText}
@@ -178,59 +285,20 @@ function ViewPaper() {
                             <p className="text-sm text-gray-500 dark:text-gray-400 ml-2">Diagram image</p>
                         </div>
                     )}
-                    <div className="mt-3 flex items-center gap-2">
-                        <label className="text-sm text-gray-700 dark:text-gray-300 font-medium">
-                            Marks:
-                        </label>
-                        <input
-                            type="number"
-                            min={0}
-                            max={question.marks || 0}
-                            step="0.5"
-                            value={studentAnswer.marksObtained ?? ""}
-                            onChange={(e) => {
-                                const value = e.target.value;
-                                if (value === "") {
-                                    setLocalExamAttempt((prev) => {
-                                        const updatedAnswers = prev.answers.map((ans) =>
-                                            ans.questionId === question._id
-                                                ? { ...ans, marksObtained: "" }
-                                                : ans
-                                        );
-                                        return { ...prev, answers: updatedAnswers };
-                                    });
-                                    return;
-                                }
-
-                                const numValue = Number(value);
-                                const maxMarks = question.marks || 0;
-
-                                if (numValue < 0 || numValue > maxMarks) {
-                                    toast.error(`Marks must be between 0 and ${maxMarks}`);
-                                    setValidated(false);
-                                    return;
-                                }
-
-                                setLocalExamAttempt((prev) => {
-                                    const updatedAnswers = prev.answers.map((ans) =>
-                                        ans.questionId === question._id
-                                            ? { ...ans, marksObtained: numValue }
-                                            : ans
-                                    );
-                                    return { ...prev, answers: updatedAnswers };
-                                });
-                            }}
-                            className="w-20 px-2 py-1 border border-gray-300 dark:border-gray-600 rounded text-sm text-gray-900 dark:text-gray-100 bg-white/70 dark:bg-gray-700 focus:ring-1 focus:ring-indigo-500 outline-none"
-                        />
-                        <span className="text-gray-500 text-xs">/ {question.marks || 0}</span>
-                    </div>
+                    <MarksInput
+                        question={question}
+                        studentAnswer={studentAnswer}
+                        setLocalExamAttempt={setLocalExamAttempt}
+                    />
                 </div>
             );
         }
 
         if (question.type === "mcq") {
             const selectedOption = studentAnswer.answerText;
-            const optionDetails = question.options?.find(opt => opt._id === selectedOption || opt.text === selectedOption);
+            const optionDetails = question.options?.find(opt => 
+                opt._id === selectedOption || opt.text === selectedOption
+            );
 
             return (
                 <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4 space-y-3">
@@ -242,75 +310,37 @@ function ViewPaper() {
                             {optionDetails?.text || selectedOption}
                         </p>
                     </div>
-                    {question.options && question.options.length > 0 && (
+                    {question.options?.length > 0 && (
                         <div className="space-y-2 mt-3">
                             <p className="text-xs font-medium text-gray-600 dark:text-gray-400">All Options:</p>
                             <div className="space-y-1">
-                                {question.options.map((option, idx) => (
-                                    <div
-                                        key={option._id || idx}
-                                        className={`p-2 rounded text-sm ${selectedOption === option._id || selectedOption === option
-                                                ? "bg-green-300 dark:bg-green-300/40 border border-indigo-400 dark:border-indigo-600"
-                                                : "bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300"
+                                {question.options.map((option, idx) => {
+                                    const isSelected = selectedOption === option._id || selectedOption === option.text;
+                                    return (
+                                        <div
+                                            key={option._id || idx}
+                                            className={`p-2 rounded text-sm ${
+                                                isSelected
+                                                    ? "bg-green-300 dark:bg-green-300/40 border border-indigo-400 dark:border-indigo-600"
+                                                    : "bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300"
                                             }`}
-                                    >
-                                        <span className="font-medium">({String.fromCharCode(65 + idx)})</span> {option}
-                                    </div>
-                                ))}
+                                        >
+                                            <span className="font-medium">({String.fromCharCode(65 + idx)})</span> {option.text || option}
+                                        </div>
+                                    );
+                                })}
                             </div>
                         </div>
                     )}
-                    <div className="mt-4 flex items-center gap-2 pt-2 border-t border-blue-200 dark:border-blue-800">
-                        <label className="text-sm text-gray-700 dark:text-gray-300 font-medium">
-                            Marks:
-                        </label>
-                        <input
-                            type="number"
-                            min={0}
-                            max={question.marks || 0}
-                            step="0.5"
-                            value={studentAnswer.marksObtained ?? ""}
-                            onChange={(e) => {
-                                const value = e.target.value;
-                                if (value === "") {
-                                    setLocalExamAttempt((prev) => {
-                                        const updatedAnswers = prev.answers.map((ans) =>
-                                            ans.questionId === question._id
-                                                ? { ...ans, marksObtained: "" }
-                                                : ans
-                                        );
-                                        return { ...prev, answers: updatedAnswers };
-                                    });
-                                    return;
-                                }
-
-                                const numValue = Number(value);
-                                const maxMarks = question.marks || 0;
-
-                                if (numValue < 0 || numValue > maxMarks) {
-                                    toast.error(`Marks must be between 0 and ${maxMarks}`);
-                                    setValidated(false);
-                                    return;
-                                }
-
-                                setLocalExamAttempt((prev) => {
-                                    const updatedAnswers = prev.answers.map((ans) =>
-                                        ans.questionId === question._id
-                                            ? { ...ans, marksObtained: numValue }
-                                            : ans
-                                    );
-                                    return { ...prev, answers: updatedAnswers };
-                                });
-                            }}
-                            className="w-20 px-2 py-1 border border-gray-300 dark:border-gray-600 rounded text-sm text-gray-900 dark:text-gray-100 bg-white/70 dark:bg-gray-700 focus:ring-1 focus:ring-indigo-500 outline-none"
-                        />
-                        <span className="text-gray-500 text-xs">/ {question.marks || 0}</span>
-                    </div>
+                    <MarksInput
+                        question={question}
+                        studentAnswer={studentAnswer}
+                        setLocalExamAttempt={setLocalExamAttempt}
+                    />
                 </div>
             );
         }
 
-        // Default text/code answer display
         return (
             <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4 space-y-3">
                 <p className="text-xs font-semibold text-blue-800 dark:text-blue-300">
@@ -319,64 +349,39 @@ function ViewPaper() {
                 <pre className="text-gray-900 dark:text-gray-100 border border-gray-300 dark:border-gray-600 p-3 rounded-lg text-sm dark:bg-gray-950 bg-white leading-relaxed whitespace-pre-wrap break-words font-mono overflow-auto max-h-96">
                     {sanitizeAndFormatAnswer(studentAnswer.answerText)}
                 </pre>
-                <div className="mt-3 flex items-center gap-2 pt-3 border-t border-blue-200 dark:border-blue-800">
-                    <label className="text-sm text-gray-700 dark:text-gray-300 font-medium">
-                        Marks:
-                    </label>
-                    <input
-                        type="number"
-                        min={0}
-                        max={question.marks || 0}
-                        step="0.5"
-                        value={studentAnswer.marksObtained ?? ""}
-                        onChange={(e) => {
-                            const value = e.target.value;
-                            if (value === "") {
-                                setLocalExamAttempt((prev) => {
-                                    const updatedAnswers = prev.answers.map((ans) =>
-                                        ans.questionId === question._id
-                                            ? { ...ans, marksObtained: "" }
-                                            : ans
-                                    );
-                                    return { ...prev, answers: updatedAnswers };
-                                });
-                                return;
-                            }
+                <MarksInput
+                    question={question}
+                    studentAnswer={studentAnswer}
+                    setLocalExamAttempt={setLocalExamAttempt}
+                />
+            </div>
+        );
+    }, []);
 
-                            const numValue = Number(value);
-                            const maxMarks = question.marks || 0;
-
-                            if (numValue < 0 || numValue > maxMarks) {
-                                toast.error(`Marks must be between 0 and ${maxMarks}`);
-                                setValidated(false);
-                                return;
-                            }
-
-                            setLocalExamAttempt((prev) => {
-                                const updatedAnswers = prev.answers.map((ans) =>
-                                    ans.questionId === question._id
-                                        ? { ...ans, marksObtained: numValue }
-                                        : ans
-                                );
-                                return { ...prev, answers: updatedAnswers };
-                            });
-                        }}
-                        className="w-20 px-2 py-1 border border-gray-300 dark:border-gray-600 rounded text-sm text-gray-900 dark:text-gray-100 bg-white/70 dark:bg-gray-700 focus:ring-1 focus:ring-indigo-500 outline-none"
-                    />
-                    <span className="text-gray-500 text-xs">/ {question.marks || 0}</span>
+    // Loading State
+    if (loading || !exam || !student || !localExamAttempt) {
+        return (
+            <div className="pt-20 min-h-screen bg-gradient-to-b from-gray-100 to-gray-200 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center">
+                <div className="flex flex-col items-center gap-3">
+                    <Loader2 className="w-8 h-8 text-indigo-600 animate-spin" />
+                    <p className="text-gray-600 dark:text-gray-300">Loading exam paper...</p>
                 </div>
             </div>
         );
-    };
+    }
+
+    const studentAnswers = localExamAttempt.answers || [];
 
     return (
         <div className="pt-20 min-h-screen bg-gradient-to-b from-gray-100 to-gray-200 dark:from-gray-900 dark:to-gray-800 py-8 px-4 sm:px-6">
             <div className="max-w-7xl mx-auto">
+                {/* Header */}
                 <div className="flex items-center gap-4 mb-8">
                     <button
                         onClick={() => navigate(`/teacher/evaluation/${examId}`)}
                         className="p-2 hover:bg-white/50 dark:hover:bg-gray-700/50 rounded-lg transition"
                         title="Go back"
+                        aria-label="Go back"
                     >
                         <ArrowLeft className="w-6 h-6 text-gray-700 dark:text-gray-300" />
                     </button>
@@ -391,7 +396,9 @@ function ViewPaper() {
                 </div>
 
                 <div className="grid lg:grid-cols-3 gap-6">
+                    {/* Main Content */}
                     <div className="lg:col-span-2 space-y-6">
+                        {/* Exam Details Card */}
                         <div className="bg-white/80 dark:bg-gray-800/70 backdrop-blur-lg border border-gray-200 dark:border-gray-700 rounded-2xl p-6 shadow-md">
                             <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-4">
                                 Exam Details
@@ -424,12 +431,13 @@ function ViewPaper() {
                             </div>
                         </div>
 
+                        {/* Questions & Answers Card */}
                         <div className="bg-white/80 dark:bg-gray-800/70 backdrop-blur-lg border border-gray-200 dark:border-gray-700 rounded-2xl p-6 shadow-md">
                             <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-6">
                                 Questions & Answers
                             </h2>
 
-                            {exam.questions && exam.questions.length > 0 ? (
+                            {exam.questions?.length > 0 ? (
                                 <div className="space-y-6">
                                     {exam.questions.map((question, idx) => {
                                         const studentAnswer = studentAnswers.find(
@@ -446,7 +454,7 @@ function ViewPaper() {
                                                         <h3 className="font-bold text-gray-900 dark:text-gray-100">
                                                             Q{idx + 1}. {question.questionText}
                                                         </h3>
-                                                        <div className="flex items-center gap-2">
+                                                        <div className="flex items-center gap-2 flex-shrink-0">
                                                             <span className="px-2.5 py-1 bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 text-xs font-semibold rounded-full whitespace-nowrap">
                                                                 {question.type}
                                                             </span>
@@ -456,7 +464,7 @@ function ViewPaper() {
                                                         </div>
                                                     </div>
                                                     {question.description && (
-                                                        <p className="text-sm text-gray-600 dark:text-gray-400 ml-0">
+                                                        <p className="text-sm text-gray-600 dark:text-gray-400">
                                                             {question.description}
                                                         </p>
                                                     )}
@@ -477,6 +485,7 @@ function ViewPaper() {
                             )}
                         </div>
 
+                        {/* Submission Info */}
                         {localExamAttempt && (
                             <div className="bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 rounded-xl p-4 text-sm text-gray-600 dark:text-gray-400">
                                 <p>
@@ -491,7 +500,9 @@ function ViewPaper() {
                         )}
                     </div>
 
+                    {/* Sidebar */}
                     <div className="space-y-6">
+                        {/* Student Information Card */}
                         <div className="bg-indigo-50 dark:bg-indigo-900/20 border border-indigo-200 dark:border-indigo-800 rounded-2xl p-5 shadow-md">
                             <h3 className="font-bold text-gray-900 dark:text-gray-100 mb-4">
                                 Student Information
@@ -520,6 +531,67 @@ function ViewPaper() {
                             </div>
                         </div>
 
+                        {/* Violations Card */}
+                        <div className="bg-white/80 dark:bg-gray-800/70 backdrop-blur-lg border border-gray-200 dark:border-gray-700 rounded-2xl p-6 shadow-md">
+                            <button
+                                onClick={() => setShowViolations(prev => !prev)}
+                                className="w-full flex items-center justify-between"
+                                aria-expanded={showViolations}
+                            >
+                                <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100 flex items-center gap-2">
+                                    <AlertTriangle className="w-5 h-5 text-orange-500" />
+                                    Exam Violations
+                                    {examViolations.length > 0 && (
+                                        <span className="bg-red-100 text-red-800 text-xs font-medium px-2.5 py-0.5 rounded-full dark:bg-red-900 dark:text-red-300">
+                                            {examViolations.length}
+                                        </span>
+                                    )}
+                                </h3>
+                                {showViolations ? (
+                                    <ChevronUp className="w-5 h-5 text-gray-500" />
+                                ) : (
+                                    <ChevronDown className="w-5 h-5 text-gray-500" />
+                                )}
+                            </button>
+
+                            {showViolations && (
+                                <div className="mt-4">
+                                    {examViolations.length > 0 ? (
+                                        <div className="space-y-3">
+                                            {examViolations.map((violation, index) => (
+                                                <div
+                                                    key={violation._id || index}
+                                                    className="p-3 border rounded-lg bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-600 hover:shadow-sm transition-shadow"
+                                                >
+                                                    <div className="flex items-center justify-between mb-2">
+                                                        <div className="flex items-center gap-2">
+                                                            <span className={`p-1.5 rounded-md border ${getViolationColor(violation.type)}`}>
+                                                                {getViolationIcon(violation.type)}
+                                                            </span>
+                                                            <span className={`px-2.5 py-1 text-xs font-medium rounded-md border ${getViolationColor(violation.type)}`}>
+                                                                {formatViolationType(violation.type)}
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                    <p className="text-xs text-gray-600 dark:text-gray-400 ml-8">
+                                                        {new Date(violation.timestamp).toLocaleString()}
+                                                    </p>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    ) : (
+                                        <div className="text-center py-4">
+                                            <Eye className="w-8 h-8 text-green-500 mx-auto mb-2 opacity-60" />
+                                            <p className="text-sm text-gray-600 dark:text-gray-400">
+                                                No violations detected during this exam
+                                            </p>
+                                        </div>
+                                    )}
+                                </div>
+                            )}
+                        </div>
+
+                        {/* Mark Paper Card */}
                         <div className="bg-white/80 dark:bg-gray-800/70 backdrop-blur-lg border border-gray-200 dark:border-gray-700 rounded-2xl p-6 shadow-md sticky top-24">
                             <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100 mb-5">
                                 Mark Paper
@@ -533,7 +605,7 @@ function ViewPaper() {
                                     <div className="relative">
                                         <input
                                             type="text"
-                                            value={totalObtainedMarks}
+                                            value={totalObtainedMarks.toFixed(2)}
                                             readOnly
                                             className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg
                                             bg-gray-100 dark:bg-gray-600 text-gray-900 dark:text-gray-100 font-medium text-lg
@@ -556,10 +628,7 @@ function ViewPaper() {
                                     </label>
                                     <textarea
                                         value={comments}
-                                        onChange={(e) => {
-                                            setComments(e.target.value);
-                                            setValidated(false);
-                                        }}
+                                        onChange={(e) => setComments(e.target.value)}
                                         placeholder="Add constructive feedback for the student..."
                                         disabled={submitting}
                                         rows={5}
@@ -575,23 +644,14 @@ function ViewPaper() {
                                 </div>
                             </div>
 
-                            {validated && (
-                                <div className="mt-5 p-3 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg flex items-start gap-2">
-                                    <CheckCircle className="w-5 h-5 text-green-600 dark:text-green-400 flex-shrink-0 mt-0.5" />
-                                    <p className="text-xs text-green-700 dark:text-green-300 font-medium">
-                                        All validations passed. Ready to submit.
-                                    </p>
-                                </div>
-                            )}
-
                             <div className="space-y-3 mt-6">
                                 <button
                                     onClick={handleSubmit}
-                                    disabled={submitting || !marks}
+                                    disabled={submitting || totalObtainedMarks === 0}
                                     className="w-full bg-indigo-600 hover:bg-indigo-700 disabled:bg-gray-400 disabled:cursor-not-allowed
                                     text-white py-2.5 rounded-lg font-semibold transition duration-200
                                     focus:ring-2 focus:ring-indigo-400 focus:ring-offset-2
-                                    dark:focus:ring-offset-gray-800 flex items-center justify-center gap-2 text-sm cursor-pointer"
+                                    dark:focus:ring-offset-gray-800 flex items-center justify-center gap-2 text-sm"
                                 >
                                     {submitting ? (
                                         <>

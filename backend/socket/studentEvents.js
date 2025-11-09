@@ -87,6 +87,13 @@ export default function registerStudentEvents(io, socket) {
                 console.warn("Invalid student-submitted payload:", payload);
                 return;
             }
+            
+            //if violation exists, update status to submitted
+            await Violation.findOneAndUpdate(
+                { examId, studentId },
+                { status: "submitted" },
+                { new: true, upsert: false }
+            );
 
             console.log(`Student ${studentId} submitted exam ${examId}`);
 

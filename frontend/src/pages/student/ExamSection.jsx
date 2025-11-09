@@ -8,7 +8,7 @@ import { java } from "@codemirror/lang-java";
 import { cpp } from "@codemirror/lang-cpp";
 import { oneDark } from "@codemirror/theme-one-dark";
 import { Clock, FileText, Code, User, AlertTriangle, Shield } from "lucide-react";
-import DiagramCanvas from "../../components/DiagramCanvas";
+import DiagramCanvas from "./components/DiagramCanvas";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { io } from "socket.io-client";
@@ -29,6 +29,12 @@ function ExamSection() {
     const socketRef = useRef(null);
     const studentJoinedEmittedRef = useRef(false);
 
+    // Refs to store latest values
+    const questionsRef = useRef([]);
+    const answersRef = useRef({});
+    const selectedLanguagesRef = useRef({});
+    const violationsRef = useRef([]);
+
     const navigate = useNavigate();
 
     const languageExtensions = {
@@ -42,6 +48,7 @@ function ExamSection() {
     useEffect(() => {
         const paperQuestions = questionPaper?.questions || [];
         setQuestions(paperQuestions);
+        questionsRef.current = paperQuestions; // Update ref
 
         const defaultLangs = {};
         const initialAnswers = {};
@@ -52,8 +59,27 @@ function ExamSection() {
         });
 
         setSelectedLanguages(defaultLangs);
+        selectedLanguagesRef.current = defaultLangs; // Update ref
         setAnswers(initialAnswers);
+        answersRef.current = initialAnswers; // Update ref
     }, [questionPaper]);
+
+    // Update refs whenever state changes
+    useEffect(() => {
+        questionsRef.current = questions;
+    }, [questions]);
+
+    useEffect(() => {
+        answersRef.current = answers;
+    }, [answers]);
+
+    useEffect(() => {
+        selectedLanguagesRef.current = selectedLanguages;
+    }, [selectedLanguages]);
+
+    useEffect(() => {
+        violationsRef.current = violations;
+    }, [violations]);
 
     // Calculate initial time
     useEffect(() => {
@@ -92,6 +118,68 @@ function ExamSection() {
         return () => clearInterval(timerRef.current);
     }, [timeLeft, isSubmitted, examPaused]);
 
+    // Modified handleSubmit to use refs
+    const handleSubmit = useCallback(async () => {
+        if (submitAttemptedRef.current) return;
+        submitAttemptedRef.current = true;
+        setIsSubmitted(true);
+        clearInterval(timerRef.current);
+
+        try {
+            const currentQuestions = questionsRef.current;
+            const currentAnswers = answersRef.current;
+            const currentLanguages = selectedLanguagesRef.current;
+            
+            
+            const finalAnswers = currentQuestions.map(q => ({
+                questionId: q._id,
+                questionText: q.questionText,
+                type: q.type,
+                answerText: currentAnswers[q._id] || "",
+                language: currentLanguages[q._id] || null,
+                marks: q.marks,
+                marksObtained: 0
+            }));
+
+            const response = await axios.post(
+                `${import.meta.env.VITE_API_URL}/api/v1/exams/submit`,
+                { 
+                    answers: finalAnswers, 
+                    examId: exam._id, 
+                    studentDetail: {
+                        id: studentDetails._id,
+                        rollNumber: studentDetails.rollNumber,
+                        collegeId: studentDetails.collegeId,
+                        name: studentDetails.name,
+                        session: studentDetails.session,
+                        batch: studentDetails.batch
+                    }, 
+                },
+                { withCredentials: true }
+            );
+
+            if (response.status === 200) {
+                // Notify teacher via socket
+                if (socketRef.current && socketRef.current.connected) {
+                    socketRef.current.emit("student-submitted", {
+                        examId: exam._id,
+                        studentId: studentDetails._id
+                    });
+                }
+                
+                toast.success("Exam submitted successfully!");
+                const name = studentDetails?.name?.split(" ").map(n => n.charAt(0).toUpperCase() + n.slice(1)).join(" ");
+                setTimeout(() => navigate(`/thank-you/${name}`), 1500);
+            } else throw new Error('Failed to submit exam');
+
+        } catch (error) {
+            console.error(error);
+            toast.error(error.response?.data?.message || "Failed to submit exam");
+            submitAttemptedRef.current = false;
+            setIsSubmitted(false);
+        }
+    }, [exam, studentDetails, navigate]); // Removed state dependencies
+
     // Socket connection
     useEffect(() => {
         if (!exam || !studentDetails) return;
@@ -106,14 +194,12 @@ function ExamSection() {
         socketRef.current = socket;
 
         socket.on("connect", () => {
-            // Join rooms
             console.log(`Joining room: exam_${exam._id}`);
             socket.emit("joinRoom", { room: `exam_${exam._id}` });
             
             console.log(`Joining room: student_${studentDetails._id}`);
             socket.emit("joinRoom", { room: `student_${studentDetails._id}` });
             
-            // Send student-joined event only once
             if (!studentJoinedEmittedRef.current) {
                 const studentData = {
                     examId: exam._id,
@@ -146,7 +232,7 @@ function ExamSection() {
             
             if (data.action === "terminate") {
                 toast.error("Your exam was terminated by the teacher!");
-                handleSubmit();
+                handleSubmit(); // This will now use the latest values
             } else if (data.action === "pause") {
                 setExamPaused(true);
                 setPauseReason(data.reason || "Paused by teacher");
@@ -162,7 +248,7 @@ function ExamSection() {
             console.log("Disconnecting socket");
             socket.disconnect();
         };
-    }, [exam, studentDetails]);
+    }, [exam, studentDetails, handleSubmit]); // Added handleSubmit to dependencies
 
     // Report violation via socket
     const reportViolation = useCallback((violation) => {
@@ -394,63 +480,6 @@ function ExamSection() {
     }, []);
 
     const name = studentDetails?.name?.split(" ").map(n => n.charAt(0).toUpperCase() + n.slice(1)).join(" ");
-
-    const handleSubmit = useCallback(async () => {
-        if (submitAttemptedRef.current) return;
-        submitAttemptedRef.current = true;
-        setIsSubmitted(true);
-        clearInterval(timerRef.current);
-
-        try {
-            const finalAnswers = questions.map(q => ({
-                questionId: q._id,
-                questionText: q.questionText,
-                type: q.type,
-                answerText: answers[q._id] || "",
-                language: selectedLanguages[q._id] || null,
-                marks: q.marks,
-                marksObtained: 0
-            }));
-
-            const response = await axios.post(
-                `${import.meta.env.VITE_API_URL}/api/v1/exams/submit`,
-                { 
-                    answers: finalAnswers, 
-                    examId: exam._id, 
-                    studentDetail: {
-                        id: studentDetails._id,
-                        rollNumber: studentDetails.rollNumber,
-                        collegeId: studentDetails.collegeId,
-                        name: studentDetails.name,
-                        session: studentDetails.session,
-                        batch: studentDetails.batch
-                    }, 
-                    violations, 
-                    submittedAt: new Date().toISOString() 
-                },
-                { withCredentials: true }
-            );
-
-            if (response.status === 200) {
-                // Notify teacher via socket
-                if (socketRef.current && socketRef.current.connected) {
-                    socketRef.current.emit("student-submitted", {
-                        examId: exam._id,
-                        studentId: studentDetails._id
-                    });
-                }
-                
-                toast.success("Exam submitted successfully!");
-                setTimeout(() => navigate(`/thank-you/${name}`), 1500);
-            } else throw new Error('Failed to submit exam');
-
-        } catch (error) {
-            console.error(error);
-            toast.error(error.response?.data?.message || "Failed to submit exam");
-            submitAttemptedRef.current = false;
-            setIsSubmitted(false);
-        }
-    }, [questions, answers, selectedLanguages, exam, studentDetails, violations, navigate, name]);
 
     const formatTime = (seconds) => {
         const h = Math.floor(seconds / 3600);

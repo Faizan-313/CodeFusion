@@ -1,5 +1,3 @@
-import React from 'react';
-
 function ExamInstructions() {
     return (
         <div className="bg-white dark:bg-gray-900 rounded-xl shadow-lg p-6 md:p-8 transition-colors duration-300">

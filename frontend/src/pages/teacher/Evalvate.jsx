@@ -1,26 +1,32 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState } from "react";
 import {
-    User, School, GraduationCap, FileText, Search, ClipboardCheck,
-    ChevronRight, AlertCircle, Loader2
+    Search, ClipboardCheck, AlertCircle, Loader2
 } from "lucide-react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useTeacher } from "../../context/TeacherContext";
+import { useExam } from "../../context/ExamContext";
+import StudentRow, { StudentTableHeader } from "./components/StudentRow";
 
 function Evalvate() {
     const [search, setSearch] = useState("");
     const { examId } = useParams();
     const navigate = useNavigate();
     const { fetchStudents, students, studentsLoading, studentsError } = useTeacher();
+    const { particularExamDetails, fetchParticularExamDetails } = useExam();
 
     useEffect(() => {
         if (examId) {
             fetchStudents(examId);
+            fetchParticularExamDetails(examId);
         }
     }, [examId]);
+    
+    const exam = particularExamDetails || {};
 
     const handleEvaluate = (studentId) => {
         navigate(`/teacher/evalvate/${examId}/${studentId}`);
     };
+    
     const filteredStudents = Array.isArray(students)
         ? students.filter(
             (s) =>
@@ -31,191 +37,177 @@ function Evalvate() {
 
     if (studentsLoading) {
         return (
-            <div className="flex justify-center items-center min-h-screen">
-                <Loader2 className="w-8 h-8 animate-spin text-indigo-600" />
-                <p>Loading students...</p>
+            <div className="flex flex-col justify-center items-center min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-gray-900 dark:via-slate-900 dark:to-gray-900">
+                <Loader2 className="w-12 h-12 animate-spin text-indigo-600 dark:text-indigo-400 mb-4" />
+                <p className="text-gray-600 dark:text-gray-400 font-medium">Loading students...</p>
             </div>
         );
     }
 
     return (
-        <div className="pt-20 min-h-screen bg-gradient-to-b from-gray-100 to-gray-200 dark:from-gray-900 dark:to-gray-800 py-10 px-4 sm:px-6">
-            <div className="max-w-6xl mx-auto">
-                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-6">
-                    <div>
-                        <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-gray-100 flex items-center gap-2 mb-2">
-                            <ClipboardCheck className="w-8 h-8 text-indigo-600" />
-                            Evaluation Panel
-                        </h1>
-                        <p className="text-gray-600 dark:text-gray-400 text-sm">
-                            Manage and evaluate student exam papers
-                        </p>
-                    </div>
+        <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-gray-900 dark:via-slate-900 dark:to-gray-900 py-8 px-4 sm:px-6 lg:px-8">
+            <div className="max-w-7xl mx-auto pt-20">
+                {/* Header Section */}
+                <div className="mb-8">
+                    <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+                        <div>
+                            <div className="flex items-center gap-3 mb-2">
+                                <div className="p-2 bg-indigo-600 dark:bg-indigo-500 rounded-xl shadow-lg">
+                                    <ClipboardCheck className="w-7 h-7 text-white" />
+                                </div>
+                                <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white">
+                                    Evaluation Panel
+                                </h1>
+                            </div>
+                            <p className="text-gray-600 dark:text-gray-400 ml-14">
+                                Manage and evaluate student exam papers efficiently
+                            </p>
+                        </div>
 
-                    {/* Search Bar */}
-                    <div className="relative w-full sm:w-72">
-                        <Search className="absolute left-3 top-3 text-gray-400 w-5 h-5" />
-                        <input
-                            type="text"
-                            placeholder="Search by name or roll..."
-                            value={search}
-                            onChange={(e) => setSearch(e.target.value)}
-                            className="w-full pl-10 pr-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-xl 
-                                bg-white/70 dark:bg-gray-700 text-gray-800 dark:text-gray-100 
-                                placeholder-gray-500 dark:placeholder-gray-400
-                                focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition"
-                        />
+                        {/* Search Bar */}
+                        <div className="relative w-full lg:w-80">
+                            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500 w-5 h-5" />
+                            <input
+                                type="text"
+                                placeholder="Search by name or roll number..."
+                                value={search}
+                                onChange={(e) => setSearch(e.target.value)}
+                                className="w-full pl-12 pr-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl 
+                                    bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 
+                                    placeholder-gray-500 dark:placeholder-gray-400
+                                    shadow-sm hover:shadow-md
+                                    focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 dark:focus:ring-indigo-400
+                                    outline-none transition-all duration-200"
+                            />
+                        </div>
+                    </div>
+                </div>
+
+                {/* Exam Details Card */}
+                <div className="mb-8">
+                    <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl shadow-lg overflow-hidden">
+                        <div className="bg-gradient-to-r from-indigo-600 to-blue-600 dark:from-indigo-500 dark:to-blue-500 px-6 py-4">
+                            <h2 className="text-xl font-bold text-white flex items-center gap-2">
+                                <ClipboardCheck className="w-5 h-5" />
+                                Exam Details
+                            </h2>
+                        </div>
+                        <div className="p-6">
+                            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                                <div className="space-y-1">
+                                    <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">
+                                        Exam Title
+                                    </p>
+                                    <p className="text-base font-semibold text-gray-900 dark:text-white">
+                                        {exam.title || "N/A"}
+                                    </p>
+                                </div>
+                                <div className="space-y-1">
+                                    <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">
+                                        Exam Code
+                                    </p>
+                                    <p className="text-base font-mono font-medium text-gray-900 dark:text-white">
+                                        {exam.examCode || "N/A"}
+                                    </p>
+                                </div>
+                                <div className="space-y-1">
+                                    <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">
+                                        Duration
+                                    </p>
+                                    <p className="text-base font-semibold text-gray-900 dark:text-white">
+                                        {exam.duration ? `${exam.duration} minutes` : "N/A"}
+                                    </p>
+                                </div>
+                                <div className="space-y-1">
+                                    <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">
+                                        Total Marks
+                                    </p>
+                                    <p className="text-2xl font-bold text-indigo-600 dark:text-indigo-400">
+                                        {exam.totalMarks || "N/A"}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
                 {/* Error State */}
                 {studentsError && (
-                    <div className="mb-6 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl flex items-start gap-3">
-                        <AlertCircle className="w-5 h-5 text-red-600 dark:text-red-400 flex-shrink-0 mt-0.5" />
-                        <div>
-                            <p className="font-medium text-red-800 dark:text-red-300">{studentsError}</p>
-                            <button
-                                onClick={fetchStudents}
-                                className="mt-2 text-sm text-red-600 dark:text-red-400 hover:underline font-medium"
-                            >
-                                Try Again
-                            </button>
+                    <div className="mb-6 p-4 bg-red-50 dark:bg-red-900/20 border-l-4 border-red-500 dark:border-red-400 rounded-lg shadow-md">
+                        <div className="flex items-start gap-3">
+                            <AlertCircle className="w-5 h-5 text-red-600 dark:text-red-400 flex-shrink-0 mt-0.5" />
+                            <div className="flex-1">
+                                <p className="font-semibold text-red-800 dark:text-red-300 mb-1">
+                                    Error Loading Students
+                                </p>
+                                <p className="text-sm text-red-700 dark:text-red-400">{studentsError}</p>
+                                <button
+                                    onClick={() => fetchStudents(examId)}
+                                    className="mt-3 px-4 py-2 bg-red-600 hover:bg-red-700 dark:bg-red-500 dark:hover:bg-red-600 text-white text-sm font-medium rounded-lg transition-colors duration-200"
+                                >
+                                    Try Again
+                                </button>
+                            </div>
                         </div>
                     </div>
                 )}
 
                 {/* Empty State */}
                 {filteredStudents.length === 0 && !studentsError && (
-                    <div className="text-center py-12">
-                        <ClipboardCheck className="w-12 h-12 text-gray-400 mx-auto mb-3 opacity-50" />
-                        <p className="text-gray-600 dark:text-gray-400 text-lg">
-                            {students.length === 0 ? "No students enrolled for this exam" : "No matching students found"}
-                        </p>
-                        {search && (
-                            <button
-                                onClick={() => setSearch("")}
-                                className="mt-4 text-indigo-600 dark:text-indigo-400 hover:underline font-medium"
-                            >
-                                Clear Search
-                            </button>
-                        )}
+                    <div className="bg-white dark:bg-gray-800 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-2xl p-12 text-center">
+                        <div className="flex flex-col items-center">
+                            <div className="w-16 h-16 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center mb-4">
+                                <ClipboardCheck className="w-8 h-8 text-gray-400 dark:text-gray-500" />
+                            </div>
+                            <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+                                {students.length === 0 ? "No Students Enrolled" : "No Results Found"}
+                            </h3>
+                            <p className="text-gray-600 dark:text-gray-400 mb-4">
+                                {students.length === 0 
+                                    ? "There are no students enrolled for this exam yet." 
+                                    : `No students match your search "${search}"`}
+                            </p>
+                            {search && (
+                                <button
+                                    onClick={() => setSearch("")}
+                                    className="px-6 py-2.5 bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600 text-white font-medium rounded-lg transition-colors duration-200 shadow-md hover:shadow-lg"
+                                >
+                                    Clear Search
+                                </button>
+                            )}
+                        </div>
                     </div>
                 )}
 
-                {/* Students Grid */}
+                {/* Students Table */}
                 {filteredStudents.length > 0 && (
-                    <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {filteredStudents.map((student) => (
-                            <StudentCard
-                                key={student._id}
-                                student={student}
-                                onEvaluate={handleEvaluate}
-                            />
-                        ))}
-                    </div>
-                )}
-
-                {/* Results Counter */}
-                {filteredStudents.length > 0 && (
-                    <div className="mt-8 text-center text-sm text-gray-600 dark:text-gray-400">
-                        Showing {filteredStudents.length} of {students.length} students
-                    </div>
-                )}
-            </div>
-        </div>
-    );
-}
-
-function StudentCard({ student, onEvaluate }) {
-    const evaluationStatus = student.examsAttempted[0].evaluateStatus;
-
-    const statusColor = evaluationStatus === "Evaluated"
-        ? "bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 border-green-300 dark:border-green-800"
-        : "bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 border-amber-300 dark:border-amber-800";
-
-    return (
-        <div className="bg-white/80 dark:bg-gray-800/70 backdrop-blur-lg border border-gray-200 dark:border-gray-700 
-                    rounded-2xl p-6 shadow-md hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
-
-            {/* Status Badge */}
-            <div className="flex justify-between items-start mb-4">
-                <div />
-                <span className={`px-3 py-1 rounded-full text-xs font-semibold border ${statusColor}`}>
-                    {evaluationStatus}
-                </span>
-            </div>
-
-            {/* Student Info */}
-            <div className="space-y-3 mb-5">
-                <div className="flex items-start gap-3">
-                    <User className="w-5 h-5 text-indigo-600 flex-shrink-0 mt-0.5" />
-                    <div>
-                        <p className="text-xs text-gray-500 dark:text-gray-400 font-medium">Student Name</p>
-                        <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
-                            {student.name}
-                        </h2>
-                    </div>
-                </div>
-
-                <div className="grid grid-cols-2 gap-3 pl-8">
-                    <div>
-                        <p className="text-xs text-gray-500 dark:text-gray-400 font-medium flex items-center gap-1">
-                            <FileText className="w-3.5 h-3.5" /> Roll No
-                        </p>
-                        <p className="font-medium text-gray-900 dark:text-gray-100">
-                            {student.rollNumber}
-                        </p>
-                    </div>
-
-                    <div>
-                        <p className="text-xs text-gray-500 dark:text-gray-400 font-medium flex items-center gap-1">
-                            <School className="w-3.5 h-3.5" /> College ID
-                        </p>
-                        <p className="font-medium text-gray-900 dark:text-gray-100">
-                            {student.collegeId}
-                        </p>
-                    </div>
-                </div>
-
-                <div className="grid grid-cols-2 gap-3 pl-8">
-                    <div>
-                        <p className="text-xs text-gray-500 dark:text-gray-400 font-medium flex items-center gap-1">
-                            <GraduationCap className="w-3.5 h-3.5" /> Batch
-                        </p>
-                        <p className="font-medium text-gray-900 dark:text-gray-100">
-                            {student.batch}
-                        </p>
-                    </div>
-
-                    <div>
-                        <p className="text-xs text-gray-500 dark:text-gray-400 font-medium">Session</p>
-                        <p className="font-medium text-gray-900 dark:text-gray-100">
-                            {student.session}
-                        </p>
-                    </div>
-                </div>
-
-                {/* Marks Display */}
-                {evaluationStatus === "Evaluated" && (
-                    <div className="mt-4 p-3 bg-indigo-50 dark:bg-indigo-900/20 border border-indigo-200 dark:border-indigo-800 rounded-lg">
-                        <p className="text-xs text-gray-600 dark:text-gray-400 font-medium mb-1">Total Marks</p>
-                        <p className="text-2xl font-bold text-indigo-600 dark:text-indigo-400">
-                            {student.examsAttempted[0].totalScore} / {student.examsAttempted[0].examId.totalMarks}
-                        </p>
+                    <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl shadow-lg overflow-hidden">
+                        <div className="overflow-x-auto">
+                            <table className="w-full">
+                                <StudentTableHeader />
+                                <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
+                                    {filteredStudents.map((student, index) => (
+                                        <StudentRow
+                                            key={student._id}
+                                            student={student}
+                                            index={index}
+                                            onEvaluate={handleEvaluate}
+                                        />
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        {/* Results Counter */}
+                        <div className="px-6 py-4 bg-gray-50 dark:bg-gray-900/50 border-t border-gray-200 dark:border-gray-700">
+                            <p className="text-sm text-gray-600 dark:text-gray-400 text-center">
+                                Showing <span className="font-semibold text-gray-900 dark:text-white">{filteredStudents.length}</span> of{" "}
+                                <span className="font-semibold text-gray-900 dark:text-white">{students.length}</span> students
+                            </p>
+                        </div>
                     </div>
                 )}
             </div>
-
-            {/* Action Button */}
-            <button
-                onClick={() => onEvaluate(student._id, student)}
-                className="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2.5 rounded-xl font-medium 
-                    transition duration-200 focus:ring-2 focus:ring-indigo-400 focus:ring-offset-2 
-                    dark:focus:ring-offset-gray-800 flex items-center justify-center gap-2 group"
-            >
-                {evaluationStatus === "Evaluated" ? "Review Paper" : "Evaluate Paper"}
-                <ChevronRight className="w-4 h-4 group-hover:translate-x-0.5 transition" />
-            </button>
         </div>
     );
 }

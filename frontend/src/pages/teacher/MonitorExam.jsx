@@ -3,8 +3,8 @@ import { io } from "socket.io-client";
 import { useParams } from "react-router-dom";
 import { AlertTriangle, Loader2, User, Clock, Shield, XCircle, ChevronDown, ChevronUp } from "lucide-react";
 import toast from "react-hot-toast";
-import axios from "axios";
-import ReasonWindow from "../../components/PauseReasonWindow";
+import ReasonWindow from "./components/PauseReasonWindow";
+import { useExam } from "../../context/ExamContext";
 
 export default function MonitorExam() {
     const { examId } = useParams();
@@ -16,25 +16,26 @@ export default function MonitorExam() {
     const [isConnected, setIsConnected] = useState(false);
     const [showWindow, setShowWindow] = useState(false);
     const [selectedStudent, setSelectedStudent] = useState(null);
+    const { fetchParticularExamDetails } = useExam();
 
     // Fetch exam details
     useEffect(() => {
         const fetchExamDetails = async () => {
+            if (!examId) return;
+            setLoading(true);
             try {
-                const response = await axios.get(
-                    `${import.meta.env.VITE_API_URL}/api/v1/exams/${examId}`,
-                    { withCredentials: true }
-                );
-                setExamDetails(response.data);
-                setLoading(false);
+                const response = await fetchParticularExamDetails(examId);
+                const data = response?.data ?? response;
+                setExamDetails(data);
             } catch (error) {
                 console.error("Error fetching exam details:", error);
                 toast.error("Failed to load exam details");
+            } finally {
                 setLoading(false);
             }
         };
 
-        if (examId) fetchExamDetails();
+        fetchExamDetails();
     }, [examId]);
 
     // Socket connection

@@ -13,7 +13,7 @@ const violationSchema = new mongoose.Schema({
     },
     status: {
         type: String,
-        enum: ["active", "paused", "terminated"],
+        enum: ["active", "paused", "terminated", "submitted"],
         default: "active"
     },
     violations: [

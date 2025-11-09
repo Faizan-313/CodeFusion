@@ -1,6 +1,5 @@
 import { createContext, useContext, useState, useEffect } from "react";
 import axios from "axios";
-import toast from "react-hot-toast";
 
 const ExamContext = createContext();
 
@@ -15,6 +14,24 @@ export function ExamProvider({ children }) {
     const [loading, setLoading] = useState(false);
     const [studentDetails, setStudentDetails] = useState(null);
     const [questionPaper, setQuestionPaper] = useState(null); 
+    const [particularExamDetails, setParticularExamDetails] = useState(null);
+
+    //get particular exam details
+    const fetchParticularExamDetails = async (examId) => {
+        try {
+                const response = await axios.get(
+                    `${import.meta.env.VITE_API_URL}/api/v1/exams/${examId}`,
+                    { withCredentials: true }
+                ); 
+                if (response.status === 200) {
+                    setParticularExamDetails(response.data);
+                    return { success: true, data: response.data};
+                }
+        } catch (error) {
+            console.error("Error fetching exam details:", error);
+            return { success: false, error: error.response?.data?.message };
+        }
+    }
 
     //Restore exam details if present
     useEffect(() => {
@@ -77,6 +94,8 @@ export function ExamProvider({ children }) {
         questionPaper,
         studentDetails,
         loading,
+        fetchParticularExamDetails,
+        particularExamDetails
     };
 
     return (

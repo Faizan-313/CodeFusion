@@ -1,5 +1,5 @@
 import { Violation } from "../models/violation.model.js";
-import { Student } from "../models/student.model.js";
+import { submitExam } from "../controllers/exams.controller.js";
 
 export default function registerTeacherEvents(io, socket) {
     socket.on("teacher-action", async (payload) => {

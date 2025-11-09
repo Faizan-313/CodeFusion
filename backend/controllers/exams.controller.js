@@ -141,14 +141,13 @@ const storeStudentDetails = async (req, res) => {
 };
 
 
-const submitAnswers = async (req, res) => {
+const submitExam = async (req, res) => {
     try {
         const { answers, examId, studentDetail } = req.body;
 
         if (!answers || !examId) {
             return res.status(400).json({ message: "Unauthorized" });
         }
-
         const student = await Student.findOne({
             rollNumber: studentDetail.rollNumber.trim().toUpperCase(),
             collegeId: studentDetail.collegeId.trim().toUpperCase()
@@ -174,7 +173,6 @@ const submitAnswers = async (req, res) => {
         }
 
         const teacherId = exam.createdBy;
-        
 
         const submission = await ExamSubmission.create({
             studentId: student._id,
@@ -182,7 +180,7 @@ const submitAnswers = async (req, res) => {
             teacherId,
             answers: answers.map(ans => ({
                 questionId: ans.questionId,
-                answerText: ans.answer,
+                answerText: ans.answerText || "",
                 marks: ans.marks || 0,
                 questionType: ans.type
             }))
@@ -206,25 +204,45 @@ const submitAnswers = async (req, res) => {
     }
 };
 
-const getExamData = async (req, res)=>{
+const getExamData = async (req, res) => {
     try {
         const { examId } = req.params;
+
         if (!examId) {
             return res.status(400).json({ message: "Exam ID is required" });
         }
 
+        // Fetch the exam by ID
         const exam = await Exam.findById(examId);
 
         if (!exam) {
             return res.status(404).json({ message: "Exam not found" });
         }
 
-        return res.status(200).json(exam);
+        // Fetch the related question paper
+        const paper = await QuestionPaper.findOne({ examId: exam._id });
+
+        // Prepare formatted response
+        const formattedExam = {
+            _id: exam._id,
+            title: exam.title,
+            examCode: exam.examCode,
+            description: exam.description,
+            duration: exam.duration,
+            totalMarks: exam.totalMarks,
+            startTime: exam.startTime,
+            endTime: exam.endTime,
+            questions: paper?.questions || [],
+            createdAt: exam.createdAt,
+        };
+
+        return res.status(200).json(formattedExam);
     } catch (error) {
-        console.log("Error in getting a praticular exam data: ", error);
-        return res.status(500).json({ message: "Something went wrong" })
+        console.error("Error in getting a particular exam data:", error);
+        return res.status(500).json({ message: "Something went wrong" });
     }
-}
+};
+
 
 
 
@@ -232,6 +250,6 @@ export {
     createExam,
     validateCode,
     storeStudentDetails,
-    submitAnswers,
+    submitExam,
     getExamData
 }

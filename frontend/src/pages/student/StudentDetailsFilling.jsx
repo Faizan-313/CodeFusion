@@ -199,6 +199,7 @@ const StudentDetailsFilling = () => {
                                             type="text"
                                             name="rollNumber"
                                             value={formData.rollNumber}
+                                            maxLength={15}
                                             onChange={handleChange}
                                             placeholder="CSE-22-80"
                                             className="w-full pl-12 pr-4 py-3.5 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
@@ -218,6 +219,7 @@ const StudentDetailsFilling = () => {
                                             type="text"
                                             name="collegeId"
                                             value={formData.collegeId}
+                                            maxLength={16}
                                             onChange={handleChange}
                                             placeholder="Enter college ID"
                                             className="w-full pl-12 pr-4 py-3.5 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
@@ -239,6 +241,7 @@ const StudentDetailsFilling = () => {
                                             type="text"
                                             name="session"
                                             value={formData.session}
+                                            maxLength={15}
                                             onChange={handleChange}
                                             placeholder="Autumn 2025"
                                             className="w-full pl-12 pr-4 py-3.5 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
@@ -259,6 +262,7 @@ const StudentDetailsFilling = () => {
                                             name="batch"
                                             value={formData.batch}
                                             onChange={handleChange}
+                                            maxLength={10}
                                             placeholder="2022"
                                             className="w-full pl-12 pr-4 py-3.5 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
                                         />
