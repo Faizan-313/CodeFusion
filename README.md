@@ -27,7 +27,7 @@ Built using modern technologies such as **React.js**, **Node.js**, and **MongoDB
 | **Frontend** | React.js, Tailwind CSS, CodeMirror |
 | **Backend** | Node.js, Express.js, Socket.io |
 | **Database** | MongoDB |
-| **AI & ML** | Python, TensorFlow / PyTorch, OpenCV, MediaPipe |
+| **AI** | Python, TensorFlow / PyTorch, OpenCV, MediaPipe |
 
 ---
 
