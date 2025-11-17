@@ -62,24 +62,73 @@ Built using modern technologies such as **React.js**, **Node.js**, and **MongoDB
 
 ### 🚀 Steps
 
+Prerequisites
+- Node.js and npm 
+- MongoDB (local or hosted, e.g., Atlas)
+- Git
+
+1. Clone the repository
 ```bash
-# 1. Clone the repository
 git clone https://github.com/yourusername/codefusion.git
-cd codefusion/backend
-
-# 2. Install backend dependencies
-npm install
-
-# 3. Start the backend server
-npm run dev
-
-# 4. Open a new terminal and set up the frontend
-cd ../frontend
-npm install
-npm run dev
-
+cd codefusion
 ```
-## 👥 Authors & Contributors
+
+2. Backend — install, configure, and run
+```bash
+cd backend
+# install dependencies
+npm install
+
+# create .env file (see template below)
+# edit .env and set values (PORT, MONGO_DB_URL, secrets, etc.)
+
+# run
+npm run dev
+```
+
+Backend .env template (backend/.env)
+```env
+# Server
+PORT=3000
+NODE_ENV=dev
+CORS_ORIGIN=http://localhost:5173
+
+# Database
+MONGO_DB_URL=mongodb+srv://<user>:<pass>@cluster.mongodb.net
+DB_NAME=codefusion
+
+# Auth tokens
+ACCESS_TOKEN_SECRET=your_access_token_secret
+ACCESS_TOKEN_EXPIRY=15m
+REFRESH_TOKEN_SECRET=your_refresh_token_secret
+REFRESH_TOKEN_EXPIRY=7d
+```
+
+3. Frontend — install, configure, and run
+```bash
+cd ../frontend
+# install dependencies
+npm install
+
+# create frontend env
+# set API url  (example below)
+
+# run dev server
+npm run dev
+```
+
+Frontend 
+```env
+VITE_API_URL=http://localhost:5000/api
+```
+
+
+Notes
+- Replace placeholder secrets with secure values.
+- For CI/CD and cloud deployment, use environment settings in your provider and avoid committing .env files to VCS.
+- If using MongoDB Atlas, whitelist your server IP / add proper network & user credentials.
+
+This should be placed into the README under "Installation & Setup" to provide a clear, professional developer onboarding flow.
 | Name              | Role                                | Responsibilities                                            |
 | ----------------- | ----------------------------------- | ----------------------------------------------------------- |
 | **Peer Faizan**   | Project Lead / Full Stack Developer | System architecture, backend APIs, and frontend integration |
