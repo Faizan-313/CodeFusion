@@ -35,19 +35,19 @@ Built using modern technologies such as **React.js**, **Node.js**, and **MongoDB
 
 ### 👨‍💻 For Students
 - 🧩 **Multi-format Answer Interface** — Code, Text, MCQs, and Diagram editors in a unified workspace  
-- 🧠 **Lockdown Mode** — Prevents tab switching and external application access  
+- 🧠 **Lockdown Mode** — Prevents tab switching, external application access etc.
 - 📸 **AI Proctoring** — Webcam-based anomaly detection to maintain exam integrity  
 
 ### 👩‍🏫 For Teachers
 - 🖥️ **Live Dashboard** — Monitor active students, alerts, and submissions in real time  
-- ⚡ **AI-Generated Alerts** — Suspicious activities flagged automatically  
+- ⚡ **Alerts** — Suspicious activities flagged automatically  
 - 🧾 **Exam Management** — Create, schedule, and manage exams with full administrative control  
 
 ---
 
 ## 🧩 Modules Overview
 
-| Module | Description |
+| Module  | Description |
 |--------|-------------|
 | **Authentication** | Secure login system for teachers and students |
 | **Exam Creation** | Create questions in text, code, MCQs, or diagram formats |
@@ -120,7 +120,7 @@ npm install
 npm run dev
 ```
 
-Frontend 
+Frontend .env template (frontend/.env)
 ```env
 VITE_API_URL=
 ```
@@ -128,7 +128,6 @@ VITE_API_URL=
 
 Notes
 - Replace placeholder secrets with secure values.
-- For CI/CD and cloud deployment, use environment settings in your provider and avoid committing .env files to VCS.
 - If using MongoDB Atlas, whitelist your server IP / add proper network & user credentials.
 
 This should be placed into the README under "Installation & Setup" to provide a clear, professional developer onboarding flow.
