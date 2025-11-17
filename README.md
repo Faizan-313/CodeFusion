@@ -75,7 +75,8 @@ cd codefusion
 
 2. Backend — install, configure, and run
 ```bash
-cd backend
+cd Project/backend
+
 # install dependencies
 npm install
 
@@ -91,11 +92,11 @@ Backend .env template (backend/.env)
 # Server
 PORT=3000
 NODE_ENV=dev
-CORS_ORIGIN=http://localhost:5173
+CORS_ORIGIN=
 
 # Database
 MONGO_DB_URL=mongodb+srv://<user>:<pass>@cluster.mongodb.net
-DB_NAME=codefusion
+DB_NAME=
 
 # Auth tokens
 ACCESS_TOKEN_SECRET=your_access_token_secret
@@ -106,7 +107,9 @@ REFRESH_TOKEN_EXPIRY=7d
 
 3. Frontend — install, configure, and run
 ```bash
-cd ../frontend
+#open new terminal
+cd /Project/frontend
+
 # install dependencies
 npm install
 
@@ -119,7 +122,7 @@ npm run dev
 
 Frontend 
 ```env
-VITE_API_URL=http://localhost:5000/api
+VITE_API_URL=
 ```
 
 
