@@ -1,0 +1,531 @@
+import { useEffect, useState } from "react";
+import { io } from "socket.io-client";
+import { useParams } from "react-router-dom";
+import { AlertTriangle, Loader2, User, Clock, Shield, XCircle, ChevronDown, ChevronUp } from "lucide-react";
+import toast from "react-hot-toast";
+import ReasonWindow from "./components/PauseReasonWindow";
+import { useExam } from "../../context/ExamContext";
+
+export default function MonitorExam() {
+    const { examId } = useParams();
+    const [studentViolations, setStudentViolations] = useState({});
+    const [examDetails, setExamDetails] = useState(null);
+    const [socket, setSocket] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [expandedStudents, setExpandedStudents] = useState({});
+    const [isConnected, setIsConnected] = useState(false);
+    const [showWindow, setShowWindow] = useState(false);
+    const [selectedStudent, setSelectedStudent] = useState(null);
+    const { fetchParticularExamDetails } = useExam();
+
+    // Fetch exam details
+    useEffect(() => {
+        const fetchExamDetails = async () => {
+            if (!examId) return;
+            setLoading(true);
+            try {
+                const response = await fetchParticularExamDetails(examId);
+                const data = response?.data ?? response;
+                setExamDetails(data);
+            } catch (error) {
+                console.error("Error fetching exam details:", error);
+                toast.error("Failed to load exam details");
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchExamDetails();
+    }, [examId]);
+
+    // Socket connection
+    useEffect(() => {
+        const s = io(import.meta.env.VITE_API_URL, {
+            transports: ["websocket"],
+            reconnection: true,
+            reconnectionAttempts: 5,
+            reconnectionDelay: 1000
+        });
+        setSocket(s);
+
+        s.on("connect", () => {
+            setIsConnected(true);
+            toast.success("Monitoring started!");
+            s.emit("joinRoom", { room: `exam_${examId}` });
+
+            // Request existing violations history
+            s.emit("fetch-violations", { examId });
+        });
+
+        s.on("disconnect", () => {
+            setIsConnected(false);
+            toast.error("Connection lost. Attempting to reconnect...");
+        });
+
+        s.on("connect_error", (error) => {
+            console.error("Socket connection error:", error);
+            setIsConnected(false);
+        });
+
+        // Listen for violations history 
+        s.on("violations-history", (data) => {
+            if (data.violations && Array.isArray(data.violations)) {
+                const violationsMap = {};
+
+                data.violations.forEach(doc => {
+                    violationsMap[doc.studentId] = {
+                        studentId: doc.studentId,
+                        studentDetails: doc.studentDetails,
+                        violations: doc.violations || [],
+                        isPaused: doc.status === "paused",
+                        isTerminated: doc.status === "terminated",
+                        isSubmitted: doc.status === "submitted"
+                    };
+                });
+                setStudentViolations(violationsMap);
+            }
+        });
+
+        // Listen for student join
+        s.on("student-joined", (data) => {
+            const { studentId, studentDetails } = data;
+
+            setStudentViolations((prev) => {
+                // Don't overwrite if student already exists
+                if (prev[studentId]) {
+                    return prev;
+                }
+
+                return {
+                    ...prev,
+                    [studentId]: {
+                        studentId,
+                        studentDetails,
+                        violations: [],
+                        isPaused: false,
+                        isTerminated: false,
+                        isSubmitted: false,
+                        joinedAt: data.joinedAt
+                    }
+                };
+            });
+
+            toast.success(`${studentDetails?.name || 'Student'} joined the exam`);
+        });
+
+        // Listen for new violations
+        s.on("new-violation", (data) => {
+            const { studentId, violation, studentDetails } = data;
+
+            setStudentViolations((prev) => {
+                const existing = prev[studentId] || {
+                    studentId,
+                    studentDetails,
+                    violations: [],
+                    isPaused: false,
+                    isTerminated: false,
+                    isSubmitted: false
+                };
+
+                return {
+                    ...prev,
+                    [studentId]: {
+                        ...existing,
+                        studentDetails: studentDetails || existing.studentDetails,
+                        violations: [violation, ...existing.violations],
+                    },
+                };
+            });
+
+            toast.error(`New violation from ${studentDetails?.name || "Student"}`);
+        });
+
+        // Listen for teacher actions confirmation
+        s.on("teacher-action-applied", async (data) => {
+            const { studentId, action } = data;
+
+            setStudentViolations((prev) => {
+            const studentData = prev[studentId];
+            if (!studentData) return prev;
+
+            return {
+                ...prev,
+                [studentId]: {
+                    ...studentData,
+                    isPaused: action === "pause",
+                    isTerminated: action === "terminate"
+                },
+            };
+            });
+
+            const actionText = action === "resume" ? "resumed" : action === "pause" ? "paused" : "terminated";
+            toast.success(`Student exam ${actionText}`);
+        });
+
+        // Listen for student submission
+        s.on("student-submitted", (data) => {
+            const { studentId } = data;
+
+            setStudentViolations((prev) => {
+                const studentData = prev[studentId];
+                if (!studentData) return prev;
+
+                return {
+                    ...prev,
+                    [studentId]: {
+                        ...studentData,
+                        isSubmitted: true,
+                        isPaused: false,
+                        submittedAt: data.submittedAt
+                    },
+                };
+            });
+
+            toast.success("Student submitted exam");
+        });
+
+        // Listen for student heartbeats
+        s.on("student-heartbeat", (data) => {
+            const { studentId, timeLeft } = data;
+
+            setStudentViolations((prev) => {
+                const studentData = prev[studentId];
+                if (!studentData) return prev;
+
+                return {
+                    ...prev,
+                    [studentId]: {
+                        ...studentData,
+                        timeLeft,
+                        lastHeartbeat: new Date().toISOString()
+                    },
+                };
+            });
+        });
+
+        return () => {
+            console.log("Cleaning up socket connection");
+            s.disconnect();
+        };
+    }, [examId]);
+
+    // Actions
+    const handleAction = (studentId, action, reason = null) => {
+        if (!socket || !socket.connected) {
+            toast.error("Not connected to server");
+            return;
+        }
+
+        const payload = { examId, studentId, action, reason };
+        socket.emit("teacher-action", payload);
+    };
+
+    const handlePause = (studentId) => {
+        setSelectedStudent(studentId);
+        setShowWindow(true);
+    };
+
+    const handleSubmitReason = (finalReason) => {
+        handleAction(selectedStudent, "pause", finalReason);
+        setShowWindow(false);
+    };
+
+    const handleCancel = () => {
+        setShowWindow(false);
+    };
+
+    const toggleExpand = (studentId) => {
+        setExpandedStudents(prev => ({
+            ...prev,
+            [studentId]: !prev[studentId]
+        }));
+    };
+
+
+    const handleTerminate = (student) => {
+        toast.custom((t) => (
+            <div className={`bg-white dark:bg-gray-900 p-4 rounded-lg shadow-lg border text-sm flex flex-col gap-3 w-72`}>
+                <p className="text-gray-800 dark:text-gray-200">
+                    Are you sure you want to <span className="font-semibold text-red-600">terminate</span> {student.studentDetails?.name}'s exam?
+                </p>
+                <div className="flex justify-end gap-2">
+                    <button
+                        onClick={() => {
+                            toast.dismiss(t.id)
+                            toast.success(`${student.studentDetails?.name}'s exam not terminated.`);
+                        }}
+                        className="px-3 cursor-pointer py-1 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded-md text-xs font-medium hover:bg-gray-300"
+                    >
+                        Cancel
+                    </button>
+                    <button
+                        onClick={() => {
+                            handleAction(student.studentId, "terminate");
+                            toast.dismiss(t.id);
+                            toast.success(`${student.studentDetails?.name}'s exam terminated.`);
+                        }}
+                        className="px-3 cursor-pointer py-1 bg-red-600 hover:bg-red-700 text-white rounded-md text-xs font-medium"
+                    >
+                        Confirm
+                    </button>
+                </div>
+            </div>
+        ));
+    };
+
+    const getViolationIcon = (type) => {
+        switch (type) {
+            case "TAB_SWITCH":
+            case "WINDOW_BLUR":
+                return <XCircle className="w-4 h-4" />;
+            case "DEVTOOLS_OPENED":
+                return <Shield className="w-4 h-4" />;
+            case "FULLSCREEN_EXIT":
+                return <AlertTriangle className="w-4 h-4" />;
+            default:
+                return <AlertTriangle className="w-4 h-4" />;
+        }
+    };
+
+    const getViolationColor = (type) => {
+        switch (type) {
+            case "DEVTOOLS_OPENED":
+                return "text-red-600 dark:text-red-400";
+            case "TAB_SWITCH":
+            case "WINDOW_BLUR":
+                return "text-orange-600 dark:text-orange-400";
+            default:
+                return "text-yellow-600 dark:text-yellow-400";
+        }
+    };
+
+    const getStatusBadge = (student) => {
+        if (student.isSubmitted) {
+            return <span className="px-3 py-1 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 rounded-full text-xs font-bold">SUBMITTED</span>;
+        }
+        if (student.isTerminated) {
+            return <span className="px-3 py-1 bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400 rounded-full text-xs font-bold">TERMINATED</span>;
+        }
+        if (student.isPaused) {
+            return <span className="px-3 py-1 bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-400 rounded-full text-xs font-bold">PAUSED</span>;
+        }
+        return <span className="px-3 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 rounded-full text-xs font-bold">ACTIVE</span>;
+    };
+
+    const formatTime = (seconds) => {
+        if (!seconds) return "--:--";
+        const m = Math.floor(seconds / 60);
+        const s = seconds % 60;
+        return `${m}:${s < 10 ? "0" : ""}${s}`;
+    };
+
+    if (loading) {
+        return (
+            <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
+                <div className="text-center">
+                    <Loader2 className="animate-spin w-12 h-12 mx-auto mb-4 text-cyan-600" />
+                    <p className="text-gray-600 dark:text-gray-400">Loading exam details...</p>
+                </div>
+            </div>
+        );
+    }
+
+    const copyToClipboard = async (code) => {
+        try {
+            await navigator.clipboard.writeText(code);
+            toast.success("Exam code copied!");
+        } catch (err) {
+            console.error("Failed to copy:", err);
+            toast.error("Failed to copy code");
+        }
+    };
+
+    return (
+        <div className="min-h-screen bg-gray-50 dark:bg-gray-900 p-6 pt-20">
+            <div className="max-w-7xl mx-auto">
+                <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6 mb-6">
+                    <div className="flex flex-col md:flex-row items-center justify-between gap-4 mb-4">
+                        <div className="flex flex-col sm:flex-row sm:items-center sm:gap-6 w-full sm:w-auto">
+                            <div>
+                                <h1 className="text-3xl font-extrabold text-gray-900 dark:text-gray-100">Live Monitoring</h1>
+                                <p className="text-lg text-cyan-600 dark:text-cyan-400 font-semibold mt-1">
+                                    {examDetails?.title || "Exam"}
+                                </p>
+                            </div>
+                            <button
+                                onClick={() => copyToClipboard(examDetails?.examCode)}
+                                className="flex items-center gap-2 mt-3 sm:mt-0 px-3 py-2 bg-cyan-50 dark:bg-cyan-900/20 text-cyan-700 dark:text-cyan-300 font-mono text-sm rounded-lg hover:bg-cyan-100 dark:hover:bg-cyan-800/40 transition-all"
+                                title="Copy exam code"
+                            >
+                                <p className="font-semibold">{examDetails?.examCode || "N/A"}</p>
+                            </button>
+                        </div>
+
+                        <div className={`flex items-center gap-2 px-4 py-2 rounded-lg border ${isConnected
+                            ? "bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-700"
+                            : "bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-700"
+                            }`}>
+                            <div className={`w-3 h-3 rounded-full ${isConnected ? "bg-green-500 animate-pulse" : "bg-red-500"}`}></div>
+                            <span className={`font-medium ${isConnected ? "text-green-700 dark:text-green-400" : "text-red-700 dark:text-red-400"}`}>
+                                {isConnected ? "Live" : "Disconnected"}
+                            </span>
+                        </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-3">
+                            <p className="text-sm text-gray-600 dark:text-gray-400">Duration</p>
+                            <p className="text-lg font-semibold text-gray-900 dark:text-white">{examDetails?.duration} minutes</p>
+                        </div>
+                        <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-3">
+                            <p className="text-sm text-gray-600 dark:text-gray-400">Total Marks</p>
+                            <p className="text-lg font-semibold text-gray-900 dark:text-white">{examDetails?.totalMarks}</p>
+                        </div>
+                        <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-3">
+                            <p className="text-sm text-gray-600 dark:text-gray-400">Students Monitored</p>
+                            <p className="text-lg font-semibold text-gray-900 dark:text-white">{Object.keys(studentViolations).length}</p>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Students List */}
+                {Object.keys(studentViolations).length === 0 ? (
+                    <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-12 text-center">
+                        <Loader2 className="animate-spin w-12 h-12 mx-auto mb-4 text-cyan-600" />
+                        <p className="text-gray-600 dark:text-gray-400 text-lg">Waiting for students to join...</p>
+                        <p className="text-gray-500 dark:text-gray-500 text-sm mt-2">Students will appear here when they start the exam</p>
+                    </div>
+                ) : (
+                    <div className="space-y-3">
+                        {Object.values(studentViolations).map((student) => (
+                            <div key={student.studentId} className="bg-white dark:bg-gray-800 rounded-xl shadow-md border border-gray-200 dark:border-gray-700 overflow-hidden">
+                                {/* Compact Student Header */}
+                                <div className="p-4">
+                                    <div className="flex items-center justify-between">
+                                        <div className="flex items-center gap-3 flex-1">
+                                            <div className="w-10 h-10 rounded-full bg-cyan-100 dark:bg-cyan-900/30 flex items-center justify-center flex-shrink-0">
+                                                <User className="w-5 h-5 text-cyan-600 dark:text-cyan-400" />
+                                            </div>
+                                            <div className="flex-1 min-w-0">
+                                                <h3 className="text-base font-bold text-gray-900 dark:text-white truncate">
+                                                    {student.studentDetails?.name || "Unknown Student"}
+                                                </h3>
+                                                <div className="flex items-center gap-4 text-xs text-gray-600 dark:text-gray-400">
+                                                    <span>{student.studentDetails?.rollNumber || "N/A"}</span>
+                                                    <span>{student.studentDetails?.collegeId || "N/A"}</span>
+                                                    <span>{student.studentDetails?.session || "N/A"}</span>
+                                                    <span>{student.studentDetails?.batch || "N/A"}</span>
+                                                    {student.timeLeft && (
+                                                        <span className="flex items-center gap-1">
+                                                            <Clock className="w-3 h-3" />
+                                                            {formatTime(student.timeLeft)}
+                                                        </span>
+                                                    )}
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div className="flex items-center gap-2">
+                                            {/* Status Badge */}
+                                            {getStatusBadge(student)}
+
+                                            {/* Violation Count */}
+                                            <div className={`px-3 py-1 rounded-full ${student.violations.length > 5 ? "bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400" :
+                                                student.violations.length > 2 ? "bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-400" :
+                                                    student.violations.length > 0 ? "bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-400" :
+                                                        "bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400"
+                                                }`}>
+                                                <p className="text-xs font-medium">{student.violations.length}</p>
+                                            </div>
+
+                                            {/* Action Buttons */}
+                                            {!student.isSubmitted && !student.isTerminated && (
+                                                <>
+                                                    <ReasonWindow
+                                                        visible={showWindow}
+                                                        onSubmit={handleSubmitReason}
+                                                        onCancel={handleCancel}
+                                                    />
+                                                    {!student.isPaused ? (
+                                                        <button
+                                                            onClick={() => handlePause(student.studentId)}
+                                                            className="px-3 py-1.5 bg-orange-500 hover:bg-orange-600 text-white rounded-md text-xs font-medium transition-colors"
+                                                            title="Pause exam"
+                                                        >
+                                                            Pause
+                                                        </button>
+
+                                                    ) : (
+                                                        <button
+                                                            onClick={() => handleAction(student.studentId, "resume")}
+                                                            className="px-3 py-1.5 bg-green-500 hover:bg-green-600 text-white rounded-md text-xs font-medium transition-colors"
+                                                            title="Resume exam"
+                                                        >
+                                                            Resume
+                                                        </button>
+                                                    )}
+                                                    <button
+                                                        onClick={() => handleTerminate(student)}
+                                                        className="px-3 py-1.5 bg-red-600 hover:bg-red-700 text-white rounded-md text-xs font-medium transition-colors"
+                                                        title="Terminate exam"
+                                                    >
+                                                        Terminate
+                                                    </button>
+
+                                                </>
+                                            )}
+
+                                            {/* Expand/Collapse Button */}
+                                            {student.violations.length > 0 && (
+                                                <button
+                                                    onClick={() => toggleExpand(student.studentId)}
+                                                    className="p-1.5 hover:bg-gray-100 dark:hover:bg-gray-700 rounded transition-colors"
+                                                    title={expandedStudents[student.studentId] ? "Hide violations" : "Show violations"}
+                                                >
+                                                    {expandedStudents[student.studentId] ?
+                                                        <ChevronUp className="w-5 h-5 text-gray-600 dark:text-gray-400" /> :
+                                                        <ChevronDown className="w-5 h-5 text-gray-600 dark:text-gray-400" />
+                                                    }
+                                                </button>
+                                            )}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Expandable Violations List */}
+                                {expandedStudents[student.studentId] && student.violations.length > 0 && (
+                                    <div className="border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/50 p-3 max-h-60 overflow-y-auto">
+                                        <div className="space-y-2">
+                                            {student.violations.map((violation, idx) => (
+                                                <div
+                                                    key={`${student.studentId}-${idx}`}
+                                                    className="flex items-center justify-between bg-white dark:bg-gray-800 rounded-lg p-2 text-xs"
+                                                >
+                                                    <div className="flex items-center gap-2 flex-1">
+                                                        <div className={getViolationColor(violation.type)}>
+                                                            {getViolationIcon(violation.type)}
+                                                        </div>
+                                                        <div className="flex-1 min-w-0">
+                                                            <p className="font-semibold text-gray-900 dark:text-white truncate">
+                                                                {violation.type.replace(/_/g, " ")}
+                                                            </p>
+                                                            <p className="text-gray-600 dark:text-gray-400 truncate">{violation.message}</p>
+                                                        </div>
+                                                    </div>
+                                                    <div className="flex items-center gap-1 text-gray-500 dark:text-gray-400 flex-shrink-0 ml-2">
+                                                        <Clock className="w-3 h-3" />
+                                                        <span>{new Date(violation.timestamp).toLocaleTimeString()}</span>
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+                        ))}
+                    </div>
+                )}
+            </div>
+        </div>
+    );
+}
