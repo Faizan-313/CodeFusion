@@ -1,5 +1,8 @@
 {
-    "rewrites": [
-        { "source": "/(.*)", "destination": "/" }
-    ]
+  "rewrites": [
+    {
+      "source": "/api/(.*)",
+      "destination": "https://codefusion-jdq6.onrender.com/api/$1"
+    }
+  ]
 }
