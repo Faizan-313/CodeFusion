@@ -8,6 +8,7 @@ const options = {
     secure: isProduction,
     sameSite: isProduction ? "none" : "lax",
     domain: isProduction ? process.env.DOMAIN : "localhost",
+    path: "/",  
     maxAge: 7 * 24 * 60 * 60 * 1000
 }
 
