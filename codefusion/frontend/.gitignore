@@ -6,9 +6,6 @@ dist-ssr/
 # Node modules
 node_modules/
 
-# Tailwind CSS output
-*.css
-!.src/**/*.css
 
 # Logs
 logs
