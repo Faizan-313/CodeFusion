@@ -95,7 +95,7 @@ NODE_ENV=dev
 CORS_ORIGIN=
 
 # Database
-MONGO_DB_URL=mongodb+srv://<user>:<pass>@cluster.mongodb.net
+MONGO_DB_URL=
 DB_NAME=
 
 # Auth tokens
