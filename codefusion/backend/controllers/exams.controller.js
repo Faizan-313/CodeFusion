@@ -65,8 +65,15 @@ const validateCode = async (req, res) => {
         }
 
         const now = new Date();
-        const examEndTime = new Date(examDetails.endTime);
 
+        // check if exam has started or not
+        const examStartTime = new Date(examDetails.startTime);
+        if(examStartTime > now){
+            return res.status(410).json({ message: "Exam has not started yet" });
+        }
+
+        //check if exam has already ended
+        const examEndTime = new Date(examDetails.endTime);
         if(examEndTime < now){
             return res.status(410).json({ message: "This exam has ended and is no longer accessible." });
         }
@@ -162,10 +169,10 @@ const submitExam = async (req, res) => {
             return res.status(404).json({ message: "Exam does not exist" });
         }
 
-        //check exam timing
-        // if (exam.endTime && Date.now() > new Date(exam.endTime)) {
-        //     return res.status(400).json({ message: "Exam has already ended" });
-        // }
+        // check exam timing
+        if (exam.endTime && Date.now() > new Date(exam.endTime)) {
+            return res.status(400).json({ message: "Exam has already ended" });
+        }
 
         const existing = await ExamSubmission.findOne({ studentId: student._id, examId });
         if (existing) {
