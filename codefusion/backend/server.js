@@ -12,6 +12,10 @@ import examRouter from "./routes/exam.routes.js";
 import dashboardRouter from "./routes/teacher.routes.js";
 
 const app = express();
+
+// REQUIRED for Render to handle "secure: true" correctly
+app.set("trust proxy", 1);
+
 const port = process.env.PORT || 3000;
 
 // middleware
