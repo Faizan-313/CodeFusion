@@ -31,12 +31,14 @@ export default function registerTeacherEvents(io, socket) {
                 console.log(`Violation status updated: ${studentId} → ${status}`);
             }
 
-             // Fetch violations for this exam and populate student info
+             // Fetch violations for this exam with optimizations
             const violations = await Violation.find({ examId })
                 .populate({
                     path: "studentId",
                     select: "name rollNumber collegeId session batch"
-                });
+                })
+                .lean()
+                .select("_id examId studentId violations status");
 
             // Transform to include studentDetails
             const formatted = violations.map(v => ({

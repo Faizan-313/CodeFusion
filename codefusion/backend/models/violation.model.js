@@ -37,4 +37,8 @@ const violationSchema = new mongoose.Schema({
     timestamps: true
 });
 
+// Add indexes for frequently queried fields
+violationSchema.index({ examId: 1 });
+violationSchema.index({ studentId: 1, examId: 1 });
+
 export const Violation = mongoose.model("Violation", violationSchema);

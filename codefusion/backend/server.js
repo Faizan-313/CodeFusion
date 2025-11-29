@@ -3,6 +3,7 @@ import express from "express";
 import "dotenv/config";
 import cors from "cors";
 import cookieParser from "cookie-parser";
+import compression from "compression";
 import http from "http"; 
 import connectDB from "./database/db.js";
 import { setupSocket } from "./socket/socket.js";
@@ -19,6 +20,7 @@ app.set("trust proxy", 1);
 const port = process.env.PORT || 3000;
 
 // middleware
+app.use(compression());
 app.use(express.json());
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
