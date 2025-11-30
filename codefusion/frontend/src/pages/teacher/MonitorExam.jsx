@@ -17,6 +17,8 @@ export default function MonitorExam() {
     const [showWindow, setShowWindow] = useState(false);
     const [selectedStudent, setSelectedStudent] = useState(null);
     const { fetchParticularExamDetails } = useExam();
+    const [students, setStudents] = useState(null);
+    const [view, setView] = useState("active"); // 'active' | 'submitted'
 
     // Fetch exam details
     useEffect(() => {
@@ -28,7 +30,6 @@ export default function MonitorExam() {
                 const data = response?.data ?? response;
                 setExamDetails(data);
             } catch (error) {
-                console.error("Error fetching exam details:", error);
                 toast.error("Failed to load exam details");
             } finally {
                 setLoading(false);
@@ -63,7 +64,6 @@ export default function MonitorExam() {
         });
 
         s.on("connect_error", (error) => {
-            console.error("Socket connection error:", error);
             setIsConnected(false);
         });
 
@@ -145,17 +145,17 @@ export default function MonitorExam() {
             const { studentId, action } = data;
 
             setStudentViolations((prev) => {
-            const studentData = prev[studentId];
-            if (!studentData) return prev;
+                const studentData = prev[studentId];
+                if (!studentData) return prev;
 
-            return {
-                ...prev,
-                [studentId]: {
-                    ...studentData,
-                    isPaused: action === "pause",
-                    isTerminated: action === "terminate"
-                },
-            };
+                return {
+                    ...prev,
+                    [studentId]: {
+                        ...studentData,
+                        isPaused: action === "pause",
+                        isTerminated: action === "terminate"
+                    },
+                };
             });
 
             const actionText = action === "resume" ? "resumed" : action === "pause" ? "paused" : "terminated";
@@ -204,7 +204,6 @@ export default function MonitorExam() {
         });
 
         return () => {
-            console.log("Cleaning up socket connection");
             s.disconnect();
         };
     }, [examId]);
@@ -240,6 +239,10 @@ export default function MonitorExam() {
             [studentId]: !prev[studentId]
         }));
     };
+
+    const showActiveStudents = () => setView("active");
+
+    const showSubmittedStudents = () => setView("submitted");
 
 
     const handleTerminate = (student) => {
@@ -335,7 +338,6 @@ export default function MonitorExam() {
             await navigator.clipboard.writeText(code);
             toast.success("Exam code copied!");
         } catch (err) {
-            console.error("Failed to copy:", err);
             toast.error("Failed to copy code");
         }
     };
@@ -397,132 +399,178 @@ export default function MonitorExam() {
                     </div>
                 ) : (
                     <div className="space-y-3">
-                        {Object.values(studentViolations).map((student) => (
-                            <div key={student.studentId} className="bg-white dark:bg-gray-800 rounded-xl shadow-md border border-gray-200 dark:border-gray-700 overflow-hidden">
-                                {/* Compact Student Header */}
-                                <div className="p-4">
-                                    <div className="flex items-center justify-between">
-                                        <div className="flex items-center gap-3 flex-1">
-                                            <div className="w-10 h-10 rounded-full bg-cyan-100 dark:bg-cyan-900/30 flex items-center justify-center flex-shrink-0">
-                                                <User className="w-5 h-5 text-cyan-600 dark:text-cyan-400" />
-                                            </div>
-                                            <div className="flex-1 min-w-0">
-                                                <h3 className="text-base font-bold text-gray-900 dark:text-white truncate">
-                                                    {student.studentDetails?.name || "Unknown Student"}
-                                                </h3>
-                                                <div className="flex items-center gap-4 text-xs text-gray-600 dark:text-gray-400">
-                                                    <span>{student.studentDetails?.rollNumber || "N/A"}</span>
-                                                    <span>{student.studentDetails?.collegeId || "N/A"}</span>
-                                                    <span>{student.studentDetails?.session || "N/A"}</span>
-                                                    <span>{student.studentDetails?.batch || "N/A"}</span>
-                                                    {student.timeLeft && (
-                                                        <span className="flex items-center gap-1">
-                                                            <Clock className="w-3 h-3" />
-                                                            {formatTime(student.timeLeft)}
-                                                        </span>
-                                                    )}
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div className="flex items-center gap-2">
-                                            {/* Status Badge */}
-                                            {getStatusBadge(student)}
-
-                                            {/* Violation Count */}
-                                            <div className={`px-3 py-1 rounded-full ${student.violations.length > 5 ? "bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400" :
-                                                student.violations.length > 2 ? "bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-400" :
-                                                    student.violations.length > 0 ? "bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-400" :
-                                                        "bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400"
-                                                }`}>
-                                                <p className="text-xs font-medium">{student.violations.length}</p>
-                                            </div>
-
-                                            {/* Action Buttons */}
-                                            {!student.isSubmitted && !student.isTerminated && (
-                                                <>
-                                                    <ReasonWindow
-                                                        visible={showWindow}
-                                                        onSubmit={handleSubmitReason}
-                                                        onCancel={handleCancel}
-                                                    />
-                                                    {!student.isPaused ? (
-                                                        <button
-                                                            onClick={() => handlePause(student.studentId)}
-                                                            className="px-3 py-1.5 bg-orange-500 hover:bg-orange-600 text-white rounded-md text-xs font-medium transition-colors"
-                                                            title="Pause exam"
-                                                        >
-                                                            Pause
-                                                        </button>
-
-                                                    ) : (
-                                                        <button
-                                                            onClick={() => handleAction(student.studentId, "resume")}
-                                                            className="px-3 py-1.5 bg-green-500 hover:bg-green-600 text-white rounded-md text-xs font-medium transition-colors"
-                                                            title="Resume exam"
-                                                        >
-                                                            Resume
-                                                        </button>
-                                                    )}
-                                                    <button
-                                                        onClick={() => handleTerminate(student)}
-                                                        className="px-3 py-1.5 bg-red-600 hover:bg-red-700 text-white rounded-md text-xs font-medium transition-colors"
-                                                        title="Terminate exam"
-                                                    >
-                                                        Terminate
-                                                    </button>
-
-                                                </>
-                                            )}
-
-                                            {/* Expand/Collapse Button */}
-                                            {student.violations.length > 0 && (
-                                                <button
-                                                    onClick={() => toggleExpand(student.studentId)}
-                                                    className="p-1.5 hover:bg-gray-100 dark:hover:bg-gray-700 rounded transition-colors"
-                                                    title={expandedStudents[student.studentId] ? "Hide violations" : "Show violations"}
-                                                >
-                                                    {expandedStudents[student.studentId] ?
-                                                        <ChevronUp className="w-5 h-5 text-gray-600 dark:text-gray-400" /> :
-                                                        <ChevronDown className="w-5 h-5 text-gray-600 dark:text-gray-400" />
-                                                    }
-                                                </button>
-                                            )}
-                                        </div>
-                                    </div>
-                                </div>
-
-                                {/* Expandable Violations List */}
-                                {expandedStudents[student.studentId] && student.violations.length > 0 && (
-                                    <div className="border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/50 p-3 max-h-60 overflow-y-auto">
-                                        <div className="space-y-2">
-                                            {student.violations.map((violation, idx) => (
-                                                <div
-                                                    key={`${student.studentId}-${idx}`}
-                                                    className="flex items-center justify-between bg-white dark:bg-gray-800 rounded-lg p-2 text-xs"
-                                                >
-                                                    <div className="flex items-center gap-2 flex-1">
-                                                        <div className={getViolationColor(violation.type)}>
-                                                            {getViolationIcon(violation.type)}
-                                                        </div>
-                                                        <div className="flex-1 min-w-0">
-                                                            <p className="font-semibold text-gray-900 dark:text-white truncate">
-                                                                {violation.type.replace(/_/g, " ")}
-                                                            </p>
-                                                            <p className="text-gray-600 dark:text-gray-400 truncate">{violation.message}</p>
-                                                        </div>
-                                                    </div>
-                                                    <div className="flex items-center gap-1 text-gray-500 dark:text-gray-400 flex-shrink-0 ml-2">
-                                                        <Clock className="w-3 h-3" />
-                                                        <span>{new Date(violation.timestamp).toLocaleTimeString()}</span>
-                                                    </div>
-                                                </div>
-                                            ))}
-                                        </div>
-                                    </div>
-                                )}
+                        <div>
+                            <div className="flex gap-3 mb-6 p-1 bg-gray-100 dark:bg-gray-800 rounded-lg w-fit">
+                                <button
+                                    onClick={showActiveStudents}
+                                    className={`px-6 py-2.5 rounded-md font-semibold text-sm transition-all duration-200 relative cursor-pointer ${view === "active"
+                                            ? "bg-white dark:bg-gray-900 text-blue-600 dark:text-blue-400 shadow-md"
+                                            : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200"
+                                        }`}
+                                >
+                                    <span className="flex items-center gap-2">
+                                        <span className={`w-2 h-2 rounded-full ${view === "active" ? "bg-green-500 animate-pulse" : "bg-gray-400"}`}></span>
+                                        Active Students
+                                        <span className={`ml-1 px-2 py-0.5 rounded-full text-xs font-bold ${view === "active"
+                                                ? "bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300"
+                                                : "bg-gray-300 dark:bg-gray-700 text-gray-600 dark:text-gray-400"
+                                            }`}>
+                                            {Object.values(studentViolations).filter(s => !s.isSubmitted).length}
+                                        </span>
+                                    </span>
+                                </button>
+                                <button
+                                    onClick={showSubmittedStudents}
+                                    className={`px-6 py-2.5 rounded-md font-semibold text-sm transition-all duration-200 cursor-pointer ${view === "submitted"
+                                            ? "bg-white dark:bg-gray-900 text-green-600 dark:text-green-400 shadow-md"
+                                            : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200"
+                                        }`}
+                                >
+                                    <span className="flex items-center gap-2">
+                                        Submitted
+                                        <span className={`ml-1 px-2 py-0.5 rounded-full text-xs font-bold ${view === "submitted"
+                                                ? "bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-300"
+                                                : "bg-gray-300 dark:bg-gray-700 text-gray-600 dark:text-gray-400"
+                                            }`}>
+                                            {Object.values(studentViolations).filter(s => s.isSubmitted).length}
+                                        </span>
+                                    </span>
+                                </button>
                             </div>
-                        ))}
+                            {(() => {
+                                const allStudents = Object.values(studentViolations);
+                                const submittedStudents = allStudents.filter(s => s.isSubmitted);
+                                const activeStudents = allStudents.filter(s => !s.isSubmitted);
+
+                                return (
+                                    <div className="space-y-6">
+                                        {view === "active" && (
+                                            <div>
+                                                <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-3">Active Students ({activeStudents.length})</h2>
+                                                {activeStudents.length === 0 ? (
+                                                    <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6 text-center">
+                                                        <p className="text-gray-600 dark:text-gray-400">No active students</p>
+                                                    </div>
+                                                ) : (
+                                                    <div className="space-y-3">
+                                                        {activeStudents.map((student) => (
+                                                            <div key={student.studentId} className="bg-white dark:bg-gray-800 rounded-xl shadow-md border border-gray-200 dark:border-gray-700 overflow-hidden">
+                                                                <div className="p-4">
+                                                                    <div className="flex items-center justify-between">
+                                                                        <div className="flex items-center gap-3 flex-1">
+                                                                            <div className="w-10 h-10 rounded-full bg-cyan-100 dark:bg-cyan-900/30 flex items-center justify-center flex-shrink-0">
+                                                                                <User className="w-5 h-5 text-cyan-600 dark:text-cyan-400" />
+                                                                            </div>
+                                                                            <div className="flex-1 min-w-0">
+                                                                                <h3 className="text-base font-bold text-gray-900 dark:text-white truncate">{student.studentDetails?.name || "Unknown Student"}</h3>
+                                                                                <div className="flex items-center gap-4 text-xs text-gray-600 dark:text-gray-400">
+                                                                                    <span>{student.studentDetails?.rollNumber || "N/A"}</span>
+                                                                                    <span>{student.studentDetails?.collegeId || "N/A"}</span>
+                                                                                    <span>{student.studentDetails?.session || "N/A"}</span>
+                                                                                    <span>{student.studentDetails?.batch || "N/A"}</span>
+                                                                                    {student.timeLeft && (
+                                                                                        <span className="flex items-center gap-1"><Clock className="w-3 h-3" />{formatTime(student.timeLeft)}</span>
+                                                                                    )}
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+
+                                                                        <div className="flex items-center gap-2">
+                                                                            {getStatusBadge(student)}
+                                                                            <div className={`px-3 py-1 rounded-full ${student.violations.length > 5 ? "bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400" : student.violations.length > 2 ? "bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-400" : student.violations.length > 0 ? "bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-400" : "bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400"}`}>
+                                                                                <p className="text-xs font-medium">{student.violations.length}</p>
+                                                                            </div>
+
+                                                                            {!student.isTerminated && (
+                                                                                <>
+                                                                                    <ReasonWindow visible={showWindow} onSubmit={handleSubmitReason} onCancel={handleCancel} />
+                                                                                    {!student.isPaused ? (
+                                                                                        <button onClick={() => handlePause(student.studentId)} className="px-3 py-1.5 bg-orange-500 hover:bg-orange-600 text-white rounded-md text-xs font-medium transition-colors" title="Pause exam">Pause</button>
+                                                                                    ) : (
+                                                                                        <button onClick={() => handleAction(student.studentId, "resume")} className="px-3 py-1.5 bg-green-500 hover:bg-green-600 text-white rounded-md text-xs font-medium transition-colors" title="Resume exam">Resume</button>
+                                                                                    )}
+                                                                                    <button onClick={() => handleTerminate(student)} className="px-3 py-1.5 bg-red-600 hover:bg-red-700 text-white rounded-md text-xs font-medium transition-colors" title="Terminate exam">Terminate</button>
+                                                                                </>
+                                                                            )}
+
+                                                                            {student.violations.length > 0 && (
+                                                                                <button onClick={() => toggleExpand(student.studentId)} className="p-1.5 hover:bg-gray-100 dark:hover:bg-gray-700 rounded transition-colors" title={expandedStudents[student.studentId] ? "Hide violations" : "Show violations"}>
+                                                                                    {expandedStudents[student.studentId] ? <ChevronUp className="w-5 h-5 text-gray-600 dark:text-gray-400" /> : <ChevronDown className="w-5 h-5 text-gray-600 dark:text-gray-400" />}
+                                                                                </button>
+                                                                            )}
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+
+                                                                {expandedStudents[student.studentId] && student.violations.length > 0 && (
+                                                                    <div className="border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/50 p-3 max-h-60 overflow-y-auto">
+                                                                        <div className="space-y-2">
+                                                                            {student.violations.map((violation, idx) => (
+                                                                                <div key={`${student.studentId}-${idx}`} className="flex items-center justify-between bg-white dark:bg-gray-800 rounded-lg p-2 text-xs">
+                                                                                    <div className="flex items-center gap-2 flex-1">
+                                                                                        <div className={getViolationColor(violation.type)}>{getViolationIcon(violation.type)}</div>
+                                                                                        <div className="flex-1 min-w-0">
+                                                                                            <p className="font-semibold text-gray-900 dark:text-white truncate">{violation.type.replace(/_/g, " ")}</p>
+                                                                                            <p className="text-gray-600 dark:text-gray-400 truncate">{violation.message}</p>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    <div className="flex items-center gap-1 text-gray-500 dark:text-gray-400 flex-shrink-0 ml-2">
+                                                                                        <Clock className="w-3 h-3" />
+                                                                                        <span>{new Date(violation.timestamp).toLocaleTimeString()}</span>
+                                                                                    </div>
+                                                                                </div>
+                                                                            ))}
+                                                                        </div>
+                                                                    </div>
+                                                                )}
+                                                            </div>
+                                                        ))}
+                                                    </div>
+                                                )}
+                                            </div>
+                                        )}
+
+                                        {view === "submitted" && (
+                                            <div>
+                                                <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-3">Submitted Students ({submittedStudents.length})</h2>
+                                                {submittedStudents.length === 0 ? (
+                                                    <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6 text-center">
+                                                        <p className="text-gray-600 dark:text-gray-400">No submitted students yet</p>
+                                                    </div>
+                                                ) : (
+                                                    <div className="space-y-3">
+                                                        {submittedStudents.map((student) => (
+                                                            <div key={student.studentId} className="bg-white dark:bg-gray-800 rounded-xl shadow-md border border-gray-200 dark:border-gray-700 overflow-hidden">
+                                                                <div className="p-4 flex items-center justify-between">
+                                                                    <div className="flex items-center gap-3">
+                                                                        <div className="w-10 h-10 rounded-full bg-cyan-100 dark:bg-cyan-900/30 flex items-center justify-center flex-shrink-0">
+                                                                            <User className="w-5 h-5 text-cyan-600 dark:text-cyan-400" />
+                                                                        </div>
+                                                                        <div>
+                                                                            <h3 className="text-base font-bold text-gray-900 dark:text-white truncate">{student.studentDetails?.name || "Unknown Student"}</h3>
+                                                                            <div className="flex items-center gap-3 text-xs text-gray-600 dark:text-gray-400">
+                                                                                <span>{student.studentDetails?.rollNumber || "N/A"}</span>
+                                                                                <span>{student.studentDetails?.collegeId || "N/A"}</span>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div className="flex items-center gap-4">
+                                                                        {getStatusBadge(student)}
+                                                                        <div className={`px-3 py-1 rounded-full ${student.violations.length > 5 ? "bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400" : student.violations.length > 2 ? "bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-400" : student.violations.length > 0 ? "bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-400" : "bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400"}`}>
+                                                                            <p className="text-xs font-medium">{student.violations.length}</p>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        ))}
+                                                    </div>
+                                                )}
+                                            </div>
+                                        )}
+                                    </div>
+                                );
+                            })()}
+                        </div>
                     </div>
                 )}
             </div>

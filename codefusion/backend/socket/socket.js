@@ -12,12 +12,12 @@ export const setupSocket = (server) => {
     });
 
     io.on("connection", (socket) => {
-        console.log("New client connected:", socket.id);
+        console.log("New client connected");
 
         // Handle room joining
         socket.on("joinRoom", ({ room }) => {
             socket.join(room);
-            console.log(`Socket ${socket.id} joined room: ${room}`);
+            console.log(`Socket joined room: ${room}`);
         });
 
         // Register event handlers
@@ -25,7 +25,7 @@ export const setupSocket = (server) => {
         registerTeacherEvents(io, socket);
 
         socket.on("disconnect", () => {
-            console.log("🔴 Client disconnected:", socket.id);
+            console.log("Client disconnected");
         });
     });
 

@@ -45,5 +45,5 @@ app.use("/api/v1/exams", examRouter);
 app.use("/api/v1/teacher", dashboardRouter);
 
 server.listen(port, () => {
-    console.log(`🚀 Server listening on PORT ${port}`);
+    console.log(`Server listening on PORT ${port}`);
 });

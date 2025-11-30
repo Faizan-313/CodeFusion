@@ -1,4 +1,5 @@
 import { Violation } from "../models/violation.model.js";
+import { ExamSubmission } from "../models/examSubmission.model.js";
 
 export default function registerStudentEvents(io, socket) {
     // Handle student joining exam
@@ -21,7 +22,7 @@ export default function registerStudentEvents(io, socket) {
             
             io.to(`exam_${examId}`).emit("student-joined", broadcastData);
             
-            console.log(`Broadcasted successfully to exam_${examId}`);
+
         } catch (err) {
             console.error("Error handling student join:", err);
         }
@@ -60,7 +61,7 @@ export default function registerStudentEvents(io, socket) {
             
             io.to(`exam_${examId}`).emit("new-violation", broadcastData);
             
-            console.log(`Violation broadcasted successfully`);
+
         } catch (err) {
             console.error("Error saving violation:", err);
         }
@@ -88,14 +89,14 @@ export default function registerStudentEvents(io, socket) {
                 return;
             }
             
-            //if violation exists, update status to submitted
+            //if violation exists, update status to submitted; if not, create a minimal violation doc
             await Violation.findOneAndUpdate(
                 { examId, studentId },
-                { status: "submitted" },
-                { new: true, upsert: false }
+                { $set: { status: "submitted" }, $setOnInsert: { violations: [] } },
+                { new: true, upsert: true }
             );
 
-            console.log(`Student ${studentId} submitted exam ${examId}`);
+
 
             // Broadcast to teachers
             const broadcastData = {
@@ -106,7 +107,6 @@ export default function registerStudentEvents(io, socket) {
             
             io.to(`exam_${examId}`).emit("student-submitted", broadcastData);
             
-            console.log(`Submission broadcasted successfully`);
         } catch (err) {
             console.error("Error handling student submission:", err);
         }
