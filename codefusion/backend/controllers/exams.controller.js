@@ -14,7 +14,7 @@ const createExam = async (req, res) => {
         const code = examDetails.examCode;
         const uniqueCode = `${code}-${uuidv4().split("-")[0].toUpperCase()}`; 
 
-        //create new exam and save it
+        //create new exam (don't save yet)
         const newExam = new Exam({
             ...examDetails,
             duration: parseInt(examDetails.duration),
@@ -22,7 +22,6 @@ const createExam = async (req, res) => {
             examCode: uniqueCode,
             createdBy: req.user._id
         });
-        await newExam.save();
 
         //create question paper linked to it
         const newQuestionPaper = new QuestionPaper({
@@ -35,7 +34,7 @@ const createExam = async (req, res) => {
         })
         await newQuestionPaper.save();
 
-         // Link QuestionPaper to Exam
+        // Link QuestionPaper to Exam and save only once
         newExam.questionPaper = newQuestionPaper._id;
         await newExam.save();
 

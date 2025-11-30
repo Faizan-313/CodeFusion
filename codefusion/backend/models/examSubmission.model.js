@@ -46,4 +46,4 @@ const ExamSubmissionSchema = new mongoose.Schema({
     submittedAt: { type: Date, default: Date.now }
 },{timestamps: true });
 
-export const ExamSubmission = new mongoose.model("ExamSubmission", ExamSubmissionSchema);
+export const ExamSubmission = mongoose.model("ExamSubmission", ExamSubmissionSchema);

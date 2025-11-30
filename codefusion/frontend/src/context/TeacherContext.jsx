@@ -11,21 +11,31 @@ export const TeacherProvider = ({ children }) => {
     const [students, setStudents] = useState([]);
     const [studentsLoading, setStudentsLoading] = useState(false);
     const [studentsError, setStudentsError] = useState(null);
+    const [studentsPagination, setStudentsPagination] = useState({
+        currentPage: 1,
+        pages: 0,
+        total: 0,
+    });
 
     const [exams, setExams] = useState([]);
     const [examsLoading, setExamsLoading] = useState(false);
     const [examsError, setExamsError] = useState(null);
 
-    const fetchStudents = useCallback(async (examId) => {
+    const fetchStudents = useCallback(async (examId, page = 1, limit = 4) => {
         try {
             setStudentsLoading(true);
             setStudentsError(null);
             const response = await apiCall(`${url}/api/v1/teacher/exam/students`, "GET", {
-                params: { examId },
+                params: { examId, page, limit },
             });
 
             if (response.status === 200) {
                 setStudents(Array.isArray(response.data.students) ? response.data.students : []);
+                setStudentsPagination({
+                    currentPage: response.data.currentPage || page,
+                    pages: response.data.pages || 0,
+                    total: response.data.total || 0,
+                });
             }
         } catch (err) {
             setStudentsError("Failed to load students");
@@ -62,6 +72,7 @@ export const TeacherProvider = ({ children }) => {
                 studentsLoading,
                 studentsError,
                 fetchStudents,
+                studentsPagination,
                 exams,
                 examsLoading,
                 examsError,

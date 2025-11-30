@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import {
-    Search, ClipboardCheck, AlertCircle, Loader2
+    Search, ClipboardCheck, AlertCircle, Loader2, ChevronLeft, ChevronRight
 } from "lucide-react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useTeacher } from "../../context/TeacherContext";
@@ -9,17 +9,18 @@ import StudentRow, { StudentTableHeader } from "./components/StudentRow";
 
 function Evalvate() {
     const [search, setSearch] = useState("");
+    const [currentPage, setCurrentPage] = useState(1);
     const { examId } = useParams();
     const navigate = useNavigate();
-    const { fetchStudents, students, studentsLoading, studentsError } = useTeacher();
+    const { fetchStudents, students, studentsLoading, studentsError, studentsPagination } = useTeacher();
     const { particularExamDetails, fetchParticularExamDetails } = useExam();
 
     useEffect(() => {
         if (examId) {
-            fetchStudents(examId);
+            fetchStudents(examId, currentPage);
             fetchParticularExamDetails(examId);
         }
-    }, [examId]);
+    }, [examId, currentPage]);
     
     const exam = particularExamDetails || {};
 
@@ -34,6 +35,18 @@ function Evalvate() {
                 s.rollNumber?.toLowerCase().includes(search.toLowerCase())
         )
         : [];
+
+    const handlePreviousPage = () => {
+        if (currentPage > 1) {
+            setCurrentPage(currentPage - 1);
+        }
+    };
+
+    const handleNextPage = () => {
+        if (currentPage < studentsPagination.pages) {
+            setCurrentPage(currentPage + 1);
+        }
+    };
 
     if (studentsLoading) {
         return (
@@ -142,7 +155,7 @@ function Evalvate() {
                                 </p>
                                 <p className="text-sm text-red-700 dark:text-red-400">{studentsError}</p>
                                 <button
-                                    onClick={() => fetchStudents(examId)}
+                                    onClick={() => fetchStudents(examId, currentPage)}
                                     className="mt-3 px-4 py-2 bg-red-600 hover:bg-red-700 dark:bg-red-500 dark:hover:bg-red-600 text-white text-sm font-medium rounded-lg transition-colors duration-200"
                                 >
                                     Try Again
@@ -198,12 +211,38 @@ function Evalvate() {
                             </table>
                         </div>
                         
-                        {/* Results Counter */}
+                        {/* Results Counter and Pagination */}
                         <div className="px-6 py-4 bg-gray-50 dark:bg-gray-900/50 border-t border-gray-200 dark:border-gray-700">
-                            <p className="text-sm text-gray-600 dark:text-gray-400 text-center">
-                                Showing <span className="font-semibold text-gray-900 dark:text-white">{filteredStudents.length}</span> of{" "}
-                                <span className="font-semibold text-gray-900 dark:text-white">{students.length}</span> students
-                            </p>
+                            <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+                                <p className="text-sm text-gray-600 dark:text-gray-400">
+                                    Showing <span className="font-semibold text-gray-900 dark:text-white">{filteredStudents.length}</span> of{" "}
+                                    <span className="font-semibold text-gray-900 dark:text-white">{studentsPagination.total}</span> students
+                                </p>
+                                
+                                {studentsPagination.pages > 1 && (
+                                    <div className="flex items-center gap-2">
+                                        <button
+                                            onClick={handlePreviousPage}
+                                            disabled={currentPage === 1}
+                                            className="p-2 rounded-lg border border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                                        >
+                                            <ChevronLeft className="w-5 h-5 text-gray-600 dark:text-gray-400" />
+                                        </button>
+                                        
+                                        <span className="px-4 py-2 text-sm font-medium text-gray-900 dark:text-white">
+                                            Page {studentsPagination.currentPage} of {studentsPagination.pages}
+                                        </span>
+                                        
+                                        <button
+                                            onClick={handleNextPage}
+                                            disabled={currentPage >= studentsPagination.pages}
+                                            className="p-2 rounded-lg border border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                                        >
+                                            <ChevronRight className="w-5 h-5 text-gray-600 dark:text-gray-400" />
+                                        </button>
+                                    </div>
+                                )}
+                            </div>
                         </div>
                     </div>
                 )}

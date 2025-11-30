@@ -13,7 +13,8 @@ const dashboardData = async (req, res) => {
                 path: "questionPaper",
                 select: "questions",
             })
-            .sort({ createdAt: -1 });
+            .sort({ createdAt: -1 })
+            .lean();
 
         if (!exams || exams.length === 0) {
             return res.status(200).json({
@@ -23,21 +24,18 @@ const dashboardData = async (req, res) => {
             });
         }
         
-        // Prepare formatted response for frontend
-        const formattedExams = await Promise.all(exams.map(async (exam) => {
-            const paper = await QuestionPaper.findOne({ examId: exam._id });
-            return {
-                _id: exam._id,
-                title: exam.title,
-                examCode: exam.examCode,
-                description: exam.description,
-                duration: exam.duration,
-                totalMarks: exam.totalMarks,
-                startTime: exam.startTime,
-                endTime: exam.endTime,
-                questions: paper?.questions || [],
-                createdAt: exam.createdAt,
-            };
+        // Format response without additional queries
+        const formattedExams = exams.map((exam) => ({
+            _id: exam._id,
+            title: exam.title,
+            examCode: exam.examCode,
+            description: exam.description,
+            duration: exam.duration,
+            totalMarks: exam.totalMarks,
+            startTime: exam.startTime,
+            endTime: exam.endTime,
+            questions: exam.questionPaper?.questions || [],
+            createdAt: exam.createdAt,
         }));
 
         return res.status(200).json({
@@ -52,40 +50,60 @@ const dashboardData = async (req, res) => {
 
 const studentList = async (req, res) => {
     try {
-        const { examId } = req.query;
+        const { examId, page = 1, limit = 20 } = req.query;
         if (!examId) {
             return res.status(400).json({ message: "Exam ID is required." });
         }
 
-        //Find students who have attempted this exam
-        const students = await Student.find({
-            examsAttempted: { $exists: true, $ne: [] },
+        const skip = (page - 1) * limit;
+
+        // Find exam submissions for this exam with proper indexing
+        const submissions = await ExamSubmission.find({ examId })
+            .populate({
+                path: "studentId",
+                select: "name rollNumber collegeId batch session _id"
             })
             .populate({
-                    path: "examsAttempted",
-                    match: { examId }, // filter submissions related to this exam
-                    populate: {
-                        path: "examId",
-                },
-        })
-        .select("name rollNumber collegeId batch session examsAttempted");
+                path: "examId",
+                select: "totalMarks",
+            })
+            .skip(skip)
+            .limit(Number(limit))
+            .lean();
 
-        // Filter only those who actually have an attempt for this exam
-        const filtered = students.filter(
-            (stu) => stu.examsAttempted && stu.examsAttempted.length > 0
-        );
+        const total = await ExamSubmission.countDocuments({ examId });
 
-        if (filtered.length === 0) {
+        if (submissions.length === 0) {
             return res.status(200).json({
                 message: "No students have attempted this exam yet.",
                 students: [],
+                total: 0,
+                pages: 0,
             });
         }
 
-        //Success response
+        // Format response with pagination info
         return res.status(200).json({
             message: "Students and their answer sheets fetched successfully.",
-            students: filtered,
+            students: submissions.map(sub => ({
+                ...sub.studentId,
+                _id: sub.studentId._id,
+                attemptId: sub._id,
+                submittedAt: sub.submittedAt,
+                evaluateStatus: sub.evaluateStatus,
+                totalScore: sub.totalScore,
+                totalMarks: sub.examId?.totalMarks || 0,
+                examsAttempted: [{
+                    evaluateStatus: sub.evaluateStatus,
+                    totalScore: sub.totalScore,
+                    examId: {
+                        totalMarks: sub.examId?.totalMarks || 0,
+                    }
+                }]
+            })),
+            total,
+            pages: Math.ceil(total / limit),
+            currentPage: page,
         });
 
     } catch (error) {
