@@ -4,7 +4,7 @@ import { toast } from "react-hot-toast";
 import { useExam } from "../../context/ExamContext";
 import { useNavigate } from "react-router-dom";
 
-function StartExam() {
+function ExamCodeAndInstruction() {
     const [openCodeWindow, setOpenCodeWindow] = React.useState(false);
     const [examCode, setExamCode] = React.useState("");
     const { validateExamCode } = useExam();
@@ -117,4 +117,4 @@ function StartExam() {
     );
 }
 
-export default StartExam;
+export default ExamCodeAndInstruction;

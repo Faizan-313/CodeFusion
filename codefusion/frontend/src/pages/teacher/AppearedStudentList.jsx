@@ -7,7 +7,7 @@ import { useTeacher } from "../../context/TeacherContext";
 import { useExam } from "../../context/ExamContext";
 import StudentRow, { StudentTableHeader } from "./components/StudentRow";
 
-function Evalvate() {
+function AppearedStudentList() {
     const [search, setSearch] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
     const { examId } = useParams();
@@ -251,4 +251,4 @@ function Evalvate() {
     );
 }
 
-export default Evalvate;
+export default AppearedStudentList;

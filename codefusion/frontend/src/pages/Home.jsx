@@ -34,10 +34,10 @@ function Home() {
     ];
 
     return (
-        <div className="flex flex-col min-h-screen bg-gray-50 dark:bg-gray-900">
+        <div className="flex flex-col min-h-screen bg-gray-50 dark:bg-gray-900" id='home'>
             {/* Hero Section with Parallax */}
             <div className="relative h-screen overflow-hidden">
-                <div 
+                <div
                     className="absolute inset-0 bg-gradient-to-br from-blue-900 via-purple-900 to-indigo-900"
                     style={{ transform: `translateY(${scrollY * 0.5}px)` }}
                 >
@@ -47,7 +47,7 @@ function Home() {
                         <div className="absolute bottom-20 left-1/2 w-72 h-72 bg-pink-500 rounded-full mix-blend-multiply filter blur-xl animate-pulse delay-1000"></div>
                     </div>
                 </div>
-                
+
                 <div className="relative h-full flex flex-col items-center justify-center text-center text-white px-4 z-10">
                     <div className="mb-6 animate-bounce">
                         <FaBrain className="text-7xl text-cyan-400 drop-shadow-2xl" />
@@ -90,7 +90,7 @@ function Home() {
 
                     <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
                         {features.map((feature, index) => (
-                            <div 
+                            <div
                                 key={index}
                                 className="group p-8 bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-200 dark:border-gray-700"
                             >
@@ -151,9 +151,19 @@ function Home() {
                             </div>
                             <div className="grid md:grid-cols-3 gap-8">
                                 {[
-                                    { step: "01", title: "Enter Exam Portal", desc: "Join the exam session scheduled by your instructor" },
-                                    { step: "02", title: "Start Assessment", desc: "Attempt coding and text-based questions in a unified workspace" },
-                                    { step: "03", title: "Submit & Get Results", desc: "Receive evaluation and detailed performance insights" }
+                                    {
+                                        step: "01", title: "Enter Exam Portal", desc: (
+                                            <>
+                                                Click on{" "}
+                                                <span className='text-blue-700 font-bold hover:text-blue-500'>
+                                                    <a href='/exam'>Enter Exam</a>
+                                                </span>
+                                                , read instructions, enter the exam code, fill in details and start the exam
+                                            </>
+                                        )
+                                    },
+                                    { step: "02", title: "Start Assessment", desc: "Attempt multi format questions in a unified workspace" },
+                                    { step: "03", title: "Submit", desc: "On complete click on submit or wait till time runs out" }
                                 ].map((item, index) => (
                                     <div key={index} className="relative group">
                                         <div className="text-center p-6 bg-white dark:bg-gray-800 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border-2 border-transparent hover:border-cyan-400">
@@ -230,12 +240,12 @@ function Home() {
                                 Revolutionizing online assessments with AI-powered security and intelligent evaluation.
                             </p>
                         </div>
-                        
+
                         <div>
                             <h3 className="text-xl font-bold text-white mb-4">Quick Links</h3>
                             <ul className="space-y-2">
-                                <li><a href="/home" className="hover:text-cyan-400 transition-colors">Home</a></li>
-                                <li><a href="/exam" className="hover:text-cyan-400 transition-colors">Exam</a></li>
+                                <li><a href="#home" className="hover:text-cyan-400 transition-colors">Home</a></li>
+                                <li><a href="/exam" className="hover:text-cyan-400 transition-colors">Start Exam</a></li>
                                 <li><a href="#features" className="hover:text-cyan-400 transition-colors">Features</a></li>
                             </ul>
                         </div>

@@ -7,7 +7,7 @@ import { TeacherProvider } from "./context/TeacherContext";
 //pages
 import Home from "./pages/Home"
 import NavBar from "./components/NavBar"
-import StartExam from "./pages/student/StartExam";
+import ExamCodeAndInstruction from "./pages/student/ExamCodeAndInstruction";
 import Signup from "./pages/auth/Signup";
 import Signin from "./pages/auth/Signin";
 import PageNotFound from "./pages/PageNotFound";
@@ -16,7 +16,7 @@ import TeacherDashboard from "./pages/teacher/Dashboard";
 import StudentDetailsFilling from "./pages/student/StudentDetailsFilling";
 import ExamSection from "./pages/student/ExamSection";
 import ThankYou from "./pages/ThankYou";
-import Evalvate from "./pages/teacher/Evalvate";
+import AppearedStudentList from "./pages/teacher/AppearedStudentList";
 import ViewPaper from "./pages/teacher/ViewPaper";
 import MonitorExam from "./pages/teacher/MonitorExam";
 
@@ -46,10 +46,10 @@ function AppContent() {
         <Route path="/" element={<Home />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/signin" element={<Signin />} />
-        <Route path="/exam" element={<StartExam />} />
+        <Route path="/exam" element={<ExamCodeAndInstruction />} />
         <Route path="/create-exam" element={<CreateExam />} />
         <Route path="/dashboard" element={<TeacherDashboard />} />
-        <Route path="/teacher/evaluation/:examId" element={<Evalvate />} />
+        <Route path="/teacher/evaluation/:examId" element={<AppearedStudentList />} />
         <Route path="/teacher/evalvate/:examId/:studentId" element={<ViewPaper />} />
         <Route path="/teacher/monitor/:examId" element={<MonitorExam />} />
       </Route>
