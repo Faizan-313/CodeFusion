@@ -4,6 +4,10 @@ import { AuthProvider } from "./context/AuthContext";
 import { ExamProvider } from "./context/ExamContext";
 import { TeacherProvider } from "./context/TeacherContext";
 
+//routes
+import ProtectedRoute from "./routes/ProtectedRoute";
+import PublicOnlyRoute from "./routes/PublicOnlyRoute";
+
 //pages
 import Home from "./pages/Home"
 import NavBar from "./components/NavBar"
@@ -19,6 +23,7 @@ import ThankYou from "./pages/ThankYou";
 import AppearedStudentList from "./pages/teacher/AppearedStudentList";
 import ViewPaper from "./pages/teacher/ViewPaper";
 import MonitorExam from "./pages/teacher/MonitorExam";
+import { Rotate3D } from "lucide-react";
 
 function MainLayout() {
   return (
@@ -44,14 +49,22 @@ function AppContent() {
     <Routes>
       <Route element={<MainLayout />}>
         <Route path="/" element={<Home />} />
-        <Route path="/signup" element={<Signup />} />
-        <Route path="/signin" element={<Signin />} />
+
+        <Route element={<PublicOnlyRoute />}>
+          <Route path="/signup" element={<Signup />} />
+          <Route path="/signin" element={<Signin />} />
+        </Route>
+
         <Route path="/exam" element={<ExamCodeAndInstruction />} />
-        <Route path="/create-exam" element={<CreateExam />} />
-        <Route path="/dashboard" element={<TeacherDashboard />} />
-        <Route path="/teacher/evaluation/:examId" element={<AppearedStudentList />} />
-        <Route path="/teacher/evalvate/:examId/:studentId" element={<ViewPaper />} />
-        <Route path="/teacher/monitor/:examId" element={<MonitorExam />} />
+
+        <Route element={<ProtectedRoute />}>
+          <Route path="/create-exam" element={<CreateExam />} />
+          <Route path="/dashboard" element={<TeacherDashboard />} />
+          <Route path="/teacher/evaluation/:examId" element={<AppearedStudentList />} />
+          <Route path="/teacher/evalvate/:examId/:studentId" element={<ViewPaper />} />
+          <Route path="/teacher/monitor/:examId" element={<MonitorExam />} />\
+        </Route>
+
       </Route>
 
       <Route element={<MinimalLayout />}>
