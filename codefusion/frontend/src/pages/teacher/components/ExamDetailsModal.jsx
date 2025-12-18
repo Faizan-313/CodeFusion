@@ -116,6 +116,7 @@ function ExamDetailsModal({ exam, onClose, copiedCode, onCopyCode }) {
                                                 {q.marks} marks
                                             </span>
                                         </div>
+                                        {q.image && <img className="h-[50%] w-[50%]" rel="question image" aria-label="question image" src={q.image}></img>}
 
                                         {q.type === "mcq" && q.options && (
                                             <ul className="list-disc list-inside ml-4 mt-2 space-y-1 text-gray-700 dark:text-gray-400 text-sm">

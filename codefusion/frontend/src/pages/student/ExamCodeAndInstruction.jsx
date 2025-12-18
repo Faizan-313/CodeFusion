@@ -31,8 +31,6 @@ function ExamCodeAndInstruction() {
         }
         const res = await validateExamCode(examCode.trim());
         if(res.success){
-            toast.success("Code validated!");
-            toast.dismiss();
             navigate("/exam/student/details");
             return;
         }else{

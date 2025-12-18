@@ -3,6 +3,9 @@ import { Plus, Trash2, Save, Send, Clock, Calendar, FileText, Code, CheckSquare,
 import toast from "react-hot-toast";
 import { apiCall } from "../../api/api";
 import { useNavigate } from "react-router-dom";
+import ImageUploadComponent from "./components/ImageUploadComponent";
+import validateExamDetails from "./helpers/validateExamDetails";
+
 
 export default function CreateExam() {
     const [examDetails, setExamDetails] = useState({
@@ -31,6 +34,8 @@ export default function CreateExam() {
             type,
             questionText: "",
             marks: "",
+            image: null,
+            imagePreview: null,
             isCompleted: false,
         };
 
@@ -42,6 +47,7 @@ export default function CreateExam() {
         setQuestions([...questions, newQuestion]);
     };
 
+    // get already entered data stored in localstorage on load
     useEffect(() => {
         const data = localStorage.getItem("createExamDraft");
         if (data) {
@@ -56,11 +62,19 @@ export default function CreateExam() {
                         startTime: "",
                         endTime: ""
                     });
-                    setQuestions(examData.questions || []);
+
+                    // Ensure any draft loaded does NOT restore image fields (clear them)
+                    const sanitizedQuestions = (examData.questions || []).map(q => ({
+                        ...q,
+                        image: null,
+                        imagePreview: null
+                    }));
+
+                    setQuestions(sanitizedQuestions);
                     setTotalMarks(examData.totalMarks || 0);
                 }
             } catch (e) {
-                toast.error("⚠️ Failed to load saved draft");
+                toast.error("Failed to load saved draft");
                 localStorage.removeItem("createExamDraft");
             }
         }
@@ -112,7 +126,7 @@ export default function CreateExam() {
 
     const markQuestionComplete = (index) => {
         if (!questions[index].questionText.trim() || !questions[index].marks || parseInt(questions[index].marks) <= 0) {
-            toast.error("⚠️ Please fill in the question text and valid marks before marking as done");
+            toast.error("Please fill in the question text and valid marks before marking as done");
             return;
         }
         const updated = [...questions];
@@ -127,89 +141,81 @@ export default function CreateExam() {
     };
 
     const handleSubmit = async (isDraft = false) => {
-        if (!examDetails.title.trim()) {
-            toast.error("⚠️ Please enter an exam title");
+        // If saving as draft, save exam data without actual File objects 
+        if (isDraft) {
+            try {
+                // Do NOT persist any image-related data in drafts. Clear image and preview so user must re-upload when publishing.
+                const questionsForDraft = questions.map((q) => ({
+                    ...q,
+                    image: null,
+                    imagePreview: null
+                }));
+
+                const draftExamData = {
+                    examDetails,
+                    questions: questionsForDraft,
+                    totalMarks
+                };
+
+                localStorage.setItem("createExamDraft", JSON.stringify(draftExamData));
+                toast.success("Exam saved as draft! Images are not stored in drafts.");
+            } catch (error) {
+                console.error("Error saving draft:", error);
+                toast.error("Failed to save draft");
+            }
             return;
         }
 
-        if (!examDetails.examCode.trim()) {
-            toast.error("⚠️ Please set an exam code");
-            return;
-        }
-
-        if (!examDetails.duration || parseInt(examDetails.duration) <= 0) {
-            toast.error("⚠️ Please enter a valid duration");
-            return;
-        }
-
-        if (!examDetails.startTime || !examDetails.endTime) {
-            toast.error("⚠️ Please select start and end times");
-            return;
-        }
-
-        if (new Date(examDetails.startTime) >= new Date(examDetails.endTime)) {
-            toast.error("⚠️ End time must be after start time");
-            return;
-        }
-
-        if (questions.length === 0) {
-            toast.error("⚠️ Please add at least one question");
-            return;
-        }
+        const isValid = validateExamDetails(examDetails, questions);
+        if (!isValid) return;
 
         for (let i = 0; i < questions.length; i++) {
             if (!questions[i].questionText.trim()) {
-                toast.error(`⚠️ Question ${i + 1} text is required`);
+                toast.error(`Question ${i + 1} text is required`);
                 return;
             }
             if (!questions[i].marks || parseInt(questions[i].marks) <= 0) {
-                toast.error(`⚠️ Question ${i + 1} must have valid marks`);
+                toast.error(`Question ${i + 1} must have valid marks`);
                 return;
             }
             if (questions[i].type === "mcq") {
                 const filledOptions = questions[i].options.filter(opt => opt.trim());
                 if (filledOptions.length < 2) {
-                    toast.error(`⚠️ Question ${i + 1} (MCQ) must have at least 2 options`);
+                    toast.error(`Question ${i + 1} (MCQ) must have at least 2 options`);
                     return;
                 }
             }
         }
 
-        const sanitizedQuestions = questions.map(q => ({
+        // Prepare FormData to send as multipart/form-data so we are able to include File objects directly
+        const formData = new FormData();
+        formData.append('examDetails', JSON.stringify({ ...examDetails, duration: parseInt(examDetails.duration) }));
+
+        // Questions payload (without files) include a hasImage flag for each question
+        const questionsPayload = questions.map((q) => ({
             type: q.type,
             questionText: q.questionText,
             marks: parseInt(q.marks),
-            ...(q.type === "mcq" ? { options: q.options } : {}),
+            ...(q.type === 'mcq' ? { options: q.options } : {}),
+            hasImage: !!q.image
         }));
+        formData.append('questions', JSON.stringify(questionsPayload));
+        formData.append('totalMarks', String(totalMarks));
 
-        const examDataToSend = {
-            examDetails: {
-                ...examDetails,
-                duration: parseInt(examDetails.duration)
-            },
-            questions: sanitizedQuestions,
-            totalMarks
-        };
-
-        // If saving as draft, just save to localStorage
-        if (isDraft) {
-            try {
-                localStorage.setItem("createExamDraft", JSON.stringify(examDataToSend));
-                toast.success("✅ Exam saved as draft!");
-            } catch (error) {
-                console.error("Error saving draft:", error);
-                toast.error("⚠️ Failed to save draft");
+        // Append images with keys that indicate their question index
+        questions.forEach((q, i) => {
+            if (q.image && !(typeof q.image === 'string')) {
+                formData.append(`image_${i}`, q.image);
             }
-            return;
-        }
+        });
 
-        // If publishing, submit to API
         setIsSubmitting(true);
 
         try {
-            const res = await apiCall(`${import.meta.env.VITE_API_URL}/api/v1/exams/create`, "POST", { data: examDataToSend });
+            // we're sending multipart/form-data so the backend should accept files under keys like `image_0`, `image_1`, ...
+            const res = await apiCall(`${import.meta.env.VITE_API_URL}/api/v1/exams/create`, "POST", { data: formData });
             if (res.status === 200) {
-                toast.success("🎉 Exam published successfully!");
+                toast.success("Exam published successfully!");
 
                 // Clear localStorage and reset form
                 localStorage.removeItem("createExamDraft");
@@ -227,7 +233,10 @@ export default function CreateExam() {
             }
         } catch (error) {
             console.error("Unexpected error during submission:", error);
-            toast.error("⚠️ An error occurred. Please try again.");
+            if(error.status === 413)
+                toast.error("Image size must be less than 2mb")
+            else
+                toast.error("An error occurred. Please try again.");
         } finally {
             setIsSubmitting(false);
         }
@@ -386,6 +395,8 @@ export default function CreateExam() {
                     />
                 </div>
 
+                <ImageUploadComponent key={index} index={index} questions={questions} setQuestions={setQuestions} />
+
                 {q.type === "mcq" && (
                     <div className="bg-blue-50 p-4 rounded-lg border border-blue-200 mb-4">
                         <span className="block text-sm font-semibold text-gray-700 mb-3">
@@ -419,7 +430,7 @@ export default function CreateExam() {
                             ))}
                         </div>
                         <p className="text-xs text-gray-600 mt-2">
-                            Select the radio button for the correct answer
+                            Select the correct answer
                         </p>
                     </div>
                 )}

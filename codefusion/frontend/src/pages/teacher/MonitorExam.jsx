@@ -250,6 +250,7 @@ export default function MonitorExam() {
             <div className={`bg-white dark:bg-gray-900 p-4 rounded-lg shadow-lg border text-sm flex flex-col gap-3 w-72`}>
                 <p className="text-gray-800 dark:text-gray-200">
                     Are you sure you want to <span className="font-semibold text-red-600">terminate</span> {student.studentDetails?.name}'s exam?
+                    This action can not be undone. <span className="font-bold">The student data will not be stored.</span>
                 </p>
                 <div className="flex justify-end gap-2">
                     <button

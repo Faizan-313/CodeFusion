@@ -4,52 +4,75 @@ import { QuestionPaper } from "../models/questions.model.js";
 import { Student } from "../models/student.model.js";
 import { User } from "../models/user.model.js"; 
 import { v4 as uuidv4 } from "uuid";
-
+import { uploadFile } from "../cloudinary/cloudinary.js";
 
 const createExam = async (req, res) => {
     try {
-        const { examDetails, questions, totalMarks } = req.body;
-        
-        //generate the unique code
-        const code = examDetails.examCode;
-        const uniqueCode = `${code}-${uuidv4().split("-")[0].toUpperCase()}`; 
+        //Parse multipart text fields
+        const examDetailsParsed = JSON.parse(req.body.examDetails);
+        const questionsParsed = JSON.parse(req.body.questions);
+        const totalMarks = parseInt(req.body.totalMarks);
 
-        //create new exam (don't save yet)
+        //Attach images to corresponding questions
+        if (req.files && req.files.length > 0) {
+            for (const file of req.files) {
+                const index = parseInt(file.fieldname.split("_")[1]);
+
+                if (!isNaN(index) && questionsParsed[index]) {
+                    const cloudinaryRes = await uploadFile(file.path);
+                    questionsParsed[index].image = cloudinaryRes.secure_url;
+                }
+            }
+        }
+
+        //Generate unique exam code
+        const baseCode = examDetailsParsed.examCode;
+        const uniqueCode = `${baseCode}-${uuidv4()
+            .split("-")[0]
+            .toUpperCase()}`;
+
+        // Create Exam 
         const newExam = new Exam({
-            ...examDetails,
-            duration: parseInt(examDetails.duration),
+            ...examDetailsParsed,
+            duration: parseInt(examDetailsParsed.duration),
             totalMarks,
             examCode: uniqueCode,
-            createdBy: req.user._id
+            createdBy: req.user._id,
         });
 
-        //create question paper linked to it
+        //Create Question Paper
         const newQuestionPaper = new QuestionPaper({
             examId: newExam._id,
-            questions: questions.map(q => ({
-                ...q,
+            questions: questionsParsed.map((q) => ({
+                type: q.type,
+                questionText: q.questionText,
                 marks: parseInt(q.marks),
-                Options: q.options,
+                options: q.options || [],
+                image: q.image || null,
             })),
-        })
+        });
+
         await newQuestionPaper.save();
 
-        // Link QuestionPaper to Exam and save only once
+        //Link and save exam
         newExam.questionPaper = newQuestionPaper._id;
         await newExam.save();
 
-        // Update teacher record (add exam to their created list)
+        //Update teacher record
         await User.findByIdAndUpdate(req.user._id, {
             $push: { examsCreated: newExam._id },
         });
 
-        // Send success response
-        return res.status(200).json({ message: "Exam created successfully" });
+        return res.status(200).json({
+            message: "Exam created successfully",
+            examId: newExam._id,
+        });
     } catch (error) {
-        console.log("Error in creating exam: ", error);
-        return res.status(500).json({ message: "Something went wrong" })
+        console.error("Error creating exam:", error);
+        return res.status(500).json({ message: "Something went wrong" });
     }
-}
+};
+
 
 const validateCode = async (req, res) => {
     try {

@@ -693,8 +693,8 @@ function ExamSection() {
                                     </span>
                                 </div>
 
-                                {q.description && (
-                                    <p className="text-gray-600 dark:text-gray-400 mb-4 text-sm">{q.description}</p>
+                                {q.image && (
+                                    <img className="h-[60%] w-full" rel="question image" aria-label="question image" src={q.image}></img>
                                 )}
 
                                 {q.type === "mcq" && (

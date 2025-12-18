@@ -463,10 +463,8 @@ function ViewPaper() {
                                                             </span>
                                                         </div>
                                                     </div>
-                                                    {question.description && (
-                                                        <p className="text-sm text-gray-600 dark:text-gray-400">
-                                                            {question.description}
-                                                        </p>
+                                                    {question.image && (
+                                                        <img className="h-[60%] w-full" rel="question image" aria-label="question image" src={question.image}></img>
                                                     )}
                                                 </div>
 

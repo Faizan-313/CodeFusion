@@ -11,7 +11,7 @@ const QuestionPaperSchema = new mongoose.Schema({
             },
             questionText: { type: String, required: true },
             marks: { type: Number, required: true },
-
+            image: { type: String },
             options: [String]
         },
     ],

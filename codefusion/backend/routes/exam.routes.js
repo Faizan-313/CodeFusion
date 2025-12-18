@@ -7,10 +7,11 @@ import {
     getExamData
 } from "../controllers/exams.controller.js"
 import authenticateToken from "../middlewares/auth.middleware.js";
+import { uploadMiddleware } from "../middlewares/multer.middleware.js";
 
 const router = express.Router();
 
-router.post("/create", authenticateToken, createExam);
+router.post("/create", authenticateToken, uploadMiddleware, createExam);
 router.post("/validate-code", validateCode);
 router.post("/submit-student-details", storeStudentDetails);
 router.post("/submit", submitExam);

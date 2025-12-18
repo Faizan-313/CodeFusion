@@ -24,6 +24,10 @@ app.use(compression());
 app.use(express.json());
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
+
+//images path
+app.use("/images", express.static("public/images"));
+
 app.use(
     cors({
         origin: process.env.CORS_ORIGIN,
