@@ -34,8 +34,10 @@ export const uploadMiddleware = (req, res, next) => {
         } 
         
         if (err) {
-            return res.status(500).json({ message: "Upload failed" });
-        }
+    console.error("MULTER ERROR:", err);
+    return res.status(500).json({ message: err.message || "Upload failed" });
+}
+
 
         next();
     });
