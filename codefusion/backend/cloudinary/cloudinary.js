@@ -1,5 +1,4 @@
 import { v2 as cloudinary } from "cloudinary";
-import fs from "fs";
 
 // config
 cloudinary.config({
@@ -8,25 +7,19 @@ cloudinary.config({
     api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-export const uploadFile = async (localFilePath) => {
-    if (!localFilePath) {
-        throw new Error("No file path provided");
-    }
+export const uploadBufferToCloudinary = (buffer) => {
+    return new Promise((resolve, reject) => {
+        const stream = cloudinary.uploader.upload_stream(
+            {
+                folder: "codefusion/questionImages",
+                resource_type: "auto",
+            },
+            (error, result) => {
+                if (error) return reject(error);
+                resolve(result);
+            }
+        );
 
-    try {
-        const response = await cloudinary.uploader.upload(localFilePath, {
-            folder: "codefusion/questionImages", 
-            resource_type: "auto",
-        });
-
-        // cleanup local file AFTER upload
-        fs.unlinkSync(localFilePath);
-
-        return response;
-    } catch (error) {
-        if (fs.existsSync(localFilePath)) {
-            fs.unlinkSync(localFilePath);
-        }
-        throw error;
-    }
+        stream.end(buffer);
+    });
 };

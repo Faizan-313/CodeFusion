@@ -4,7 +4,7 @@ import { QuestionPaper } from "../models/questions.model.js";
 import { Student } from "../models/student.model.js";
 import { User } from "../models/user.model.js"; 
 import { v4 as uuidv4 } from "uuid";
-import { uploadFile } from "../cloudinary/cloudinary.js";
+import { uploadBufferToCloudinary } from "../cloudinary/cloudinary.js";
 
 const createExam = async (req, res) => {
     try {
@@ -19,7 +19,7 @@ const createExam = async (req, res) => {
                 const index = parseInt(file.fieldname.split("_")[1]);
 
                 if (!isNaN(index) && questionsParsed[index]) {
-                    const cloudinaryRes = await uploadFile(file.path);
+                    const cloudinaryRes = await uploadBufferToCloudinary(file.buffer);
                     questionsParsed[index].image = cloudinaryRes.secure_url;
                 }
             }
