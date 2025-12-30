@@ -1,6 +1,6 @@
 import multer from "multer";
 
-// for me
+// for understanding
 //disk storage fails in production use memory storage
 const upload = multer({
     storage: multer.memoryStorage(),

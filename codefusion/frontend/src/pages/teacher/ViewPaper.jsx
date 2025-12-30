@@ -213,7 +213,8 @@ function ViewPaper() {
                 marksObtained: parseFloat(ans.marksObtained) || 0
             }));
 
-            const totalScore = evaluatedAnswers.reduce((sum, ans) => sum + ans.marksObtained, 0);
+            const totalScore = evaluatedAnswers.reduce((sum, ans) => sum + ans.marksObtained, 0).toFixed(1);
+
 
             const response = await apiCall(
                 `${import.meta.env.VITE_API_URL}/api/v1/teacher/evaluate-paper`,
@@ -603,7 +604,7 @@ function ViewPaper() {
                                     <div className="relative">
                                         <input
                                             type="text"
-                                            value={totalObtainedMarks.toFixed(2)}
+                                            value={totalObtainedMarks.toFixed(1)}
                                             readOnly
                                             className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg
                                             bg-gray-100 dark:bg-gray-600 text-gray-900 dark:text-gray-100 font-medium text-lg

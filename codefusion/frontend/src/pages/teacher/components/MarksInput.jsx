@@ -50,7 +50,7 @@ const MarksInput = ({ question, studentAnswer, setLocalExamAttempt }) => {
             return;
         }
 
-        const numValue = parseFloat(value);
+        const numValue = parseFloat(value).toFixed(1);
         const maxMarks = question.marks || 0;
 
         // Allow typing even if invalid, just don't save to state
@@ -127,10 +127,10 @@ const MarksInput = ({ question, studentAnswer, setLocalExamAttempt }) => {
                 Marks:
             </label>
             <input
-                type="number"
+                type="text"
+                inputMode="decimal"
                 min={0}
                 max={question.marks || 0}
-                step="any"
                 value={inputValue}
                 onChange={(e) => handleMarksChange(e.target.value)}
                 onBlur={handleBlur}
@@ -141,4 +141,4 @@ const MarksInput = ({ question, studentAnswer, setLocalExamAttempt }) => {
     );
 };
 
-export default React.memo(MarksInput);;
+export default React.memo(MarksInput)
