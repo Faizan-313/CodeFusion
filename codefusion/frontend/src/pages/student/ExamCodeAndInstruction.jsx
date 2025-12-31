@@ -40,9 +40,9 @@ function ExamCodeAndInstruction() {
     }
 
     return (
-        <div className="min-h-screen bg-gray-50 dark:bg-gray-900 pt-24 pb-12 px-4 sm:px-6">
+        <div className="min-h-screen bg-gradient-to-br from-[#f0f8f7] to-[#e0f2f0] dark:from-[#092635] dark:to-[#1b4242] pt-24 pb-12 px-4 sm:px-6">
             <div className="max-w-6xl mx-auto">
-                <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-center text-cyan-600 dark:text-cyan-400">
+                <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-center mb-5 text-[#5c8374] dark:text-[#9ec8b9]">
                     Exam Portal
                 </h1>
 
@@ -54,7 +54,7 @@ function ExamCodeAndInstruction() {
                         type="checkbox" 
                         id="instructionsAck"
                         required
-                        className="mt-1 mr-3 w-4 h-4 sm:w-5 sm:h-5 rounded focus:ring-cyan-500 text-cyan-500 cursor-pointer flex-shrink-0" 
+                        className="mt-1 mr-3 w-4 h-4 sm:w-5 sm:h-5 rounded focus:ring-[#5c8374] text-[#5c8374] cursor-pointer flex-shrink-0" 
                     />
                     <label htmlFor="instructionsAck" className="text-sm sm:text-base text-gray-700 dark:text-gray-300 cursor-pointer select-none">
                         I have read and understood the instructions.
@@ -63,7 +63,7 @@ function ExamCodeAndInstruction() {
 
                 <div className="text-center">
                     <button
-                        className="px-6 sm:px-8 py-3 sm:py-3.5 text-base sm:text-lg font-semibold rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 text-white shadow-lg hover:shadow-cyan-500/50 hover:scale-105 transition-all duration-300"
+                        className="px-6 sm:px-8 py-3 sm:py-3.5 text-base sm:text-lg font-semibold rounded-xl bg-gradient-to-r from-[#5c8374] to-[#1b4242] text-white shadow-lg hover:shadow-[#5c8374]/50 hover:scale-105 transition-all duration-300"
                         onClick={handleClick}
                     >
                         Start Assessment
@@ -81,7 +81,7 @@ function ExamCodeAndInstruction() {
                             </button>
 
                             <div className="mb-6">
-                                <div className="w-16 h-16 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                                <div className="w-16 h-16 bg-gradient-to-r from-[#5c8374] to-[#1b4242] rounded-full flex items-center justify-center mx-auto mb-4">
                                     <span className="text-3xl">🔐</span>
                                 </div>
                                 <h2 className="text-2xl sm:text-3xl font-bold mb-2 text-gray-800 dark:text-white">
@@ -97,13 +97,13 @@ function ExamCodeAndInstruction() {
                                 placeholder="Type your exam code here"
                                 value={examCode}
                                 onChange={(e) => setExamCode(e.target.value)}
-                                className="w-full p-3 sm:p-4 text-gray-800 dark:text-white bg-gray-50 dark:bg-gray-700 rounded-lg border-2 border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 focus:outline-none mb-6 text-sm sm:text-base transition-all"
+                                className="w-full p-3 sm:p-4 text-gray-800 dark:text-white bg-gray-50 dark:bg-gray-700 rounded-lg border-2 border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-[#5c8374] focus:border-[#5c8374] focus:outline-none mb-6 text-sm sm:text-base transition-all"
                                 autoFocus
                             />
                             
                             <button
                                 onClick={handleEnterExam}
-                                className="w-full px-6 py-3 sm:py-3.5 text-base sm:text-lg font-semibold rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 text-white shadow-lg hover:shadow-cyan-500/50 hover:scale-105 transition-all duration-300"
+                                className="w-full px-6 py-3 sm:py-3.5 text-base sm:text-lg font-semibold rounded-xl bg-gradient-to-r from-[#5c8374] to-[#1b4242] text-white shadow-lg hover:shadow-[#5c8374]/50 hover:scale-105 transition-all duration-300"
                             >
                                 Enter Exam
                             </button>

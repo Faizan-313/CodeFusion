@@ -50,22 +50,22 @@ function AppearedStudentList() {
 
     if (studentsLoading) {
         return (
-            <div className="flex flex-col justify-center items-center min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-gray-900 dark:via-slate-900 dark:to-gray-900">
-                <Loader2 className="w-12 h-12 animate-spin text-indigo-600 dark:text-indigo-400 mb-4" />
+            <div className="flex flex-col justify-center items-center min-h-screen bg-gradient-to-br from-slate-50 via-[#9ec8b9] to-[#5c8374] dark:from-gray-900 dark:via-slate-900 dark:to-gray-900">
+                <Loader2 className="w-12 h-12 animate-spin text-[#5c8374] dark:text-[#9ec8b9] mb-4" />
                 <p className="text-gray-600 dark:text-gray-400 font-medium">Loading students...</p>
             </div>
         );
     }
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-gray-900 dark:via-slate-900 dark:to-gray-900 py-8 px-4 sm:px-6 lg:px-8">
+        <div className="min-h-screen bg-gradient-to-br from-[#f0f8f7] via-[#e8f5f3] to-[#dff1ee] dark:from-[#092635] dark:via-[#1b4242] dark:to-[#0d3a47] py-8 px-4 sm:px-6 lg:px-8">
             <div className="max-w-7xl mx-auto pt-20">
                 {/* Header Section */}
                 <div className="mb-8">
                     <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
                         <div>
                             <div className="flex items-center gap-3 mb-2">
-                                <div className="p-2 bg-indigo-600 dark:bg-indigo-500 rounded-xl shadow-lg">
+                                <div className="p-2 bg-[#5c8374] dark:bg-[#9ec8b9] rounded-xl shadow-lg">
                                     <ClipboardCheck className="w-7 h-7 text-white" />
                                 </div>
                                 <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white">
@@ -89,7 +89,7 @@ function AppearedStudentList() {
                                     bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 
                                     placeholder-gray-500 dark:placeholder-gray-400
                                     shadow-sm hover:shadow-md
-                                    focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 dark:focus:ring-indigo-400
+                                    focus:ring-2 focus:ring-[#5c8374] focus:border-[#5c8374] dark:focus:ring-[#9ec8b9]
                                     outline-none transition-all duration-200"
                             />
                         </div>
@@ -99,7 +99,7 @@ function AppearedStudentList() {
                 {/* Exam Details Card */}
                 <div className="mb-8">
                     <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl shadow-lg overflow-hidden">
-                        <div className="bg-gradient-to-r from-indigo-600 to-blue-600 dark:from-indigo-500 dark:to-blue-500 px-6 py-4">
+                        <div className="bg-gradient-to-r from-[#5c8374] to-[#1b4242] dark:from-[#9ec8b9] dark:to-[#5c8374] px-6 py-4">
                             <h2 className="text-xl font-bold text-white flex items-center gap-2">
                                 <ClipboardCheck className="w-5 h-5" />
                                 Exam Details
@@ -135,7 +135,7 @@ function AppearedStudentList() {
                                     <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">
                                         Total Marks
                                     </p>
-                                    <p className="text-2xl font-bold text-indigo-600 dark:text-indigo-400">
+                                    <p className="text-2xl font-bold text-[#5c8374] dark:text-[#9ec8b9]">
                                         {exam.totalMarks || "N/A"}
                                     </p>
                                 </div>
@@ -183,7 +183,7 @@ function AppearedStudentList() {
                             {search && (
                                 <button
                                     onClick={() => setSearch("")}
-                                    className="px-6 py-2.5 bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600 text-white font-medium rounded-lg transition-colors duration-200 shadow-md hover:shadow-lg"
+                                    className="px-6 py-2.5 bg-[#5c8374] hover:bg-[#1b4242] dark:bg-[#9ec8b9] dark:hover:bg-[#5c8374] text-white font-medium rounded-lg transition-colors duration-200 shadow-md hover:shadow-lg"
                                 >
                                     Clear Search
                                 </button>

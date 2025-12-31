@@ -54,7 +54,7 @@ export default function TeacherDashboard() {
         return (
             <div className="flex justify-center items-center h-screen bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-900 dark:to-gray-800">
                 <div className="text-center">
-                    <Loader2 className="animate-spin h-12 w-12 text-indigo-600 mx-auto mb-4" />
+                    <Loader2 className="animate-spin h-12 w-12 text-[#5c8374] mx-auto mb-4" />
                     <p className="text-gray-600 dark:text-gray-300 text-lg font-medium">Loading dashboard...</p>
                 </div>
             </div>
@@ -81,7 +81,7 @@ export default function TeacherDashboard() {
                     </div>
                     <Link
                         to="/create-exam"
-                        className="flex items-center gap-2 bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 hover:to-blue-700 text-white px-6 py-3 rounded-xl transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 font-semibold whitespace-nowrap"
+                        className="flex items-center gap-2 bg-gradient-to-r from-[#5c8374] to-[#092635] hover:from-[#5c8374] hover:to-[#092635] text-white px-6 py-3 rounded-xl transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 font-semibold whitespace-nowrap"
                     >
                         <PlusCircle size={20} />
                         Create Exam
@@ -102,10 +102,10 @@ export default function TeacherDashboard() {
                 {exams.length > 0 && (
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
                         <StatsCard
-                            icon={<BookOpen className="text-indigo-600" size={24} />}
+                            icon={<BookOpen className="text-green-600" size={24} />}
                             label="Total Exams"
                             value={stats.total}
-                            bgColor="bg-indigo-50 dark:bg-indigo-900/20"
+                            bgColor="bg-[#9ec8b9] dark:bg-[#092635]/20"
                         />
                         <StatsCard
                             icon={<TrendingUp className="text-green-600" size={24} />}
@@ -114,16 +114,16 @@ export default function TeacherDashboard() {
                             bgColor="bg-green-50 dark:bg-green-900/20"
                         />
                         <StatsCard
-                            icon={<Clock className="text-blue-600" size={24} />}
+                            icon={<Clock className="text-green-600" size={24} />}
                             label="Upcoming"
                             value={stats.upcoming}
-                            bgColor="bg-blue-50 dark:bg-blue-900/20"
+                            bgColor="bg-[#9ec8b9] dark:bg-[#092635]/20"
                         />
                         <StatsCard
-                            icon={<Award className="text-purple-600" size={24} />}
+                            icon={<Award className="text-green-600" size={24} />}
                             label="Completed"
                             value={stats.completed}
-                            bgColor="bg-purple-50 dark:bg-purple-900/20"
+                            bgColor="bg-[#f0f8f7] dark:bg-[#5c8374]/20"
                         />
                     </div>
                 )}

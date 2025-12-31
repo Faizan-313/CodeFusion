@@ -12,7 +12,7 @@ function Home() {
 
     const features = [
         {
-            icon: <FaShieldAlt className="text-5xl text-blue-500" />,
+            icon: <FaShieldAlt className="text-5xl text-[#5c8374]" />,
             title: "AI-Powered Proctoring",
             description: "Advanced monitoring system ensures exam integrity with real-time behavioral analysis"
         },
@@ -22,12 +22,12 @@ function Home() {
             description: "Intelligent code assessment with syntax checking and automated test case execution"
         },
         {
-            icon: <FaChartLine className="text-5xl text-purple-500" />,
+            icon: <FaChartLine className="text-5xl text-[#5c8374]" />,
             title: "Real-Time Analytics",
             description: "Comprehensive performance metrics and instant result generation for educators"
         },
         {
-            icon: <FaLaptopCode className="text-5xl text-cyan-500" />,
+            icon: <FaLaptopCode className="text-5xl text-[#9ec8b9]" />,
             title: "Multi-Format Support",
             description: "MCQs, coding challenges, and descriptive questions all in one seamless platform"
         }
@@ -38,28 +38,28 @@ function Home() {
             {/* Hero Section with Parallax */}
             <div className="relative h-screen overflow-hidden">
                 <div
-                    className="absolute inset-0 bg-gradient-to-br from-blue-900 via-purple-900 to-indigo-900"
+                    className="absolute inset-0 bg-gradient-to-br from-[#092635] via-[#1b4242] to-[#5c8374]"
                     style={{ transform: `translateY(${scrollY * 0.5}px)` }}
                 >
                     <div className="absolute inset-0 opacity-20">
-                        <div className="absolute top-20 left-10 w-72 h-72 bg-blue-500 rounded-full mix-blend-multiply filter blur-xl animate-pulse"></div>
-                        <div className="absolute top-40 right-10 w-72 h-72 bg-purple-500 rounded-full mix-blend-multiply filter blur-xl animate-pulse delay-700"></div>
-                        <div className="absolute bottom-20 left-1/2 w-72 h-72 bg-pink-500 rounded-full mix-blend-multiply filter blur-xl animate-pulse delay-1000"></div>
+                        <div className="absolute top-20 left-10 w-72 h-72 bg-[#5c8374] rounded-full mix-blend-multiply filter blur-xl animate-pulse"></div>
+                        <div className="absolute top-40 right-10 w-72 h-72 bg-[#9ec8b9] rounded-full mix-blend-multiply filter blur-xl animate-pulse delay-700"></div>
+                        <div className="absolute bottom-20 left-1/2 w-72 h-72 bg-[#5c8374] rounded-full mix-blend-multiply filter blur-xl animate-pulse delay-1000"></div>
                     </div>
                 </div>
 
                 <div className="relative h-full flex flex-col items-center justify-center text-center text-white px-4 z-10">
                     <div className="mb-6 animate-bounce">
-                        <FaBrain className="text-7xl text-cyan-400 drop-shadow-2xl" />
+                        <FaBrain className="text-7xl text-[#9ec8b9] drop-shadow-2xl" />
                     </div>
                     <h1 className="text-5xl md:text-7xl font-extrabold mb-6 drop-shadow-2xl">
-                        Welcome to <span className="bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">CodeFusion</span>
+                        Welcome to <span className="bg-gradient-to-r from-[#9ec8b9] to-[#5c8374] bg-clip-text text-transparent">CodeFusion</span>
                     </h1>
                     <p className="text-xl md:text-2xl max-w-3xl mb-8 drop-shadow-lg leading-relaxed">
                         Next-Generation Online Programming Assessments with AI-Powered Proctoring
                     </p>
                     <div className="flex gap-4 flex-wrap justify-center">
-                        <a href="/exam" className="px-8 py-4 bg-cyan-500 hover:bg-cyan-600 rounded-full font-semibold text-lg transition-all transform hover:scale-105 shadow-lg">
+                        <a href="/exam" className="px-8 py-4 bg-[#5c8374] hover:bg-[#1b4242] rounded-full font-semibold text-lg transition-all transform hover:scale-105 shadow-lg">
                             Start Exam
                         </a>
                         <a href="#features" className="px-8 py-4 bg-white/10 backdrop-blur-md hover:bg-white/20 rounded-full font-semibold text-lg transition-all transform hover:scale-105 border-2 border-white/30">
@@ -81,7 +81,7 @@ function Home() {
                 <div className="max-w-7xl mx-auto px-6">
                     <div className="text-center mb-16">
                         <h2 className="text-4xl md:text-5xl font-bold text-gray-800 dark:text-white mb-4">
-                            Why Choose <span className="text-cyan-500">CodeFusion?</span>
+                            Why Choose <span className="text-[#9ec8b9]">CodeFusion?</span>
                         </h2>
                         <p className="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
                             A complete solution for secure, intelligent, and scalable online assessments
@@ -110,7 +110,7 @@ function Home() {
             </section>
 
             {/* Stats Section */}
-            <section className="py-20 bg-gradient-to-r from-blue-600 to-purple-600 text-white">
+            <section className="py-20 bg-gradient-to-r from-[#1b4242] to-[#092635] text-white">
                 <div className="max-w-7xl mx-auto px-6">
                     <div className="grid md:grid-cols-3 gap-12 text-center">
                         <div className="transform hover:scale-105 transition-transform">
@@ -142,7 +142,7 @@ function Home() {
                         {/* Student Flow */}
                         <div>
                             <div className="flex items-center justify-center mb-10">
-                                <div className="flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-full shadow-lg">
+                                <div className="flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-[#5c8374] to-[#1b4242] rounded-full shadow-lg">
                                     <FaUsers className="text-2xl text-white" />
                                     <h3 className="text-3xl font-bold text-white">
                                         For Students
@@ -155,7 +155,7 @@ function Home() {
                                         step: "01", title: "Enter Exam Portal", desc: (
                                             <>
                                                 Click on{" "}
-                                                <span className='text-blue-700 font-bold hover:text-blue-500'>
+                                                <span className='text-[#092635] font-bold hover:text-[#5c8374]'>
                                                     <a href='/exam'>Enter Exam</a>
                                                 </span>
                                                 , read instructions, enter the exam code, fill in details and start the exam
@@ -166,8 +166,8 @@ function Home() {
                                     { step: "03", title: "Submit", desc: "On complete click on submit or wait till time runs out" }
                                 ].map((item, index) => (
                                     <div key={index} className="relative group">
-                                        <div className="text-center p-6 bg-white dark:bg-gray-800 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border-2 border-transparent hover:border-cyan-400">
-                                            <div className="inline-block mb-4 w-20 h-20 rounded-full bg-gradient-to-br from-cyan-400 to-blue-600 items-center justify-center text-white text-2xl font-bold shadow-lg group-hover:scale-110 transition-transform duration-300">
+                                        <div className="text-center p-6 bg-white dark:bg-gray-800 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border-2 border-transparent hover:border-[#5c8374]">
+                                            <div className="inline-block mb-4 w-20 h-20 rounded-full bg-gradient-to-br from-[#5c8374] to-[#1b4242] items-center justify-center text-white text-2xl font-bold shadow-lg group-hover:scale-110 transition-transform duration-300">
                                                 {item.step}
                                             </div>
                                             <h4 className="text-xl font-bold text-gray-800 dark:text-white mb-3">
@@ -178,7 +178,7 @@ function Home() {
                                             </p>
                                         </div>
                                         {index < 2 && (
-                                            <div className="hidden md:block absolute top-10 left-full w-full h-1 bg-gradient-to-r from-cyan-400 to-blue-600 transform -translate-x-1/2 opacity-30"></div>
+                                            <div className="hidden md:block absolute top-10 left-full w-full h-1 bg-gradient-to-r from-[#5c8374] to-[#1b4242] transform -translate-x-1/2 opacity-30"></div>
                                         )}
                                     </div>
                                 ))}
@@ -232,7 +232,7 @@ function Home() {
                     <div className="grid md:grid-cols-3 gap-12 mb-8">
                         <div>
                             <div className="text-4xl font-bold mb-4">
-                                <span className="text-cyan-400">Code</span>
+                                <span className="text-[#9ec8b9]">Code</span>
                                 <span className="text-white">Fusion</span>
                                 <span className="text-green-500">.</span>
                             </div>
@@ -244,22 +244,22 @@ function Home() {
                         <div>
                             <h3 className="text-xl font-bold text-white mb-4">Quick Links</h3>
                             <ul className="space-y-2">
-                                <li><a href="#home" className="hover:text-cyan-400 transition-colors">Home</a></li>
-                                <li><a href="/exam" className="hover:text-cyan-400 transition-colors">Start Exam</a></li>
-                                <li><a href="#features" className="hover:text-cyan-400 transition-colors">Features</a></li>
+                                <li><a href="#home" className="hover:text-[#5c8374] transition-colors">Home</a></li>
+                                <li><a href="/exam" className="hover:text-[#5c8374] transition-colors">Start Exam</a></li>
+                                <li><a href="#features" className="hover:text-[#5c8374] transition-colors">Features</a></li>
                             </ul>
                         </div>
 
                         <div>
                             <h3 className="text-xl font-bold text-white mb-4">Connect With Us</h3>
                             <div className="flex gap-4 text-3xl">
-                                <a target="_blank" href="https://github.com/Faizan-313" className="hover:text-cyan-400 transition-colors transform hover:scale-110">
+                                <a target="_blank" href="https://github.com/Faizan-313" className="hover:text-[#5c8374] transition-colors transform hover:scale-110">
                                     <FaGithub />
                                 </a>
-                                <a target="_blank" href="https://www.linkedin.com/in/faizan-syed-4370152b9" className="hover:text-cyan-400 transition-colors transform hover:scale-110">
+                                <a target="_blank" href="https://www.linkedin.com/in/faizan-syed-4370152b9" className="hover:text-[#5c8374] transition-colors transform hover:scale-110">
                                     <FaLinkedin />
                                 </a>
-                                <a target="_blank" href="#" className="hover:text-cyan-400 transition-colors transform hover:scale-110">
+                                <a target="_blank" href="#" className="hover:text-[#5c8374] transition-colors transform hover:scale-110">
                                     <FaTwitter />
                                 </a>
                             </div>

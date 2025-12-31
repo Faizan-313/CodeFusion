@@ -23,7 +23,7 @@ function StudentRow({ student, onEvaluate, index }) {
     // Grade calculation for visual feedback
     const getGradeColor = (percent) => {
         if (percent >= 90) return "text-emerald-600 dark:text-emerald-400";
-        if (percent >= 75) return "text-blue-600 dark:text-blue-400";
+        if (percent >= 75) return "text-[#1b4242] dark:text-[#5c8374]";
         if (percent >= 60) return "text-amber-600 dark:text-amber-400";
         return "text-red-600 dark:text-red-400";
     };
@@ -40,7 +40,7 @@ function StudentRow({ student, onEvaluate, index }) {
             {/* Student Name */}
             <td className="px-3 py-3">
                 <div className="flex items-center gap-2">
-                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center flex-shrink-0 shadow-md">
+                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#5c8374] to-[#1b4242] flex items-center justify-center flex-shrink-0 shadow-md">
                         <User className="w-4 h-4 text-white" />
                     </div>
                     <p className="font-semibold text-sm text-gray-900 dark:text-white truncate">
@@ -87,7 +87,7 @@ function StudentRow({ student, onEvaluate, index }) {
                         <div className="w-16 h-1.5 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
                             <div
                                 className={`h-full rounded-full transition-all duration-300 ${percentage >= 90 ? "bg-emerald-500" :
-                                        percentage >= 75 ? "bg-blue-500" :
+                                        percentage >= 75 ? "bg-[#5c8374]" :
                                             percentage >= 60 ? "bg-amber-500" :
                                                 "bg-red-500"
                                     }`}
@@ -122,7 +122,7 @@ function StudentRow({ student, onEvaluate, index }) {
                 ) : (
                     <button
                         onClick={() => onEvaluate(student._id, student)}
-                        className="flex items-center justify-center gap-1 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium px-3 py-1.5 rounded-lg transition-all focus:ring-2 focus:ring-indigo-400 focus:ring-offset-2 dark:focus:ring-offset-gray-800"
+                        className="flex items-center justify-center gap-1 bg-[#5c8374] hover:bg-[#1b4242] text-white text-sm font-medium px-3 py-1.5 rounded-lg transition-all focus:ring-2 focus:ring-[#9ec8b9] focus:ring-offset-2 dark:focus:ring-offset-gray-800"
                     >
                         Evaluate
                         <ChevronRight className="w-4 h-4" />

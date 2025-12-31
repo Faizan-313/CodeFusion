@@ -14,7 +14,7 @@ function ExamCard({ exam, onViewDetails, onEvaluate, onCopyCode, copiedCode }) {
     return (
         <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-200 dark:border-gray-700 group">
             {/* Header with Gradient */}
-            <div className="bg-gradient-to-r from-indigo-500 to-blue-600 dark:from-indigo-600 dark:to-blue-700 p-6 text-white">
+            <div className="bg-gradient-to-r from-[#5c8374] to-[#092635] dark:from-[#5c8374] dark:to-[#092635] p-6 text-white">
                 <div className="flex justify-between items-start mb-3">
                     <span className={`px-3 py-1 rounded-full text-xs font-semibold ${status.color}`}>
                         {status.label}
@@ -46,7 +46,7 @@ function ExamCard({ exam, onViewDetails, onEvaluate, onCopyCode, copiedCode }) {
             <div className="p-6">
                 {/* Info Grid */}
                 <div className="grid grid-cols-3 gap-3 mb-6">
-                    <div className="bg-indigo-50 dark:bg-indigo-900/20 rounded-lg p-3 text-center">
+                    <div className="bg-[#9ec8b9] dark:bg-[#092635]/20 rounded-lg p-3 text-center">
                         <p className="text-xs text-gray-600 dark:text-gray-400 mb-1 font-medium">Duration</p>
                         <p className="text-lg font-bold text-gray-800 dark:text-gray-100">
                             {exam.duration}
@@ -62,7 +62,7 @@ function ExamCard({ exam, onViewDetails, onEvaluate, onCopyCode, copiedCode }) {
                         <p className="text-xs text-gray-600 dark:text-gray-400">points</p>
                     </div>
 
-                    <div className="bg-purple-50 dark:bg-purple-900/20 rounded-lg p-3 text-center">
+                    <div className="bg-[#f0f8f7] dark:bg-[#5c8374]/20 rounded-lg p-3 text-center">
                         <p className="text-xs text-gray-600 dark:text-gray-400 mb-1 font-medium">Questions</p>
                         <p className="text-lg font-bold text-gray-800 dark:text-gray-100">
                             {questionCount}
@@ -101,7 +101,7 @@ function ExamCard({ exam, onViewDetails, onEvaluate, onCopyCode, copiedCode }) {
                 <div className="space-y-2">
                     <button
                         onClick={onViewDetails}
-                        className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 hover:to-blue-700 text-white py-2.5 rounded-lg transition-all font-semibold text-sm group-hover:shadow-lg"
+                        className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-[#5c8374] to-[#092635] hover:from-[#5c8374] hover:to-[#092635] text-white py-2.5 rounded-lg transition-all font-semibold text-sm group-hover:shadow-lg"
                     >
                         View Details
                         <ChevronRight size={16} className="group-hover:translate-x-0.5 transition" />
@@ -109,7 +109,7 @@ function ExamCard({ exam, onViewDetails, onEvaluate, onCopyCode, copiedCode }) {
                     {status.label === "Live" && (
                         <button
                             onClick={() => navigate(`/teacher/monitor/${exam._id}`)}
-                            className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-pink-500 to-red-600 hover:from-pink-600 hover:to-red-700 text-white py-2.5 rounded-lg transition-all font-semibold text-sm group-hover:shadow-lg"
+                            className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-[#724c4c] to-[#d01d16] hover:from-[#c73b3b] hover:to-[#351209] text-white py-2.5 rounded-lg transition-all font-semibold text-sm group-hover:shadow-lg"
                         >
                             <Users size={16} />
                             Monitor Exam

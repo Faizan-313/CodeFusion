@@ -66,12 +66,12 @@ const getViolationColor = (type) => {
     const normalizedType = type?.toUpperCase();
 
     const colorMap = {
-        "TAB_SWITCH": "bg-blue-100 text-blue-800 dark:bg-blue-900/40 dark:text-blue-300 border-blue-200 dark:border-blue-700",
-        "WINDOW_BLUR": "bg-blue-100 text-blue-800 dark:bg-blue-900/40 dark:text-blue-300 border-blue-200 dark:border-blue-700",
+        "TAB_SWITCH": "bg-[#9ec8b9] text-[#092635] dark:bg-[#092635]/40 dark:text-[#9ec8b9] border-[#9ec8b9] dark:border-[#092635]",
+        "WINDOW_BLUR": "bg-[#9ec8b9] text-[#092635] dark:bg-[#092635]/40 dark:text-[#9ec8b9] border-[#9ec8b9] dark:border-[#092635]",
         "DEVTOOLS_OPENED": "bg-red-100 text-red-800 dark:bg-red-900/40 dark:text-red-300 border-red-200 dark:border-red-700",
         "RIGHT_CLICK_ATTEMPT": "bg-orange-100 text-orange-800 dark:bg-orange-900/40 dark:text-orange-300 border-orange-200 dark:border-orange-700",
         "BLOCKED_SHORTCUT": "bg-orange-100 text-orange-800 dark:bg-orange-900/40 dark:text-orange-300 border-orange-200 dark:border-orange-700",
-        "FULLSCREEN_EXIT": "bg-purple-100 text-purple-800 dark:bg-purple-900/40 dark:text-purple-300 border-purple-200 dark:border-purple-700",
+        "FULLSCREEN_EXIT": "bg-[#f0f7f6] text-[#1b4242] dark:bg-[#1b4242]/40 dark:text-[#9ec8b9] border-[#9ec8b9] dark:border-[#5c8374]",
     };
 
     return colorMap[normalizedType] || "bg-gray-100 text-gray-800 dark:bg-gray-900/40 dark:text-gray-300 border-gray-200 dark:border-gray-700";
@@ -268,8 +268,8 @@ function ViewPaper() {
 
         if (question.type === "diagram") {
             return (
-                <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4 space-y-3">
-                    <p className="text-xs font-semibold text-blue-800 dark:text-blue-300">
+                <div className="bg-[#9ec8b9] dark:bg-[#092635]/20 border border-[#9ec8b9] dark:border-[#092635] rounded-lg p-4 space-y-3">
+                    <p className="text-xs font-semibold text-[#1b4242] dark:text-[#9ec8b9]">
                         STUDENT'S DIAGRAM
                     </p>
                     {studentAnswer.answerText?.startsWith("data:image") ? (
@@ -302,11 +302,11 @@ function ViewPaper() {
             );
 
             return (
-                <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4 space-y-3">
-                    <p className="text-xs font-semibold text-blue-800 dark:text-blue-300">
+                <div className="bg-[#9ec8b9]/20 dark:bg-[#092635]/30 border border-[#5c8374] dark:border-[#1b4242] rounded-lg p-4 space-y-3">
+                    <p className="text-xs font-semibold text-[#1b4242] dark:text-[#9ec8b9]">
                         STUDENT'S ANSWER
                     </p>
-                    <div className="bg-white dark:bg-gray-800 border-2 border-indigo-400 dark:border-indigo-600 rounded-lg p-3">
+                    <div className="bg-white dark:bg-gray-800 border-2 border-[#5c8374] dark:border-[#1b4242] rounded-lg p-3">
                         <p className="font-semibold text-gray-900 dark:text-gray-100">
                             {optionDetails?.text || selectedOption}
                         </p>
@@ -322,7 +322,7 @@ function ViewPaper() {
                                             key={option._id || idx}
                                             className={`p-2 rounded text-sm ${
                                                 isSelected
-                                                    ? "bg-green-300 dark:bg-green-300/40 border border-indigo-400 dark:border-indigo-600"
+                                                    ? "bg-green-300 dark:bg-green-300/40 border border-[#5c8374] dark:border-[#1b4242]"
                                                     : "bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300"
                                             }`}
                                         >
@@ -343,8 +343,8 @@ function ViewPaper() {
         }
 
         return (
-            <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4 space-y-3">
-                <p className="text-xs font-semibold text-blue-800 dark:text-blue-300">
+            <div className="bg-[#9ec8b9]/20 dark:bg-[#092635]/30 border border-[#5c8374] dark:border-[#1b4242] rounded-lg p-4 space-y-3">
+                <p className="text-xs font-semibold text-[#1b4242] dark:text-[#9ec8b9]">
                     STUDENT'S ANSWER
                 </p>
                 <pre className="text-gray-900 dark:text-gray-100 border border-gray-300 dark:border-gray-600 p-3 rounded-lg text-sm dark:bg-gray-950 bg-white leading-relaxed whitespace-pre-wrap break-words font-mono overflow-auto max-h-96">
@@ -362,9 +362,9 @@ function ViewPaper() {
     // Loading State
     if (loading || !exam || !student || !localExamAttempt) {
         return (
-            <div className="pt-20 min-h-screen bg-gradient-to-b from-gray-100 to-gray-200 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center">
+            <div className="pt-20 min-h-screen bg-gradient-to-b from-[#f0f8f7] to-[#e0f2f0] dark:from-[#092635] dark:to-[#1b4242] flex items-center justify-center">
                 <div className="flex flex-col items-center gap-3">
-                    <Loader2 className="w-8 h-8 text-indigo-600 animate-spin" />
+                    <Loader2 className="w-8 h-8 text-[#5c8374] animate-spin" />
                     <p className="text-gray-600 dark:text-gray-300">Loading exam paper...</p>
                 </div>
             </div>
@@ -374,7 +374,7 @@ function ViewPaper() {
     const studentAnswers = localExamAttempt.answers || [];
 
     return (
-        <div className="pt-20 min-h-screen bg-gradient-to-b from-gray-100 to-gray-200 dark:from-gray-900 dark:to-gray-800 py-8 px-4 sm:px-6">
+        <div className="pt-20 min-h-screen bg-gradient-to-b from-[#f0f8f7] to-[#e0f2f0] dark:from-[#092635] dark:to-[#1b4242] py-8 px-4 sm:px-6">
             <div className="max-w-7xl mx-auto">
                 {/* Header */}
                 <div className="flex items-center gap-4 mb-8">
@@ -425,7 +425,7 @@ function ViewPaper() {
                                 </div>
                                 <div>
                                     <p className="text-xs text-gray-600 dark:text-gray-400 font-medium">Total Marks</p>
-                                    <p className="font-bold text-indigo-600 dark:text-indigo-400">
+                                    <p className="font-bold text-[#5c8374] dark:text-[#9ec8b9]">
                                         {maxMarks}
                                     </p>
                                 </div>
@@ -456,10 +456,10 @@ function ViewPaper() {
                                                             Q{idx + 1}. {question.questionText}
                                                         </h3>
                                                         <div className="flex items-center gap-2 flex-shrink-0">
-                                                            <span className="px-2.5 py-1 bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 text-xs font-semibold rounded-full whitespace-nowrap">
+                                                            <span className="px-2.5 py-1 bg-[#f0f7f6] dark:bg-[#1b4242]/30 text-[#1b4242] dark:text-[#9ec8b9] text-xs font-semibold rounded-full whitespace-nowrap">
                                                                 {question.type}
                                                             </span>
-                                                            <span className="px-2.5 py-1 bg-indigo-100 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 text-xs font-semibold rounded-full whitespace-nowrap">
+                                                            <span className="px-2.5 py-1 bg-[#f0f7f6] dark:bg-[#1b4242]/30 text-[#5c8374] dark:text-[#9ec8b9] text-xs font-semibold rounded-full whitespace-nowrap">
                                                                 {question.marks || 0} marks
                                                             </span>
                                                         </div>
@@ -502,7 +502,7 @@ function ViewPaper() {
                     {/* Sidebar */}
                     <div className="space-y-6">
                         {/* Student Information Card */}
-                        <div className="bg-indigo-50 dark:bg-indigo-900/20 border border-indigo-200 dark:border-indigo-800 rounded-2xl p-5 shadow-md">
+                        <div className="bg-[#f0f7f6] dark:bg-[#1b4242]/20 border border-[#9ec8b9] dark:border-[#5c8374] rounded-2xl p-5 shadow-md">
                             <h3 className="font-bold text-gray-900 dark:text-gray-100 mb-4">
                                 Student Information
                             </h3>
@@ -634,7 +634,7 @@ function ViewPaper() {
                                         maxLength={500}
                                         className="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg
                                         bg-white/70 dark:bg-gray-700 text-gray-900 dark:text-gray-100
-                                        placeholder-gray-400 focus:ring-2 focus:ring-indigo-500 
+                                        placeholder-gray-400 focus:ring-2 focus:ring-[#5c8374] 
                                         focus:border-transparent outline-none transition resize-none disabled:opacity-50"
                                     />
                                     <p className="text-xs text-gray-500 dark:text-gray-400 mt-1.5">
@@ -647,9 +647,9 @@ function ViewPaper() {
                                 <button
                                     onClick={handleSubmit}
                                     disabled={submitting || totalObtainedMarks === 0}
-                                    className="w-full bg-indigo-600 hover:bg-indigo-700 disabled:bg-gray-400 disabled:cursor-not-allowed
+                                    className="w-full bg-[#5c8374] hover:bg-[#1b4242] disabled:bg-gray-400 disabled:cursor-not-allowed
                                     text-white py-2.5 rounded-lg font-semibold transition duration-200
-                                    focus:ring-2 focus:ring-indigo-400 focus:ring-offset-2
+                                    focus:ring-2 focus:ring-[#9ec8b9] focus:ring-offset-2
                                     dark:focus:ring-offset-gray-800 flex items-center justify-center gap-2 text-sm"
                                 >
                                     {submitting ? (

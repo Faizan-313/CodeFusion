@@ -157,7 +157,7 @@ function DiagramCanvas({ questionId, onAnswerChange }) {
         }
 
         if (bounds) {
-            ctx.strokeStyle = "#007bff";
+            ctx.strokeStyle = "#5c8374";
             ctx.lineWidth = 2;
             ctx.setLineDash([5, 5]);
             ctx.strokeRect(bounds.x, bounds.y, bounds.width, bounds.height);
@@ -615,7 +615,7 @@ function DiagramCanvas({ questionId, onAnswerChange }) {
                             onClick={() => setTool(id)}
                             className={`flex items-center gap-2 px-3 py-2 rounded-lg border transition-colors ${
                                 tool === id
-                                    ? "bg-cyan-100 dark:bg-cyan-900/30 border-cyan-500 text-cyan-700 dark:text-cyan-300"
+                                    ? "bg-[#f0f8f7] dark:bg-[#5c8374]/30 border-[#5c8374] text-[#5c8374] dark:text-[#9ec8b9]"
                                     : "bg-gray-100 dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300"
                             }`}
                         >
@@ -667,7 +667,7 @@ function DiagramCanvas({ questionId, onAnswerChange }) {
             </div>
 
             {showTextInput && (
-                <div className="flex items-center gap-2 p-3 bg-blue-50 dark:bg-blue-900/20 border border-blue-300 dark:border-blue-700 rounded-lg">
+                <div className="flex items-center gap-2 p-3 bg-[#f0f8f7] dark:bg-[#5c8374]/20 border border-[#9ec8b9] dark:border-[#5c8374] rounded-lg">
                     <input
                         type="text"
                         value={text}
@@ -681,7 +681,7 @@ function DiagramCanvas({ questionId, onAnswerChange }) {
                     />
                     <button
                         onClick={handleTextSubmit}
-                        className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                        className="px-4 py-2 bg-[#5c8374] text-white rounded-lg hover:bg-[#1b4242] transition-colors"
                     >
                         Add Text
                     </button>

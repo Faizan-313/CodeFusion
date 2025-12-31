@@ -31,12 +31,12 @@ function ThankYou() {
 
                     {/* Summary Cards */}
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-                        <div className="bg-blue-50 dark:bg-blue-900/20 rounded-xl p-4 border border-blue-200 dark:border-blue-700">
+                        <div className="bg-[#9ec8b9] dark:bg-[#092635]/20 rounded-xl p-4 border border-[#9ec8b9] dark:border-[#092635]">
                             <div className="flex items-center justify-center gap-2 mb-2">
-                                <FileText className="w-5 h-5 text-blue-600 dark:text-blue-400" />
-                                <span className="text-sm font-medium text-blue-700 dark:text-blue-300">Status</span>
+                                <FileText className="w-5 h-5 text-[#1b4242] dark:text-[#5c8374]" />
+                                <span className="text-sm font-medium text-[#092635] dark:text-[#9ec8b9]">Status</span>
                             </div>
-                            <p className="text-lg font-semibold text-blue-900 dark:text-blue-100">Submitted</p>
+                            <p className="text-lg font-semibold text-[#092635] dark:text-[#9ec8b9]">Submitted</p>
                         </div>
 
                         <div className="bg-green-50 dark:bg-green-900/20 rounded-xl p-4 border border-green-200 dark:border-green-700">
@@ -49,12 +49,12 @@ function ThankYou() {
                             </p>
                         </div>
 
-                        <div className="bg-purple-50 dark:bg-purple-900/20 rounded-xl p-4 border border-purple-200 dark:border-purple-700">
+                        <div className="bg-[#f0f8f7] dark:bg-[#5c8374]/20 rounded-xl p-4 border border-[#9ec8b9] dark:border-[#5c8374]">
                             <div className="flex items-center justify-center gap-2 mb-2">
-                                <Award className="w-5 h-5 text-purple-600 dark:text-purple-400" />
-                                <span className="text-sm font-medium text-purple-700 dark:text-purple-300">Result</span>
+                                <Award className="w-5 h-5 text-[#5c8374] dark:text-[#9ec8b9]" />
+                                <span className="text-sm font-medium text-[#5c8374] dark:text-[#9ec8b9]">Result</span>
                             </div>
-                            <p className="text-lg font-semibold text-purple-900 dark:text-purple-100">Pending</p>
+                            <p className="text-lg font-semibold text-[#1b4242] dark:text-[#9ec8b9]">Pending</p>
                         </div>
                     </div>
 
@@ -62,7 +62,7 @@ function ThankYou() {
                     <div className="flex flex-col sm:flex-row gap-4 justify-center">
                         <button
                             onClick={() => navigate('/')}
-                            className="flex items-center justify-center gap-3 px-6 py-3 bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-700 hover:to-blue-700 text-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 font-semibold"
+                            className="flex items-center justify-center gap-3 px-6 py-3 bg-gradient-to-r from-[#1b4242] to-[#092635] hover:from-[#1b4242] hover:to-[#092635] text-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 font-semibold"
                         >
                             <Home className="w-5 h-5" />
                             Back to Home
@@ -86,7 +86,7 @@ function ThankYou() {
 
                 <div className="mt-6 text-center">
                     <p className="text-sm text-gray-500 dark:text-gray-400">
-                        Need help? <a href="#" className="text-cyan-600 dark:text-cyan-400 hover:underline">Contact Exam Support</a>
+                        Need help? <a href="#" className="text-[#5c8374] dark:text-[#9ec8b9] hover:underline">Contact Exam Support</a>
                     </p>
                 </div>
             </div>

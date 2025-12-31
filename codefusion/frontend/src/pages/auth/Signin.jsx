@@ -42,14 +42,13 @@ function Signin() {
     }
 
     return (
-        <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-gray-700 via-blue-800 to-purple-900 px-4 pt-20 relative overflow-hidden">
+        <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-[#092635] via-[#1b4242] to-[#5c8374] px-4 pt-20 relative overflow-hidden">
             <motion.div
                 initial={{ opacity: 0, y: 40 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, ease: "easeOut" }}
                 className="relative z-10 w-full max-w-md rounded-3xl bg-white/95 backdrop-blur-lg p-8 shadow-2xl border border-gray-200/20"
             >
-                {/* Header */}
                 <motion.div
                     initial={{ scale: 0.9, opacity: 0 }}
                     animate={{ scale: 1, opacity: 1 }}
@@ -57,20 +56,20 @@ function Signin() {
                     className="flex flex-col items-center text-center mb-8"
                 >
                     <div className="relative mb-4">
-                        <FaBrain className="text-5xl text-cyan-500" />
-                        <div className="absolute inset-0 bg-cyan-500 blur-xl opacity-50"></div>
+                        <FaBrain className="text-5xl text-[#9ec8b9]" />
+                        <div className="absolute inset-0 bg-[#9ec8b9] blur-xl opacity-50"></div>
                     </div>
                     <h1 className="text-3xl font-bold mb-2">
-                        <span className="text-cyan-500">Code</span>
-                        <span className="text-gray-800">Fusion</span>
+                        <span className="text-[#5c8374]">Code</span>
+                        <span className="text-[#092635]">Fusion</span>
                     </h1>
-                    <h2 className="text-2xl font-bold text-gray-800 mb-2">Welcome Back</h2>
-                    <p className="text-gray-600">Sign in to continue your journey</p>
+                    <h2 className="text-2xl font-bold text-[#092635] mb-2">Welcome Back</h2>
+                    <p className="text-[#1b4242]">Sign in to continue your journey</p>
                 </motion.div>
 
                 <form onSubmit={handleSubmit} className="space-y-5" autoComplete="on">
                     <div>
-                        <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+                        <label htmlFor="email" className="block text-sm font-medium text-gray-900 mb-2">
                             Email Address
                         </label>
                         <div className="relative">
@@ -84,13 +83,13 @@ function Signin() {
                                 onChange={handleChange}
                                 placeholder="Enter your email"
                                 required
-                                className="w-full rounded-lg border border-gray-300 py-3 pl-10 pr-3 text-gray-700 bg-gray-50 focus:bg-white shadow-sm focus:border-cyan-500 focus:ring-2 focus:ring-cyan-400 focus:outline-none transition-all"
+                                className="w-full rounded-lg border border-gray-300 py-3 pl-10 pr-3 text-gray-700 bg-gray-50 focus:bg-white shadow-sm focus:border-[#5c8374] focus:ring-2 focus:ring-[#5c8374] focus:outline-none transition-all"
                             />
                         </div>
                     </div>
 
                     <div>
-                        <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
+                        <label htmlFor="password" className="block text-sm font-medium text-gray-900 mb-2">
                             Password
                         </label>
                         <div className="relative">
@@ -104,13 +103,13 @@ function Signin() {
                                 onChange={handleChange}
                                 placeholder="Enter your password"
                                 required
-                                className="w-full rounded-lg border border-gray-300 py-3 pl-10 pr-3 text-gray-700 bg-gray-50 focus:bg-white shadow-sm focus:border-cyan-500 focus:ring-2 focus:ring-cyan-400 focus:outline-none transition-all"
+                                className="w-full rounded-lg border border-gray-300 py-3 pl-10 pr-3 text-gray-700 bg-gray-50 focus:bg-white shadow-sm focus:border-[#5c8374] focus:ring-2 focus:ring-[#5c8374] focus:outline-none transition-all"
                             />
                         </div>
                     </div>
 
                     <div className="flex items-center justify-between text-sm">
-                        <Link to="/forgot-password" className="text-cyan-500 hover:text-cyan-600 font-medium transition-colors">
+                        <Link to="/forgot-password" className="text-[#46c196] hover:text-[#5c8374] font-medium transition-colors">
                             Forgot Password?
                         </Link>
                     </div>
@@ -119,7 +118,7 @@ function Signin() {
                         whileTap={{ scale: 0.95 }}
                         whileHover={{ scale: 1.02 }}
                         type="submit"
-                        className="w-full rounded-lg bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 py-3 text-white font-semibold shadow-lg hover:shadow-cyan-500/50 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="w-full rounded-lg bg-gradient-to-r from-[#5c8374] to-[#1b4242] hover:from-[#1b4242] hover:to-[#092635] py-3 text-white font-semibold shadow-lg hover:shadow-[#5c8374]/50 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                         disabled={loading}
                     >
                         {loading ? (
@@ -154,7 +153,7 @@ function Signin() {
                 <div className="text-center">
                     <Link 
                         to="/signup" 
-                        className="text-cyan-500 hover:text-cyan-600 font-semibold transition-colors inline-flex items-center gap-1"
+                        className="text-[#46c196] hover:text-[#5c8374] font-semibold transition-colors inline-flex items-center gap-1"
                     >
                         Create Account
                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

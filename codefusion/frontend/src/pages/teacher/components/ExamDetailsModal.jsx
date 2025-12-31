@@ -16,7 +16,7 @@ function ExamDetailsModal({ exam, onClose, copiedCode, onCopyCode }) {
                 className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto"
                 onClick={(e) => e.stopPropagation()}
             >
-                <div className="bg-gradient-to-r from-indigo-500 to-blue-600 dark:from-indigo-600 dark:to-blue-700 p-6 text-white sticky top-0">
+                <div className="bg-gradient-to-r from-[#5c8374] to-[#092635] dark:from-[#5c8374] dark:to-[#092635] p-6 text-white sticky top-0">
                     <div className="flex justify-between items-start gap-4">
                         <div className="flex-1">
                             <div className="flex items-center gap-3 mb-3">
@@ -68,8 +68,8 @@ function ExamDetailsModal({ exam, onClose, copiedCode, onCopyCode }) {
                             Exam Details
                         </h3>
                         <div className="grid grid-cols-2 gap-4">
-                            <div className="bg-indigo-50 dark:bg-indigo-900/20 rounded-xl p-5 border border-indigo-200 dark:border-indigo-800">
-                                <div className="flex items-center gap-2 text-indigo-700 dark:text-indigo-300 mb-3">
+                            <div className="bg-[#9ec8b9] dark:bg-[#092635]/20 rounded-xl p-5 border border-[#9ec8b9] dark:border-[#092635]">
+                                <div className="flex items-center gap-2 text-[#1b4242] dark:text-[#5c8374] mb-3">
                                     <Clock size={18} />
                                     <span className="text-sm font-semibold">Duration</span>
                                 </div>
@@ -106,13 +106,13 @@ function ExamDetailsModal({ exam, onClose, copiedCode, onCopyCode }) {
                                 exam.questions.map((q, idx) => (
                                     <div
                                         key={q._id || idx}
-                                        className="bg-white dark:bg-gray-700 p-4 rounded-lg border border-gray-200 dark:border-gray-600 hover:border-indigo-300 dark:hover:border-indigo-500 transition"
+                                        className="bg-white dark:bg-gray-700 p-4 rounded-lg border border-gray-200 dark:border-gray-600 hover:border-[#5c8374] dark:hover:border-[#5c8374] transition"
                                     >
                                         <div className="flex items-start justify-between gap-3 mb-2">
                                             <p className="font-semibold text-gray-900 dark:text-gray-100">
-                                                Q{idx + 1}. <span className="text-blue-900 dark:text-blue-300">{q.questionText}</span>
+                                                Q{idx + 1}. <span className="text-[#092635] dark:text-[#9ec8b9]">{q.questionText}</span>
                                             </p>
-                                            <span className="px-2.5 py-1 bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 text-xs font-semibold rounded-full whitespace-nowrap flex-shrink-0">
+                                            <span className="px-2.5 py-1 bg-[#f0f8f7] dark:bg-[#5c8374]/30 text-[#5c8374] dark:text-[#9ec8b9] text-xs font-semibold rounded-full whitespace-nowrap flex-shrink-0">
                                                 {q.marks} marks
                                             </span>
                                         </div>
@@ -148,7 +148,7 @@ function ExamDetailsModal({ exam, onClose, copiedCode, onCopyCode }) {
                         </h3>
                         <div className="space-y-3">
                             <div className="flex items-start gap-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg p-5 border border-gray-200 dark:border-gray-600">
-                                <Calendar className="text-indigo-600 dark:text-indigo-400 mt-1 flex-shrink-0" size={20} />
+                                <Calendar className="text-[#5c8374] dark:text-[#9ec8b9] mt-1 flex-shrink-0" size={20} />
                                 <div>
                                     <p className="font-semibold text-gray-800 dark:text-gray-100 mb-2">Start Time</p>
                                     <p className="text-gray-600 dark:text-gray-400">
@@ -165,7 +165,7 @@ function ExamDetailsModal({ exam, onClose, copiedCode, onCopyCode }) {
                             </div>
 
                             <div className="flex items-start gap-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg p-5 border border-gray-200 dark:border-gray-600">
-                                <Calendar className="text-blue-600 dark:text-blue-400 mt-1 flex-shrink-0" size={20} />
+                                <Calendar className="text-[#1b4242] dark:text-[#5c8374] mt-1 flex-shrink-0" size={20} />
                                 <div>
                                     <p className="font-semibold text-gray-800 dark:text-gray-100 mb-2">End Time</p>
                                     <p className="text-gray-600 dark:text-gray-400">

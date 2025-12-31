@@ -32,7 +32,7 @@ function Window({  visible = false, onSubmit, onCancel }) {
                         value={reason}
                         onClick={(e)=> e.target.select()}
                         onChange={(e) => setReason(e.target.value)}
-                        className="w-full border border-gray-300 rounded-md p-2 mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="w-full border border-gray-300 rounded-md p-2 mb-4 focus:outline-none focus:ring-2 focus:ring-[#5c8374]"
                         placeholder="Type your reason here..."
                         required
                     />
@@ -46,7 +46,7 @@ function Window({  visible = false, onSubmit, onCancel }) {
                         </button>
                         <button
                             type="submit"
-                            className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+                            className="px-4 py-2 bg-[#1b4242] text-white rounded-md hover:bg-[#092635]"
                         >
                             Submit
                         </button>

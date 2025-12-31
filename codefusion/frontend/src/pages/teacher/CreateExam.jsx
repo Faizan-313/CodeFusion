@@ -254,7 +254,7 @@ export default function CreateExam() {
 
     const renderCompletedQuestion = (q, index) => {
         return (
-            <div className="border-2 border-blue-200 rounded-xl p-6 bg-white shadow-sm">
+            <div className="border-2 border-[#9ec8b9] rounded-xl p-6 bg-white shadow-sm">
                 <div className="flex justify-between items-start mb-4">
                     <div className="flex items-center gap-3">
                         <div className="w-10 h-10 rounded-full bg-green-100 text-green-700 flex items-center justify-center">
@@ -268,7 +268,7 @@ export default function CreateExam() {
                     <div className="flex gap-2">
                         <button
                             onClick={() => editQuestion(index)}
-                            className="text-blue-600 hover:text-blue-800 hover:bg-blue-50 p-2 rounded-lg transition-all"
+                            className="text-[#1b4242] hover:text-[#092635] hover:bg-[#9ec8b9] p-2 rounded-lg transition-all"
                             title="Edit Question"
                         >
                             <Edit2 className="w-5 h-5" />
@@ -286,7 +286,7 @@ export default function CreateExam() {
                 <div className="space-y-3">
                     <div className="flex justify-between items-start">
                         <p className="text-gray-800 text-base leading-relaxed flex-1">{q.questionText}</p>
-                        <span className="ml-4 px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm font-semibold whitespace-nowrap">
+                        <span className="ml-4 px-3 py-1 bg-[#9ec8b9] text-[#092635] rounded-full text-sm font-semibold whitespace-nowrap">
                             {q.marks} marks
                         </span>
                     </div>
@@ -315,13 +315,13 @@ export default function CreateExam() {
 
     const renderEditableQuestion = (q, index) => {
         return (
-            <div className="border-2 border-gray-200 rounded-xl p-6 bg-gradient-to-br from-blue-50 to-white shadow-sm">
+            <div className="border-2 border-[#9ec8b9] rounded-xl p-6 bg-white shadow-md hover:shadow-lg transition-shadow">
                 <div className="flex justify-between items-start mb-4">
                     <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center font-bold text-lg">
+                        <div className="w-10 h-10 rounded-full bg-[#9ec8b9] text-[#092635] flex items-center justify-center font-bold text-lg">
                             {index + 1}
                         </div>
-                        <h4 className="font-bold text-gray-800 text-lg">
+                        <h4 className="font-bold text-[#1b4242] text-lg">
                             Question {index + 1}
                         </h4>
                     </div>
@@ -336,7 +336,7 @@ export default function CreateExam() {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                     <div>
-                        <label htmlFor={`type-${index}`} className="block text-sm font-semibold text-gray-700 mb-2">
+                        <label htmlFor={`type-${index}`} className="block text-sm font-semibold text-[#1b4242] mb-2">
                             Question Type
                         </label>
                         <div className="relative">
@@ -349,7 +349,7 @@ export default function CreateExam() {
                                 onChange={(e) =>
                                     handleQuestionChange(index, "type", e.target.value)
                                 }
-                                className="border-2 border-gray-300 p-3 pl-10 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition appearance-none bg-white"
+                                className="border-2 border-[#9ec8b9] p-3 pl-10 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-[#5c8374] focus:border-transparent transition appearance-none bg-white text-gray-800"
                             >
                                 <option value="code">Code Question</option>
                                 <option value="text">Text Answer</option>
@@ -360,7 +360,7 @@ export default function CreateExam() {
                     </div>
 
                     <div>
-                        <label htmlFor={`marks-${index}`} className="block text-sm font-semibold text-gray-700 mb-2">
+                        <label htmlFor={`marks-${index}`} className="block text-sm font-semibold text-[#1b4242] mb-2">
                             Marks
                         </label>
                         <input
@@ -372,14 +372,14 @@ export default function CreateExam() {
                                 handleQuestionChange(index, "marks", e.target.value)
                             }
                             required
-                            className="border-2 border-gray-300 p-3 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+                            className="border-2 border-[#9ec8b9] p-3 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-[#5c8374] focus:border-transparent transition text-gray-800"
                             min="1"
                         />
                     </div>
                 </div>
 
                 <div className="mb-4">
-                    <label htmlFor={`questionText-${index}`} className="block text-sm font-semibold text-gray-700 mb-2">
+                    <label htmlFor={`questionText-${index}`} className="block text-sm font-semibold text-[#1b4242] mb-2">
                         Question Text
                     </label>
                     <textarea
@@ -390,7 +390,7 @@ export default function CreateExam() {
                             handleQuestionChange(index, "questionText", e.target.value)
                         }
                         required
-                        className="border-2 border-gray-300 p-3 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition resize-none"
+                        className="border-2 border-[#9ec8b9] p-3 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-[#5c8374] focus:border-transparent transition resize-none text-gray-800"
                         rows={3}
                     />
                 </div>
@@ -398,8 +398,8 @@ export default function CreateExam() {
                 <ImageUploadComponent key={index} index={index} questions={questions} setQuestions={setQuestions} />
 
                 {q.type === "mcq" && (
-                    <div className="bg-blue-50 p-4 rounded-lg border border-blue-200 mb-4">
-                        <span className="block text-sm font-semibold text-gray-700 mb-3">
+                    <div className="bg-[#f0f7f6] p-4 rounded-lg border border-[#5c8374] mb-4">
+                        <span className="block text-sm font-semibold text-[#1b4242] mb-3">
                             Multiple Choice Options
                         </span>
                         <div className="space-y-2">
@@ -413,7 +413,7 @@ export default function CreateExam() {
                                         onChange={() =>
                                             handleQuestionChange(index, "correctAnswer", optIndex)
                                         }
-                                        className="w-4 h-4 text-blue-600 focus:ring-blue-500"
+                                        className="w-4 h-4 text-[#1b4242] focus:ring-[#5c8374]"
                                     />
                                     <label htmlFor={`q-${index}-opt-${optIndex}`} className="flex-1">
                                         <input
@@ -423,13 +423,13 @@ export default function CreateExam() {
                                             onChange={(e) =>
                                                 handleOptionChange(index, optIndex, e.target.value)
                                             }
-                                            className="border-2 border-gray-300 p-2.5 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition bg-white"
+                                            className="border-2 border-[#9ec8b9] p-2.5 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-[#5c8374] focus:border-transparent transition bg-white text-gray-800"
                                         />
                                     </label>
                                 </div>
                             ))}
                         </div>
-                        <p className="text-xs text-gray-600 mt-2">
+                        <p className="text-xs text-[#5c8374] mt-2">
                             Select the correct answer
                         </p>
                     </div>
@@ -438,7 +438,7 @@ export default function CreateExam() {
                 <div className="flex justify-end">
                     <button
                         onClick={() => markQuestionComplete(index)}
-                        className="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-green-600 to-green-700 text-white rounded-lg hover:from-green-700 hover:to-green-800 transition-all duration-200 shadow-md hover:shadow-lg font-medium"
+                        className="flex items-center gap-2 px-5 py-3 mt-2 bg-gradient-to-r from-[#5c8374] to-[#1b4242] text-white rounded-lg hover:from-[#1b4242] hover:to-[#092635] transition-all duration-200 shadow-md hover:shadow-lg font-medium"
                     >
                         <Check className="w-5 h-5" />
                         Done
@@ -449,20 +449,20 @@ export default function CreateExam() {
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-blue-400 via-blue-500 to-blue-600 pb-8 pt-20 px-4 sm:px-6 lg:px-8">
+        <div className="min-h-screen bg-gradient-to-br from-[#9ec8b9] via-[#5c8374] to-[#092635] pb-8 pt-20 px-4 sm:px-6 lg:px-8">
             <div className="max-w-5xl mx-auto">
-                <div className="bg-white rounded-2xl shadow-2xl p-8 mb-6 border-t-4 border-blue-700">
+                <div className="bg-[#f5f5f5] rounded-2xl shadow-2xl p-8 mb-6 border-t-4 border-[#092635]">
                     <div className="flex items-center justify-between mb-2">
-                        <h1 className="text-3xl font-bold text-gray-800">Create New Exam</h1>
-                        <div className="bg-blue-100 text-blue-700 px-4 py-2 rounded-full font-semibold">
+                        <h1 className="text-3xl font-bold text-[#092635]">Create New Exam</h1>
+                        <div className="bg-[#9ec8b9] text-[#092635] px-4 py-2 rounded-full font-semibold">
                             Total: {totalMarks} marks
                         </div>
                     </div>
                     <p className="text-gray-600">Design your exam with custom questions and settings</p>
                 </div>
 
-                <div className="bg-white rounded-2xl shadow-2xl p-8 mb-6">
-                    <h2 className="text-xl font-bold text-blue-700 mb-6 flex items-center gap-2">
+                <div className="bg-white rounded-2xl shadow-2xl p-8 mb-6 border border-[#9ec8b9]">
+                    <h2 className="text-xl font-bold text-[#1b4242] mb-6 flex items-center gap-2">
                         <Calendar className="w-5 h-5" />
                         Exam Details
                     </h2>
@@ -479,7 +479,7 @@ export default function CreateExam() {
                                 placeholder="e.g., Data Structures Final Exam"
                                 value={examDetails.title}
                                 onChange={handleExamChange}
-                                className="border-2 border-gray-300 p-3 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+                                className="border-2 border-gray-300 p-3 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-[#5c8374] focus:border-transparent transition"
                             />
                         </div>
 
@@ -495,7 +495,7 @@ export default function CreateExam() {
                                 placeholder="60"
                                 value={examDetails.duration}
                                 onChange={handleExamChange}
-                                className="border-2 border-gray-300 p-3 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+                                className="border-2 border-gray-300 p-3 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-[#5c8374] focus:border-transparent transition"
                                 min="1"
                             />
                         </div>
@@ -512,7 +512,7 @@ export default function CreateExam() {
                                 placeholder="Set an exam code"
                                 value={examDetails.examCode}
                                 onChange={handleExamChange}
-                                className="border-2 border-gray-300 p-3 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+                                className="border-2 border-gray-300 p-3 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-[#5c8374] focus:border-transparent transition"
                             />
                         </div>
 
@@ -526,7 +526,7 @@ export default function CreateExam() {
                                 name="startTime"
                                 value={examDetails.startTime}
                                 onChange={handleExamChange}
-                                className="border-2 border-gray-300 p-3 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+                                className="border-2 border-gray-300 p-3 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-[#5c8374] focus:border-transparent transition"
                             />
                         </div>
 
@@ -540,7 +540,7 @@ export default function CreateExam() {
                                 name="endTime"
                                 value={examDetails.endTime}
                                 onChange={handleExamChange}
-                                className="border-2 border-gray-300 p-3 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+                                className="border-2 border-gray-300 p-3 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-[#5c8374] focus:border-transparent transition"
                             />
                         </div>
                     </div>
@@ -555,7 +555,7 @@ export default function CreateExam() {
                             placeholder="Enter exam instructions, guidelines, or any important notes for students..."
                             value={examDetails.description}
                             onChange={handleExamChange}
-                            className="border-2 border-gray-300 p-3 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition resize-none"
+                            className="border-2 border-gray-300 p-3 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-[#5c8374] focus:border-transparent transition resize-none"
                             rows={4}
                         />
                     </div>
@@ -563,13 +563,13 @@ export default function CreateExam() {
 
                 <div className="bg-white rounded-2xl shadow-2xl p-8 mb-6">
                     <div className="flex justify-between items-center mb-6">
-                        <h2 className="text-xl font-bold text-blue-700 flex items-center gap-2">
+                        <h2 className="text-xl font-bold text-[#1b4242] flex items-center gap-2">
                             <FileText className="w-5 h-5" />
                             Questions ({questions.length})
                         </h2>
                         <button
                             onClick={() => addQuestion("code")}
-                            className="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-lg hover:from-blue-700 hover:to-blue-800 transition-all duration-200 shadow-md hover:shadow-lg font-medium"
+                            className="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-[#5c8374] to-[#1b4242] text-white rounded-lg hover:from-[#1b4242] hover:to-[#092635] transition-all duration-200 shadow-md hover:shadow-lg font-medium"
                         >
                             <Plus className="w-5 h-5" />
                             Add Question
@@ -577,8 +577,8 @@ export default function CreateExam() {
                     </div>
 
                     {questions.length === 0 ? (
-                        <div className="text-center py-12 bg-blue-50 rounded-xl border-2 border-dashed border-blue-300">
-                            <FileText className="w-16 h-16 text-blue-400 mx-auto mb-4" />
+                        <div className="text-center py-12 bg-[#9ec8b9]/20 rounded-xl border-2 border-dashed border-[#5c8374]">
+                            <FileText className="w-16 h-16 text-[#5c8374] mx-auto mb-4" />
                             <p className="text-gray-600 text-lg font-medium">No questions added yet</p>
                             <p className="text-gray-500 mt-2">Click "Add Question" to get started</p>
                         </div>
@@ -605,7 +605,7 @@ export default function CreateExam() {
                     <button
                         onClick={() => handleSubmit(false)}
                         disabled={isSubmitting}
-                        className="flex items-center gap-2 px-8 py-3 bg-gradient-to-r from-blue-700 to-indigo-700 text-white rounded-lg hover:from-blue-800 hover:to-indigo-800 transition-all duration-200 shadow-lg hover:shadow-xl font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="flex items-center gap-2 px-8 py-3 bg-gradient-to-r from-[#1b4242] to-[#092635] text-white rounded-lg hover:from-[#092635] hover:to-[#092635] transition-all duration-200 shadow-lg hover:shadow-xl font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                         <Send className="w-5 h-5" />
                         {isSubmitting ? "Publishing..." : "Publish Exam"}

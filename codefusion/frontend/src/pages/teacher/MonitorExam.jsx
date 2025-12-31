@@ -60,7 +60,7 @@ export default function MonitorExam() {
 
         s.on("disconnect", () => {
             setIsConnected(false);
-            toast.error("Connection lost. Attempting to reconnect...");
+            toast.error("Connection lost");
         });
 
         s.on("connect_error", (error) => {
@@ -313,7 +313,7 @@ export default function MonitorExam() {
         if (student.isPaused) {
             return <span className="px-3 py-1 bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-400 rounded-full text-xs font-bold">PAUSED</span>;
         }
-        return <span className="px-3 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 rounded-full text-xs font-bold">ACTIVE</span>;
+        return <span className="px-3 py-1 bg-[#00cf87]  text-[#000000]  rounded-full text-xs font-bold animate-pulse">ACTIVE</span>; 
     };
 
     const formatTime = (seconds) => {
@@ -325,9 +325,9 @@ export default function MonitorExam() {
 
     if (loading) {
         return (
-            <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
+            <div className="min-h-screen bg-gradient-to-br from-[#f0f8f7] to-[#e0f2f0] dark:from-[#092635] dark:to-[#1b4242] flex items-center justify-center">
                 <div className="text-center">
-                    <Loader2 className="animate-spin w-12 h-12 mx-auto mb-4 text-cyan-600" />
+                    <Loader2 className="animate-spin w-12 h-12 mx-auto mb-4 text-[#5c8374]" />
                     <p className="text-gray-600 dark:text-gray-400">Loading exam details...</p>
                 </div>
             </div>
@@ -344,20 +344,20 @@ export default function MonitorExam() {
     };
 
     return (
-        <div className="min-h-screen bg-gray-50 dark:bg-gray-900 p-6 pt-20">
+        <div className="min-h-screen bg-gradient-to-br from-[#f0f8f7] to-[#e0f2f0] dark:from-[#092635] dark:to-[#1b4242] p-6 pt-20">
             <div className="max-w-7xl mx-auto">
                 <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6 mb-6">
                     <div className="flex flex-col md:flex-row items-center justify-between gap-4 mb-4">
                         <div className="flex flex-col sm:flex-row sm:items-center sm:gap-6 w-full sm:w-auto">
                             <div>
                                 <h1 className="text-3xl font-extrabold text-gray-900 dark:text-gray-100">Live Monitoring</h1>
-                                <p className="text-lg text-cyan-600 dark:text-cyan-400 font-semibold mt-1">
+                                <p className="text-lg text-[#f4ffff] font-semibold mt-1">
                                     {examDetails?.title || "Exam"}
                                 </p>
                             </div>
                             <button
                                 onClick={() => copyToClipboard(examDetails?.examCode)}
-                                className="flex items-center gap-2 mt-3 sm:mt-0 px-3 py-2 bg-cyan-50 dark:bg-cyan-900/20 text-cyan-700 dark:text-cyan-300 font-mono text-sm rounded-lg hover:bg-cyan-100 dark:hover:bg-cyan-800/40 transition-all"
+                                className="flex items-center gap-2 mt-3 sm:mt-0 px-3 py-2 bg-[#9ec8b9] dark:bg-[#092635]/20 text-[#092635] dark:text-[#9ec8b9] font-mono text-sm rounded-lg hover:bg-[#9ec8b9] dark:hover:bg-[#092635]/40 transition-all"
                                 title="Copy exam code"
                             >
                                 <p className="font-semibold">{examDetails?.examCode || "N/A"}</p>
@@ -394,7 +394,7 @@ export default function MonitorExam() {
                 {/* Students List */}
                 {Object.keys(studentViolations).length === 0 ? (
                     <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-12 text-center">
-                        <Loader2 className="animate-spin w-12 h-12 mx-auto mb-4 text-cyan-600" />
+                        <Loader2 className="animate-spin w-12 h-12 mx-auto mb-4 text-[#5c8374]" />
                         <p className="text-gray-600 dark:text-gray-400 text-lg">Waiting for students to join...</p>
                         <p className="text-gray-500 dark:text-gray-500 text-sm mt-2">Students will appear here when they start the exam</p>
                     </div>
@@ -405,7 +405,7 @@ export default function MonitorExam() {
                                 <button
                                     onClick={showActiveStudents}
                                     className={`px-6 py-2.5 rounded-md font-semibold text-sm transition-all duration-200 relative cursor-pointer ${view === "active"
-                                            ? "bg-white dark:bg-gray-900 text-blue-600 dark:text-blue-400 shadow-md"
+                                            ? "bg-white dark:bg-gray-900  text-green-600 dark:text-green-400 shadow-md"
                                             : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200"
                                         }`}
                                 >
@@ -413,7 +413,7 @@ export default function MonitorExam() {
                                         <span className={`w-2 h-2 rounded-full ${view === "active" ? "bg-green-500 animate-pulse" : "bg-gray-400"}`}></span>
                                         Active Students
                                         <span className={`ml-1 px-2 py-0.5 rounded-full text-xs font-bold ${view === "active"
-                                                ? "bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300"
+                                                ? "bg-[#9ec8b9] dark:bg-[#092635]/40 text-[#092635] dark:text-[#9ec8b9]"
                                                 : "bg-gray-300 dark:bg-gray-700 text-gray-600 dark:text-gray-400"
                                             }`}>
                                             {Object.values(studentViolations).filter(s => !s.isSubmitted).length}
@@ -455,12 +455,13 @@ export default function MonitorExam() {
                                                 ) : (
                                                     <div className="space-y-3">
                                                         {activeStudents.map((student) => (
+                                                            console.log(student),
                                                             <div key={student.studentId} className="bg-white dark:bg-gray-800 rounded-xl shadow-md border border-gray-200 dark:border-gray-700 overflow-hidden">
                                                                 <div className="p-4">
                                                                     <div className="flex items-center justify-between">
                                                                         <div className="flex items-center gap-3 flex-1">
-                                                                            <div className="w-10 h-10 rounded-full bg-cyan-100 dark:bg-cyan-900/30 flex items-center justify-center flex-shrink-0">
-                                                                                <User className="w-5 h-5 text-cyan-600 dark:text-cyan-400" />
+                                                                            <div className="w-10 h-10 rounded-full bg-[#f0f8f7] dark:bg-[#5c8374]/30 flex items-center justify-center flex-shrink-0">
+                                                                                <User className="w-5 h-5 text-[#5c8374] dark:text-[#9ec8b9]" />
                                                                             </div>
                                                                             <div className="flex-1 min-w-0">
                                                                                 <h3 className="text-base font-bold text-gray-900 dark:text-white truncate">{student.studentDetails?.name || "Unknown Student"}</h3>
@@ -469,9 +470,6 @@ export default function MonitorExam() {
                                                                                     <span>{student.studentDetails?.collegeId || "N/A"}</span>
                                                                                     <span>{student.studentDetails?.session || "N/A"}</span>
                                                                                     <span>{student.studentDetails?.batch || "N/A"}</span>
-                                                                                    {student.timeLeft && (
-                                                                                        <span className="flex items-center gap-1"><Clock className="w-3 h-3" />{formatTime(student.timeLeft)}</span>
-                                                                                    )}
                                                                                 </div>
                                                                             </div>
                                                                         </div>

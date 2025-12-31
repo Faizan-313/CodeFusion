@@ -69,7 +69,7 @@ const ImageUploadComponent = ({questions, setQuestions, index}) => {
     if (!question) return null;
 
     return (
-        <div className="bg-gradient-to-br from-slate-50 to-blue-50 p-4 rounded-lg">
+        <div className="bg-gradient-to-br from-slate-50 to-[#9ec8b9] p-4 rounded-lg">
             <div className="max-w-full">
                 <div className="mb-6 p-4 bg-white rounded-xl shadow-lg border border-gray-200">
                     <label htmlFor={`fileUpload-${index}`} className="block text-sm font-semibold text-gray-700 mb-4">
@@ -82,20 +82,20 @@ const ImageUploadComponent = ({questions, setQuestions, index}) => {
                             id={`fileUpload-${index}`}
                             accept="image/*"
                             onChange={(e) => handleFileSelect(index, e)}
-                            className="flex-1 text-sm text-gray-600 file:mr-2 file:px-4 file:py-2 file:rounded-lg file:border-0 file:bg-blue-100 file:text-blue-700 file:font-medium hover:file:bg-blue-200 file:cursor-pointer transition"
+                            className="flex-1 text-sm text-gray-600 file:mr-2 file:px-4 file:py-2 file:rounded-lg file:border-0 file:bg-[#9ec8b9] file:text-[#092635] file:font-medium hover:file:bg-[#9ec8b9] file:cursor-pointer transition"
                         />
                     </div>
 
                     {question.imagePreview ? (
-                        <div className="bg-gradient-to-br from-blue-50 to-indigo-50 border-2 border-blue-300 rounded-lg p-4">
+                        <div className="bg-gradient-to-br from-[#9ec8b9] to-[#5c8374] border-2 border-[#9ec8b9] rounded-lg p-4">
                             <div className="flex items-start gap-4">
                                 <img
                                     src={question.imagePreview}
                                     alt="Preview"
-                                    className="w-32 h-32 object-cover rounded-lg border-2 border-blue-200 shadow-md"
+                                    className="w-32 h-32 object-cover rounded-lg border-2 border-[#9ec8b9] shadow-md"
                                 />
                                 <div className="flex-1">
-                                    <p className="text-sm font-semibold text-blue-700 mb-1">✓ Image Selected</p>
+                                    <p className="text-sm font-semibold text-[#092635] mb-1">✓ Image Selected</p>
                                     <p className="text-xs text-gray-600 mb-1">{getImageFileName(question.image, index)}</p>
                                     {getImageSizeText(question.image) && (
                                         <p className="text-xs text-gray-500 mb-3">{getImageSizeText(question.image)}</p>

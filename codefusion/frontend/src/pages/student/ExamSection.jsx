@@ -521,7 +521,7 @@ function ExamSection() {
     }
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 py-8 px-4 sm:px-6 lg:px-8">
+        <div className="min-h-screen bg-gradient-to-br from-[#f0f8f7] via-[#e8f5f3] to-[#dff1ee] dark:from-[#092635] dark:via-[#1b4242] dark:to-[#0d3a47] py-8 px-4 sm:px-6 lg:px-8">
             <div className="max-w-5xl mx-auto">
                 {/* Security Warning */}
                 {violations.length > 0 && !examPaused && (
@@ -544,7 +544,7 @@ function ExamSection() {
                 {!examPaused && (
                     <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6 mb-6 border border-gray-200 dark:border-gray-700">
                         <div className="flex items-center gap-3 mb-4">
-                            <User className="w-6 h-6 text-cyan-600 dark:text-cyan-400" />
+                            <User className="w-6 h-6 text-[#5c8374] dark:text-[#9ec8b9]" />
                             <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Student Information</h2>
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -576,16 +576,16 @@ function ExamSection() {
                 {!examPaused && (
                     <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6 mb-6 border border-gray-200 dark:border-gray-700">
                         <div className="text-center mb-6">
-                            <h1 className="text-4xl font-bold bg-gradient-to-r from-cyan-600 to-blue-600 bg-clip-text text-transparent mb-2">
+                            <h1 className="text-4xl font-bold bg-gradient-to-r from-[#ddf6ed] to-[#8dd9d9] bg-clip-text text-transparent mb-2">
                                 {exam.title}
                             </h1>
                             <p className="text-gray-600 dark:text-gray-300 text-lg">{exam.description}</p>
                         </div>
 
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                            <div className="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 rounded-xl p-4 border border-blue-200 dark:border-blue-700">
+                            <div className="bg-gradient-to-br from-[#f0f8f7] to-[#e0f2f0] dark:from-[#5c8374]/20 dark:to-[#1b4242]/20 rounded-xl p-4 border border-[#9ec8b9] dark:border-[#5c8374]">
                                 <div className="flex items-center gap-3">
-                                    <Clock className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+                                    <Clock className="w-5 h-5 text-[#5c8374] dark:text-[#9ec8b9]" />
                                     <div>
                                         <p className="text-sm text-gray-600 dark:text-gray-400">Duration</p>
                                         <p className="text-lg font-semibold text-gray-900 dark:text-white">{exam.duration} min</p>
@@ -593,9 +593,9 @@ function ExamSection() {
                                 </div>
                             </div>
 
-                            <div className="bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-900/20 dark:to-purple-800/20 rounded-xl p-4 border border-purple-200 dark:border-purple-700">
+                            <div className="bg-gradient-to-br from-[#f0f8f7] to-[#e0f2f0] dark:from-[#5c8374]/20 dark:to-[#1b4242]/20 rounded-xl p-4 border border-[#9ec8b9] dark:border-[#5c8374]">
                                 <div className="flex items-center gap-3">
-                                    <FileText className="w-5 h-5 text-purple-600 dark:text-purple-400" />
+                                    <FileText className="w-5 h-5 text-[#5c8374] dark:text-[#9ec8b9]" />
                                     <div>
                                         <p className="text-sm text-gray-600 dark:text-gray-400">Total Marks</p>
                                         <p className="text-lg font-semibold text-gray-900 dark:text-white">{exam.totalMarks}</p>
@@ -683,12 +683,12 @@ function ExamSection() {
                             <div key={q._id || `question-${index}`} className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 border border-gray-200 dark:border-gray-700 hover:shadow-xl transition-shadow duration-300">
                                 <div className="flex items-start justify-between mb-4">
                                     <h3 className="text-xl font-semibold text-gray-900 dark:text-white flex-1">
-                                        <span className="inline-flex items-center justify-center w-8 h-8 bg-cyan-100 dark:bg-cyan-900/30 text-cyan-600 dark:text-cyan-400 rounded-lg mr-3 font-bold">
+                                        <span className="inline-flex items-center justify-center w-8 h-8 bg-[#f0f8f7] dark:bg-[#5c8374]/30 text-[#5c8374] dark:text-[#9ec8b9] rounded-lg mr-3 font-bold">
                                             {index + 1}
                                         </span>
                                         {q.questionText}
                                     </h3>
-                                    <span className="ml-4 px-3 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded-full text-sm font-medium whitespace-nowrap">
+                                    <span className="ml-4 px-3 py-1 bg-[#f0f8f7] dark:bg-[#5c8374]/30 text-[#5c8374] dark:text-[#9ec8b9] rounded-full text-sm font-medium whitespace-nowrap">
                                         {q.marks} marks
                                     </span>
                                 </div>
@@ -707,7 +707,7 @@ function ExamSection() {
                                                     value={opt}
                                                     checked={answers[q._id] === opt}
                                                     onChange={(e) => handleAnswerChange(q._id, e.target.value)}
-                                                    className="w-4 h-4 text-cyan-600 focus:ring-cyan-500"
+                                                    className="w-4 h-4 text-[#5c8374] focus:ring-[#5c8374]"
                                                 />
                                                 <span className="text-gray-700 dark:text-gray-200 font-medium">{opt}</span>
                                             </label>
@@ -719,7 +719,7 @@ function ExamSection() {
                                     <textarea
                                         rows={5}
                                         value={answers[q._id] || ""}
-                                        className="w-full border border-gray-300 dark:border-gray-600 rounded-xl p-4 mt-4 bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all duration-200 resize-none"
+                                        className="w-full border border-gray-300 dark:border-gray-600 rounded-xl p-4 mt-4 bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white focus:ring-2 focus:ring-[#5c8374] focus:border-transparent transition-all duration-200 resize-none"
                                         placeholder="Type your answer here..."
                                         onChange={(e) => handleAnswerChange(q._id, e.target.value)}
                                     />
@@ -728,11 +728,11 @@ function ExamSection() {
                                 {q.type === "code" && (
                                     <div className="mt-4 space-y-4">
                                         <div className="flex items-center gap-3">
-                                            <Code className="w-5 h-5 text-cyan-600 dark:text-cyan-400" />
+                                            <Code className="w-5 h-5 text-[#5c8374] dark:text-[#9ec8b9]" />
                                             <select
                                                 value={selectedLanguages[q._id] || "javascript"}
                                                 onChange={(e) => handleLanguageChange(q._id, e.target.value)}
-                                                className="px-4 py-2 bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
+                                                className="px-4 py-2 bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white focus:ring-2 focus:ring-[#5c8374] focus:border-transparent"
                                             >
                                                 {Object.entries(languageExtensions).map(([key, { label }]) => (
                                                     <option key={`${q._id}-lang-${key}`} value={key}>{label}</option>
@@ -781,7 +781,7 @@ function ExamSection() {
                             <button
                                 onClick={handleSubmit}
                                 disabled={submitAttemptedRef.current}
-                                className="group relative px-8 py-4 bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-700 hover:to-blue-700 disabled:from-gray-400 disabled:to-gray-500 disabled:cursor-not-allowed text-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 font-semibold text-lg flex items-center gap-3"
+                                className="group relative px-8 py-4 bg-gradient-to-r from-[#5c8374] to-[#1b4242] hover:from-[#1b4242] hover:to-[#092635] disabled:from-gray-400 disabled:to-gray-500 disabled:cursor-not-allowed text-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 font-semibold text-lg flex items-center gap-3"
                             >
                                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />

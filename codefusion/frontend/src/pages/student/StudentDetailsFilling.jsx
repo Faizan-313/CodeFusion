@@ -88,62 +88,62 @@ const StudentDetailsFilling = () => {
     }
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-blue-200 via-blue-50 to-indigo-400 py-8 px-4">
+        <div className="min-h-screen bg-gradient-to-br from-[#9ec8b9] via-[#9ec8b9] to-[#5c8374] py-8 px-4">
             <div className="max-w-5xl mx-auto">
                 {/* Exam Information Banner */}
-                <div className="bg-gradient-to-r from-blue-600 to-indigo-700 rounded-2xl shadow-2xl p-8 mb-8 text-white">
+                <div className="bg-gradient-to-r from-[#1b4242] to-[#092635] rounded-2xl shadow-2xl p-8 mb-8 text-white">
                     <div className="flex items-center gap-3 mb-6">
                         <div className="p-2 bg-white/20 rounded-lg backdrop-blur-sm">
                             <Award className="w-6 h-6" />
                         </div>
                         <div>
                             <h1 className="text-2xl font-bold">{exam.title.toUpperCase()}</h1>
-                            <p className="text-blue-100 text-sm">Examination</p>
+                            <p className="text-[#9ec8b9] text-sm">Examination</p>
                         </div>
                     </div>
 
                     {exam.description && (
                         <div className="mb-6 pb-6 border-b border-white/20">
-                            <p className="text-blue-50 leading-relaxed">{exam.description}</p>
+                            <p className="text-[#9ec8b9] leading-relaxed">{exam.description}</p>
                         </div>
                     )}
 
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                         <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4 border border-white/20">
                             <div className="flex items-center gap-2 mb-2">
-                                <Clock className="w-4 h-4 text-blue-200" />
-                                <p className="text-xs text-blue-200 uppercase tracking-wide">Duration</p>
+                                <Clock className="w-4 h-4 text-[#9ec8b9]" />
+                                <p className="text-xs text-[#9ec8b9] uppercase tracking-wide">Duration</p>
                             </div>
                             <p className="text-2xl font-bold">{exam.duration}</p>
-                            <p className="text-xs text-blue-100">minutes</p>
+                            <p className="text-xs text-[#9ec8b9]">minutes</p>
                         </div>
 
                         <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4 border border-white/20">
                             <div className="flex items-center gap-2 mb-2">
-                                <Target className="w-4 h-4 text-blue-200" />
-                                <p className="text-xs text-blue-200 uppercase tracking-wide">Total Marks</p>
+                                <Target className="w-4 h-4 text-[#9ec8b9]" />
+                                <p className="text-xs text-[#9ec8b9] uppercase tracking-wide">Total Marks</p>
                             </div>
                             <p className="text-2xl font-bold">{exam.totalMarks}</p>
-                            <p className="text-xs text-blue-100">marks</p>
+                            <p className="text-xs text-[#9ec8b9]">marks</p>
                         </div>
 
                         <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4 border border-white/20">
                             <div className="flex items-center gap-2 mb-2">
-                                <FileText className="w-4 h-4 text-blue-200" />
-                                <p className="text-xs text-blue-200 uppercase tracking-wide">Exam Code</p>
+                                <FileText className="w-4 h-4 text-[#9ec8b9]" />
+                                <p className="text-xs text-[#9ec8b9] uppercase tracking-wide">Exam Code</p>
                             </div>
                             <p className="text-lg font-bold font-mono">{exam.examCode}</p>
                         </div>
 
                         <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4 border border-white/20">
                             <div className="flex items-center gap-2 mb-2">
-                                <Calendar className="w-4 h-4 text-blue-200" />
-                                <p className="text-xs text-blue-200 uppercase tracking-wide">Schedule</p>
+                                <Calendar className="w-4 h-4 text-[#9ec8b9]" />
+                                <p className="text-xs text-[#9ec8b9] uppercase tracking-wide">Schedule</p>
                             </div>
-                            <p className="text-xs text-blue-100 leading-tight">
+                            <p className="text-xs text-[#9ec8b9] leading-tight">
                                 {new Date(exam.startTime).toLocaleDateString()}
                             </p>
-                            <p className="text-xs text-blue-100">
+                            <p className="text-xs text-[#9ec8b9]">
                                 {new Date(exam.startTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                             </p>
                         </div>
@@ -152,9 +152,9 @@ const StudentDetailsFilling = () => {
 
                 {/* Registration Form */}
                 <div className="bg-white rounded-2xl shadow-2xl overflow-hidden">
-                    <div className="bg-gradient-to-r from-slate-50 to-blue-50 px-8 py-6 border-b border-gray-200">
+                    <div className="bg-gradient-to-r from-[#9ec8b9] to-[#5c8374] px-8 py-6 border-b border-gray-200">
                         <div className="flex items-center gap-3">
-                            <div className="p-2 bg-blue-600 rounded-lg">
+                            <div className="p-2 bg-[#1b4242] rounded-lg">
                                 <User className="w-5 h-5 text-white" />
                             </div>
                             <div>
@@ -181,7 +181,7 @@ const StudentDetailsFilling = () => {
                                         value={formData.fullName}
                                         onChange={handleChange}
                                         placeholder="Enter your full name"
-                                        className="w-full pl-12 pr-4 py-3.5 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                                        className="w-full pl-12 pr-4 py-3.5 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#5c8374] focus:border-[#5c8374] transition-all"
                                     />
                                 </div>
                             </div>
@@ -202,7 +202,7 @@ const StudentDetailsFilling = () => {
                                             maxLength={15}
                                             onChange={handleChange}
                                             placeholder="CSE-22-80"
-                                            className="w-full pl-12 pr-4 py-3.5 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                                            className="w-full pl-12 pr-4 py-3.5 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#5c8374] focus:border-[#5c8374] transition-all"
                                         />
                                     </div>
                                 </div>
@@ -222,7 +222,7 @@ const StudentDetailsFilling = () => {
                                             maxLength={16}
                                             onChange={handleChange}
                                             placeholder="Enter college ID"
-                                            className="w-full pl-12 pr-4 py-3.5 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                                            className="w-full pl-12 pr-4 py-3.5 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#5c8374] focus:border-[#5c8374] transition-all"
                                         />
                                     </div>
                                 </div>
@@ -244,7 +244,7 @@ const StudentDetailsFilling = () => {
                                             maxLength={15}
                                             onChange={handleChange}
                                             placeholder="Autumn 2025"
-                                            className="w-full pl-12 pr-4 py-3.5 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                                            className="w-full pl-12 pr-4 py-3.5 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#5c8374] focus:border-[#5c8374] transition-all"
                                         />
                                     </div>
                                 </div>
@@ -264,7 +264,7 @@ const StudentDetailsFilling = () => {
                                             onChange={handleChange}
                                             maxLength={10}
                                             placeholder="2022"
-                                            className="w-full pl-12 pr-4 py-3.5 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                                            className="w-full pl-12 pr-4 py-3.5 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#5c8374] focus:border-[#5c8374] transition-all"
                                         />
                                     </div>
                                 </div>
@@ -273,7 +273,7 @@ const StudentDetailsFilling = () => {
                             <div className="pt-4">
                                 <button
                                     onClick={handleSubmit}
-                                    className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white py-4 px-6 rounded-xl font-semibold text-lg hover:from-blue-700 hover:to-indigo-700 transform hover:scale-[1.01] transition-all duration-200 shadow-lg hover:shadow-xl"
+                                    className="w-full bg-gradient-to-r from-[#5c8374] to-[#1b4242] text-white py-4 px-6 rounded-xl font-semibold text-lg hover:from-[#1b4242] hover:to-[#092635] transform hover:scale-[1.01] transition-all duration-200 shadow-lg hover:shadow-xl"
                                 >
                                     Proceed to Examination
                                 </button>

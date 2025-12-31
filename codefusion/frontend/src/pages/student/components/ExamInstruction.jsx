@@ -8,51 +8,51 @@ function ExamInstructions() {
 
             <ul className="space-y-3 text-gray-700 dark:text-gray-300">
                 <li className="flex items-start gap-3">
-                    <span className="text-blue-500 mt-1">•</span>
+                    <span className="text-[#5c8374] mt-1">•</span>
                     <span className="text-sm md:text-base leading-relaxed">
                         Ensure you have a stable internet connection and webcam enabled.
                     </span>
                 </li>
                 <li className="flex items-start gap-3">
-                    <span className="text-blue-500 mt-1">•</span>
+                    <span className="text-[#5c8374] mt-1">•</span>
                     <span className="text-sm md:text-base leading-relaxed">
                         Do not leave or minimize the exam window — suspicious activity will be flagged.
                     </span>
                 </li>
                 <li className="flex items-start gap-3">
-                    <span className="text-blue-500 mt-1">•</span>
+                    <span className="text-[#5c8374] mt-1">•</span>
                     <span className="text-sm md:text-base leading-relaxed">
                         Do not look away from your screen frequently — gaze detection will be active.
                     </span>
                 </li>
                 <li className="flex items-start gap-3">
-                    <span className="text-blue-500 mt-1">•</span>
+                    <span className="text-[#5c8374] mt-1">•</span>
                     <span className="text-sm md:text-base leading-relaxed">
                         Copy-pasting answers is strictly prohibited.
                     </span>
                 </li>
                 <li className="flex items-start gap-3">
-                    <span className="text-blue-500 mt-1">•</span>
+                    <span className="text-[#5c8374] mt-1">•</span>
                     <span className="text-sm md:text-base leading-relaxed">
                         Do not switch tabs or open other applications during the exam.
                     </span>
                 </li>
                 <li className="flex items-start gap-3">
-                    <span className="text-blue-500 mt-1">•</span>
+                    <span className="text-[#5c8374] mt-1">•</span>
                     <span className="text-sm md:text-base leading-relaxed">
                         All responses must be submitted before the timer runs out.
                     </span>
                 </li>
                 <li className="flex items-start gap-3">
-                    <span className="text-blue-500 mt-1">•</span>
+                    <span className="text-[#5c8374] mt-1">•</span>
                     <span className="text-sm md:text-base leading-relaxed">
                         If the timer ends, your exam will be <strong className="text-red-600 dark:text-red-400">auto-submitted</strong>.
                     </span>
                 </li>
                 <li className="flex items-start gap-3">
-                    <span className="text-blue-500 mt-1">•</span>
+                    <span className="text-[#5c8374] mt-1">•</span>
                     <span className="text-sm md:text-base leading-relaxed">
-                        You can answer using <strong className="text-blue-600 dark:text-blue-400">Code Editor or Text Editor</strong>.
+                        You can answer using <strong className="text-[#1b4242] dark:text-[#5c8374]">Code Editor or Text Editor</strong>.
                     </span>
                 </li>
             </ul>

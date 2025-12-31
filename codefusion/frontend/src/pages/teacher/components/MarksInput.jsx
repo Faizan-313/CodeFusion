@@ -122,7 +122,7 @@ const MarksInput = ({ question, studentAnswer, setLocalExamAttempt }) => {
     };
 
     return (
-        <div className="mt-3 flex items-center gap-2 pt-3 border-t border-blue-200 dark:border-blue-800">
+        <div className="mt-3 flex items-center gap-2 pt-3 border-t border-[#9ec8b9]/30 dark:border-[#5c8374]/30">
             <label className="text-sm text-gray-700 dark:text-gray-300 font-medium">
                 Marks:
             </label>
@@ -134,7 +134,7 @@ const MarksInput = ({ question, studentAnswer, setLocalExamAttempt }) => {
                 value={inputValue}
                 onChange={(e) => handleMarksChange(e.target.value)}
                 onBlur={handleBlur}
-                className="w-20 px-2 py-1 border border-gray-300 dark:border-gray-600 rounded text-sm text-gray-900 dark:text-gray-100 bg-white/70 dark:bg-gray-700 focus:ring-1 focus:ring-indigo-500 outline-none"
+                className="w-20 px-2 py-1 border border-[#9ec8b9] dark:border-[#5c8374] rounded text-sm text-gray-900 dark:text-gray-100 bg-white/70 dark:bg-gray-700 focus:ring-2 focus:ring-[#5c8374] focus:border-[#1b4242] outline-none transition-all"
             />
             <span className="text-gray-500 text-xs">/ {question.marks || 0}</span>
         </div>

@@ -49,26 +49,25 @@ function Signup() {
     }
 
     return (
-        <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-gray-700 via-blue-800 to-purple-900 px-4 pt-20 relative overflow-hidden">
+        <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-[#092635] via-[#1b4242] to-[#5c8374] px-4 pt-20 relative overflow-hidden">
             <div className="relative z-10 w-full max-w-md">
-                <div className="rounded-3xl bg-white/95 backdrop-blur-lg p-8 shadow-2xl border border-gray-200/20 transform transition-all duration-500 hover:shadow-cyan-500/20">
-                    {/* Header */}
+                <div className="rounded-3xl bg-white/95 backdrop-blur-lg p-8 shadow-2xl border border-gray-200/20 transform transition-all duration-500 hover:shadow-[#5c8374]/20">
                     <div className="flex flex-col items-center text-center mb-4">
                         <div className="relative mb-4">
-                            <FaBrain className="text-5xl text-cyan-500 animate-pulse" />
-                            <div className="absolute inset-0 bg-cyan-500 blur-xl opacity-50"></div>
+                            <FaBrain className="text-5xl text-[#9ec8b9] animate-pulse" />
+                            <div className="absolute inset-0 bg-[#9ec8b9] blur-xl opacity-50"></div>
                         </div>
                         <h1 className="text-3xl font-bold mb-2">
-                            <span className="text-cyan-500">Code</span>
-                            <span className="text-gray-800">Fusion</span>
+                            <span className="text-[#5c8374]">Code</span>
+                            <span className="text-[#092635]">Fusion</span>
                         </h1>
-                        <h2 className="text-2xl font-bold text-gray-800 mb-2">Create Account</h2>
-                        <p className="text-gray-600">Join us and start your journey</p>
+                        <h2 className="text-2xl font-bold text-[#127f6d] mb-2">Create Account</h2>
+                        <p className="text-[#1b4242]">Join us and start your journey</p>
                     </div>
 
                     <div className="space-y-5">
                         <div>
-                            <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
+                            <label htmlFor="name" className="block text-sm font-medium text-gray-900 mb-2">
                                 Full Name
                             </label>
                             <div className="relative">
@@ -81,13 +80,13 @@ function Signup() {
                                     onChange={handleChange}
                                     placeholder="Enter your full name"
                                     required
-                                    className="w-full rounded-lg border border-gray-300 py-3 pl-10 pr-3 text-gray-700 bg-gray-50 focus:bg-white shadow-sm focus:border-cyan-500 focus:ring-2 focus:ring-cyan-400 focus:outline-none transition-all"
+                                    className="w-full rounded-lg border border-gray-300 py-3 pl-10 pr-3 text-gray-700 bg-gray-50 focus:bg-white shadow-sm focus:border-[#5c8374] focus:ring-2 focus:ring-[#5c8374] focus:outline-none transition-all"
                                 />
                             </div>
                         </div>
 
                         <div>
-                            <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+                            <label htmlFor="email" className="block text-sm font-medium text-gray-900 mb-2">
                                 Email Address
                             </label>
                             <div className="relative">
@@ -100,13 +99,13 @@ function Signup() {
                                     onChange={handleChange}
                                     placeholder="Enter your email"
                                     required
-                                    className="w-full rounded-lg border border-gray-300 py-3 pl-10 pr-3 text-gray-700 bg-gray-50 focus:bg-white shadow-sm focus:border-cyan-500 focus:ring-2 focus:ring-cyan-400 focus:outline-none transition-all"
+                                    className="w-full rounded-lg border border-gray-300 py-3 pl-10 pr-3 text-gray-700 bg-gray-50 focus:bg-white shadow-sm focus:border-[#5c8374] focus:ring-2 focus:ring-[#5c8374] focus:outline-none transition-all"
                                 />
                             </div>
                         </div>
 
                         <div>
-                            <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
+                            <label htmlFor="password" className="block text-sm font-medium text-gray-900 mb-2">
                                 Password
                             </label>
                             <div className="relative">
@@ -119,7 +118,7 @@ function Signup() {
                                     onChange={handleChange}
                                     placeholder="Create a password"
                                     required
-                                    className="w-full rounded-lg border border-gray-300 py-3 pl-10 pr-3 text-gray-700 bg-gray-50 focus:bg-white shadow-sm focus:border-cyan-500 focus:ring-2 focus:ring-cyan-400 focus:outline-none transition-all"
+                                    className="w-full rounded-lg border border-gray-300 py-3 pl-10 pr-3 text-gray-700 bg-gray-50 focus:bg-white shadow-sm focus:border-[#5c8374] focus:ring-2 focus:ring-[#5c8374] focus:outline-none transition-all"
                                 />
                             </div>
                         </div>
@@ -128,15 +127,15 @@ function Signup() {
                                 type="checkbox" 
                                 id="terms"
                                 required
-                                className="mt-1 mr-2 rounded focus:ring-cyan-500 text-cyan-500" 
+                                className="mt-1 mr-2 rounded focus:ring-[#5c8374] text-[#5c8374]" 
                             />
                             <label htmlFor="terms" className="text-sm text-gray-600">
                                 I agree to the{" "}
-                                <a href="#" className="text-cyan-500 hover:text-cyan-600 font-medium">
+                                <a href="#" className="text-[#46c196] hover:text-[#5c8374] font-medium">
                                     Terms of Service
                                 </a>
                                 {" "}and{" "}
-                                <a href="#" className="text-cyan-500 hover:text-cyan-600 font-medium">
+                                <a href="#" className="text-[#46c196] hover:text-[#5c8374] font-medium">
                                     Privacy Policy
                                 </a>
                             </label>
@@ -145,7 +144,7 @@ function Signup() {
                         <button
                             type="button"
                             onClick={handleSubmit}
-                            className="w-full rounded-lg bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 py-3 text-white font-semibold shadow-lg hover:shadow-cyan-500/50 transition-all duration-300 transform hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+                            className="w-full rounded-lg bg-gradient-to-r from-[#5c8374] to-[#1b4242] hover:from-[#1b4242] hover:to-[#092635] py-3 text-white font-semibold shadow-lg hover:shadow-[#5c8374]/50 transition-all duration-300 transform hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
                             disabled={loading}
                         >
                             {loading ? (
@@ -179,7 +178,7 @@ function Signup() {
                     <div className="text-center">
                         <a 
                             href="/signin" 
-                            className="text-cyan-500 hover:text-cyan-600 font-semibold transition-colors inline-flex items-center gap-1"
+                            className="text-[#46c196] hover:text-[#5c8374] font-semibold transition-colors inline-flex items-center gap-1"
                         >
                             Sign In
                             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
