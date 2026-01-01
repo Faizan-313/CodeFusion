@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import ExamInstructions from "./components/ExamInstruction"
 import { toast } from "react-hot-toast";
 import { useExam } from "../../context/ExamContext";
@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 function ExamCodeAndInstruction() {
     const [openCodeWindow, setOpenCodeWindow] = React.useState(false);
     const [examCode, setExamCode] = React.useState("");
+    const [loading, setLoading] = React.useState(false)
     const { validateExamCode } = useExam();
     const navigate = useNavigate();
 
@@ -29,13 +30,28 @@ function ExamCodeAndInstruction() {
             toast.error("Please enter a valid exam code.");
             return;
         }
-        const res = await validateExamCode(examCode.trim());
-        if(res.success){
-            navigate("/exam/student/details");
-            return;
-        }else{
-            toast.error(res.error);
-            return;
+        setLoading(true)
+        try {
+            await new Promise(resolve => setTimeout(resolve, 500));
+            const res = await validateExamCode(examCode.trim());
+            if (res?.success) {
+                navigate("/exam/student/details");
+                return;
+            }
+
+            if (res?.error) {
+                toast.error(res.error);
+                return;
+            }
+
+             // fallback (unexpected response)
+            toast.error("Invalid response from server");
+
+        } catch (error) {
+            console.error(error);
+            toast.error("Something went wrong. Please try again");
+        } finally {
+            setLoading(false);
         }
     }
 
@@ -66,7 +82,7 @@ function ExamCodeAndInstruction() {
                         className="px-6 sm:px-8 py-3 sm:py-3.5 text-base sm:text-lg font-semibold rounded-xl bg-gradient-to-r from-[#5c8374] to-[#1b4242] text-white shadow-lg hover:shadow-[#5c8374]/50 hover:scale-105 transition-all duration-300"
                         onClick={handleClick}
                     >
-                        Start Assessment
+                        Enter Exam Code
                     </button>
                 </div>
 
@@ -105,7 +121,7 @@ function ExamCodeAndInstruction() {
                                 onClick={handleEnterExam}
                                 className="w-full px-6 py-3 sm:py-3.5 text-base sm:text-lg font-semibold rounded-xl bg-gradient-to-r from-[#5c8374] to-[#1b4242] text-white shadow-lg hover:shadow-[#5c8374]/50 hover:scale-105 transition-all duration-300"
                             >
-                                Enter Exam
+                                {loading ? "Verifying ...": "Start Assessment"}
                             </button>
                         </div>
                     </div>
