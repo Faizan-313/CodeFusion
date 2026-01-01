@@ -33,7 +33,22 @@ function Signup() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        //checks before submission
         if(!checkCheckBox()) return;
+        if(([formData.name, formData.email, formData.password]).some(field => field.trim() === "")){
+            toast.error("Please fill in all fields")
+            return
+        }
+        if(!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(formData.email)){
+            toast.error("Please enter a valid email address")
+            return;
+        }
+        if(formData.password.length < 6){
+            toast.error("Password must be at least 6 characters long")
+            return
+        }
+
         setLoading(true);
         try {
             const res = await register(formData.name, formData.email, formData.password)
@@ -117,6 +132,7 @@ function Signup() {
                                     value={formData.password}
                                     onChange={handleChange}
                                     placeholder="Create a password"
+                                    min={6}
                                     required
                                     className="w-full rounded-lg border border-gray-300 py-3 pl-10 pr-3 text-gray-700 bg-gray-50 focus:bg-white shadow-sm focus:border-[#5c8374] focus:ring-2 focus:ring-[#5c8374] focus:outline-none transition-all"
                                 />
