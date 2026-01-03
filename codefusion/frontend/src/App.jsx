@@ -23,7 +23,7 @@ import ThankYou from "./pages/ThankYou";
 import AppearedStudentList from "./pages/teacher/AppearedStudentList";
 import ViewPaper from "./pages/teacher/ViewPaper";
 import MonitorExam from "./pages/teacher/MonitorExam";
-import { Rotate3D } from "lucide-react";
+import ForgotPassword from "./pages/auth/ForgotPassword";
 
 function MainLayout() {
   return (
@@ -53,6 +53,7 @@ function AppContent() {
         <Route element={<PublicOnlyRoute />}>
           <Route path="/signup" element={<Signup />} />
           <Route path="/signin" element={<Signin />} />
+          <Route path="forgot-password" element={<ForgotPassword />} />
         </Route>
 
         <Route path="/exam" element={<ExamCodeAndInstruction />} />
