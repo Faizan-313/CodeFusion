@@ -1,14 +1,22 @@
 import { useState } from "react"
-import { Mail, ArrowLeft } from "lucide-react"
-import { Link } from "react-router-dom"
+import { Mail, ArrowLeft, Lock } from "lucide-react"
+import { Link, useNavigate } from "react-router-dom"
+import toast from "react-hot-toast"
+
 
 function ForgotPassword() {
     const [formData, setFormData] = useState({
-        email: ""
+        email: "",
+        verificationCode: "",
+        password: "",
+        confirmPassword: ""
     })
     const [isLoading, setIsLoading] = useState(false)
-    const [step, setStep] = useState("email") // email, otp, resetPassword
+    const [step, setStep] = useState("email")                        // email, verification-code, resetPassword
     const [resetToken, setResetToken] = useState("")
+    const [message, setMessage] = useState("")
+
+    const navigate = useNavigate()
 
     const handleChange = (e) => {
         setFormData({
@@ -17,32 +25,62 @@ function ForgotPassword() {
         })
     }
 
-    const handleSubmit = async (e) => {
+    const handleEmailSubmit = (e) => {
         e.preventDefault()
-        if(!formData.email || formData.email.trim() === ""){
-            toast.error("Please enter email")
+        setMessage("")
+
+        if (!formData.email || formData.email.trim() === "") {
+            toast.error("Please enter your email")
             return
         }
-        if(!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(formData.email)){
+        if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(formData.email)) {
             toast.error("Please enter a valid email address")
             return;
         }
 
-        try {
-            setIsLoading(true)
-            const res = await register(formData.email)
-            if(res.success){
-                setStep("otp")
-                //show the otp section and submit button
-                //on submit if otp is correct show change password section
-                //on changing the password redirect to signin
-            }
-        } catch (error) {
-            toast.error("Something went wrong. Please try again.");
-            console.error("Forgot password error: ", error);
-        } finally {
+        setIsLoading(true)
+        // TODO update the api logic here 
+        setTimeout(() => {
             setIsLoading(false)
+            setResetToken("test-reset-token")
+            setMessage("A verification code has been sent to your email.")
+            setStep("verification-code")
+        }, 800)
+    }
+
+    const handleCodeVerification = (e) => {
+        e?.preventDefault?.()
+        setMessage("")
+
+        const code = (formData.verificationCode || "").trim()
+        //TODO update the verifying logic here
+        if (!code || !/^\d{4,6}$/.test(code)) {
+            toast.error("Please enter a valid verification code (4-6 digits).")
+            return
         }
+
+        // TODO handle the verifying code
+        setIsLoading(true)
+        setTimeout(() => {
+            setIsLoading(false)
+            setMessage("Code verified. Please enter a new password.")
+            setStep("resetPassword")
+        }, 600)
+    }
+
+    const handlePasswordReset = (e) => {
+        e?.preventDefault?.()
+        setMessage("")
+
+        //TODO handle confirm password and password check and updating db then redirecting to sigin
+        setIsLoading(true)
+        setTimeout(() => {
+            setIsLoading(false)
+            setMessage("Password Updated Successfully")
+            
+            navigate("/signin")
+        }, 600)
+        
     }
 
     return (
@@ -61,12 +99,15 @@ function ForgotPassword() {
                 <div className="bg-white bg-opacity-95 backdrop-blur rounded-2xl shadow-2xl overflow-hidden">
                     <div className="p-8">
                         {step === "email" && (
-                            <form onSubmit={handleSubmit} className="space-y-6">
+                            <form onSubmit={handleEmailSubmit} className="space-y-6">
                                 <div className="mb-6">
                                     <h2 className="text-xl font-semibold text-gray-800 mb-2">Reset Your Password</h2>
                                     <p className="text-sm text-gray-600">
-                                        Enter your email address and we'll send you OTP to reset your password.
+                                        Enter your email address and we'll send you a verification code to reset your password.
                                     </p>
+                                {message && (
+                                    <div className="text-sm text-green-700 bg-green-50 px-3 py-2 rounded">{message}</div>
+                                )}
                                 </div>
 
                                 <div>
@@ -94,12 +135,12 @@ function ForgotPassword() {
                                     disabled={isLoading}
                                     className="w-full bg-gradient-to-r from-[#092635] to-[#1b4242] hover:from-[#0d3140] hover:to-[#1f4a4f] text-white font-semibold py-3 rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl"
                                 >
-                                    {isLoading ? "Sending..." : "Send OTP"}
+                                    {isLoading ? "Sending..." : "Send Verification Code"}
                                 </button>
 
                                 <div className="text-center">
-                                    <Link 
-                                        to="/signin" 
+                                    <Link
+                                        to="/signin"
                                         className="inline-flex items-center justify-center text-sm text-gray-600 hover:text-[#5c8374] transition-colors gap-1"
                                     >
                                         <ArrowLeft className="h-4 w-4" />
@@ -109,43 +150,101 @@ function ForgotPassword() {
                             </form>
                         )}
 
-                        {step === "otp" && (
-                            <div className="space-y-6">
-                                <div className="mb-6">
+                        {step === "verification-code" && (
+                            <form onSubmit={handleCodeVerification} className="space-y-6">
+                                <div className="mb-4">
                                     <h2 className="text-xl font-semibold text-gray-800 mb-2">Verify Your Email</h2>
-                                    <p className="text-sm text-gray-600">
-                                        Enter the OTP sent to {formData.email}
-                                    </p>
-
-                                    //need to add otp input section here 
+                                    <p className="text-sm text-gray-600">Enter the verification code sent to {formData.email}</p>
                                 </div>
-                                <button
-                                    type="button"
-                                    onClick={() => setStep("email")}
-                                    className="w-full text-gray-600 hover:text-gray-800 font-medium py-2 rounded-lg border border-gray-300 transition-colors"
-                                >
-                                    Back
-                                </button>
-                            </div>
+                                {message && (
+                                    <div className="text-sm text-green-700 bg-green-50 px-3 py-2 rounded">{message}</div>
+                                )}
+
+                                <div className="flex flex-col mt-1 gap-3">
+                                    <input
+                                        type="text"
+                                        id="verification-code"
+                                        name="verificationCode"
+                                        placeholder="Enter verification code"
+                                        value={formData.verificationCode}
+                                        onChange={(e) => setFormData({ ...formData, verificationCode: e.target.value })}
+                                        className="w-full p-3 border border-gray-300 rounded-lg text-center tracking-widest text-lg placeholder-gray-400"
+                                    />
+
+                                    <button
+                                        type="submit"
+                                        disabled={isLoading}
+                                        className="w-full bg-gradient-to-r from-[#092635] to-[#1b4242] text-white font-semibold py-3 rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow"
+                                    >
+                                        {isLoading ? 'Verifying...' : 'Verify Code'}
+                                    </button>
+
+                                    <button
+                                        type="button"
+                                        onClick={() => { setStep("email"); setMessage("")}}
+                                        className="w-full text-gray-600 hover:text-gray-800 hover:bg-amber-50 font-medium py-2 rounded-lg border border-gray-300 transition-colors"
+                                    >
+                                        Back
+                                    </button>
+                                </div>
+                            </form>
                         )}
 
                         {step === "resetPassword" && (
-                            <div className="space-y-6">
-                                <div className="mb-6">
+                            <form onSubmit={handlePasswordReset} className="space-y-6">
+                                <div className="mb-4">
                                     <h2 className="text-xl font-semibold text-gray-800 mb-2">Create New Password</h2>
-                                    <p className="text-sm text-gray-600">
-                                        Enter your new password below
-                                    </p>
-                                    //need to add input password section here
+                                    <p className="text-sm text-gray-600">Enter your new password below</p>
                                 </div>
-                                <button
-                                    type="button"
-                                    onClick={() => setStep("otp")}
-                                    className="w-full text-gray-600 hover:text-gray-800 font-medium py-2 rounded-lg border border-gray-300 transition-colors"
-                                >
-                                    Back
-                                </button>
-                            </div>
+                                {message && (
+                                    <div className="text-sm text-green-700 bg-green-50 px-3 py-2 rounded">{message}</div>
+                                )}
+
+                                <div className="space-y-3">
+                                    <label htmlFor="password" className="block text-sm font-medium text-gray-700">New Password</label>
+                                    <div className="relative">
+                                        <Lock className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
+                                        <input
+                                            type="password"
+                                            id="password"
+                                            name="password"
+                                            placeholder="At least 6 characters"
+                                            value={formData.password}
+                                            onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                                            required
+                                            className="w-full rounded-lg border border-gray-300 py-3 pl-10 pr-3 text-gray-700 bg-gray-50 focus:bg-white shadow-sm focus:border-[#5c8374] focus:ring-2 focus:ring-[#5c8374] focus:outline-none transition-all"
+                                        />
+                                    </div>
+
+                                    <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700">Confirm Password</label>
+                                    <input
+                                        type="password"
+                                        id="confirmPassword"
+                                        name="confirmPassword"
+                                        placeholder="Retype your password"
+                                        value={formData.confirmPassword}
+                                        onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
+                                        required
+                                        className="w-full rounded-lg border border-gray-300 py-3 px-3 text-gray-700 bg-gray-50 focus:bg-white shadow-sm focus:border-[#5c8374] focus:ring-2 focus:ring-[#5c8374] focus:outline-none transition-all"
+                                    />
+
+                                    <button
+                                        type="submit"
+                                        disabled={isLoading}
+                                        className="w-full bg-gradient-to-r from-[#092635] to-[#1b4242] text-white font-semibold py-3 rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow"
+                                    >
+                                        {isLoading ? 'Saving...' : 'Reset Password'}
+                                    </button>
+
+                                    <button
+                                        type="button"
+                                        onClick={() => { setStep("verification-code"); setMessage("") }}
+                                        className="w-full text-gray-600 hover:text-gray-800 font-medium py-2 rounded-lg border border-gray-300 transition-colors"
+                                    >
+                                        Back
+                                    </button>
+                                </div>
+                            </form>
                         )}
                     </div>
 
