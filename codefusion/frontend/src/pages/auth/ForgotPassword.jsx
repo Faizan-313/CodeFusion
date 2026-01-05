@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { Mail, ArrowLeft, Lock } from "lucide-react"
+import { Mail, ArrowLeft, Lock, EyeClosed,Eye } from "lucide-react"
 import { Link, useNavigate } from "react-router-dom"
 import toast from "react-hot-toast"
 
@@ -11,6 +11,7 @@ function ForgotPassword() {
         password: "",
         confirmPassword: ""
     })
+    const [showPassword, setShowPassword] = useState(false);
     const [isLoading, setIsLoading] = useState(false)
     const [step, setStep] = useState("email")                        // email, verification-code, resetPassword
     const [resetToken, setResetToken] = useState("")
@@ -19,10 +20,11 @@ function ForgotPassword() {
     const navigate = useNavigate()
 
     const handleChange = (e) => {
-        setFormData({
-            ...formData,
-            [e.target.name]: e.target.value
-        })
+        const { name, value } = e.target;
+        setFormData(prev => ({
+            ...prev,
+            [name]: value
+        }));
     }
 
     const handleEmailSubmit = (e) => {
@@ -167,7 +169,7 @@ function ForgotPassword() {
                                         name="verificationCode"
                                         placeholder="Enter verification code"
                                         value={formData.verificationCode}
-                                        onChange={(e) => setFormData({ ...formData, verificationCode: e.target.value })}
+                                        onChange={handleChange}
                                         className="w-full p-3 border border-gray-300 rounded-lg text-center tracking-widest text-lg placeholder-gray-400"
                                     />
 
@@ -204,30 +206,33 @@ function ForgotPassword() {
                                     <label htmlFor="password" className="block text-sm font-medium text-gray-700">New Password</label>
                                     <div className="relative">
                                         <Lock className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
+                                        <div className="cursor-pointer" onClick={()=> setShowPassword((prev)=> !prev)}>
+                                            {showPassword ?<Eye className="absolute right-3 top-3.5 h-5 w-5 text-gray-600"/> : <EyeClosed  className="absolute right-3 top-3.5 h-5 w-5 text-gray-600"/>}
+                                        </div>
                                         <input
-                                            type="password"
+                                            type={showPassword ? "text" : "password"}
                                             id="password"
                                             name="password"
                                             placeholder="At least 6 characters"
                                             value={formData.password}
-                                            onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                                            onChange={handleChange}
                                             required
                                             className="w-full rounded-lg border border-gray-300 py-3 pl-10 pr-3 text-gray-700 bg-gray-50 focus:bg-white shadow-sm focus:border-[#5c8374] focus:ring-2 focus:ring-[#5c8374] focus:outline-none transition-all"
                                         />
                                     </div>
-
-                                    <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700">Confirm Password</label>
-                                    <input
-                                        type="password"
-                                        id="confirmPassword"
-                                        name="confirmPassword"
-                                        placeholder="Retype your password"
-                                        value={formData.confirmPassword}
-                                        onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
-                                        required
-                                        className="w-full rounded-lg border border-gray-300 py-3 px-3 text-gray-700 bg-gray-50 focus:bg-white shadow-sm focus:border-[#5c8374] focus:ring-2 focus:ring-[#5c8374] focus:outline-none transition-all"
-                                    />
-
+                                    <div className="relative">
+                                        <label htmlFor="confirmPassword" className="block text-sm mb-2 font-medium text-gray-700">Confirm Password</label>
+                                        <input
+                                            type="password"
+                                            id="confirmPassword"
+                                            name="confirmPassword"
+                                            placeholder="Retype your password"
+                                            value={formData.confirmPassword}
+                                            onChange={handleChange}
+                                            required
+                                            className="w-full rounded-lg border border-gray-300 py-3 px-3 text-gray-700 bg-gray-50 focus:bg-white shadow-sm focus:border-[#5c8374] focus:ring-2 focus:ring-[#5c8374] focus:outline-none transition-all"
+                                        />
+                                    </div>
                                     <button
                                         type="submit"
                                         disabled={isLoading}

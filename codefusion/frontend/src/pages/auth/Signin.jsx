@@ -1,4 +1,4 @@
-import { Mail, Lock, LogIn } from "lucide-react"
+import { Mail, Lock, LogIn, Eye, EyeClosed } from "lucide-react"
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom"
 import { motion } from "framer-motion";
@@ -14,6 +14,7 @@ function Signin() {
         password: ""
     })
     const [loading, setLoading] = useState(false)
+    const [showPassword, setShowPassword] = useState(false);
 
     const handleChange = (e) => {
         setFormData({
@@ -84,15 +85,17 @@ function Signin() {
                             />
                         </div>
                     </div>
-
                     <div>
                         <label htmlFor="password" className="block text-sm font-medium text-gray-900 mb-2">
                             Password
                         </label>
                         <div className="relative">
                             <Lock className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
+                            <div className="cursor-pointer" onClick={()=> setShowPassword((prev)=> !prev)}>
+                                {showPassword ?<Eye className="absolute right-3 top-3.5 h-5 w-5 text-gray-600"/> : <EyeClosed  className="absolute right-3 top-3.5 h-5 w-5 text-gray-600"/>}
+                            </div>
                             <input
-                                type="password"
+                                type={showPassword ? "text" : "password"}
                                 autoComplete="current-password"
                                 id="password"
                                 name="password"
