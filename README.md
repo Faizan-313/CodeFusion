@@ -26,7 +26,7 @@ Built using modern technologies such as **React.js**, **Node.js**, and **MongoDB
 |-------|-------------------|
 | **Frontend** | React.js, Tailwind CSS, CodeMirror |
 | **Backend** | Node.js, Express.js, Socket.io |
-| **Database** | MongoDB |
+| **Database** | MongoDB | Cloudinary
 | **AI** | Python, TensorFlow / PyTorch, OpenCV, MediaPipe |
 
 ---
@@ -103,6 +103,11 @@ ACCESS_TOKEN_SECRET=your_access_token_secret
 ACCESS_TOKEN_EXPIRY=15m
 REFRESH_TOKEN_SECRET=your_refresh_token_secret
 REFRESH_TOKEN_EXPIRY=7d
+
+#Cloudinary
+CLOUDINARY_CLOUD_NAME=
+CLOUDINARY_API_KEY=
+CLOUDINARY_API_SECRET=
 ```
 
 3. Frontend — install, configure, and run
