@@ -19,7 +19,7 @@ const verifyEmail = async (req, res) => {
 }
 
 //verify the reset code 
-const verifyResetCode = async (res, res) =>{
+const verifyResetCode = async (req, res) =>{
     try {
         
     } catch (error) {
@@ -29,7 +29,7 @@ const verifyResetCode = async (res, res) =>{
 }
 
 //update db with new password
-const resetPassword = async (res, res) => {
+const resetPassword = async (req, res) => {
     try {
         
     } catch (error) {
