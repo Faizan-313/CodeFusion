@@ -11,6 +11,7 @@ import { setupSocket } from "./socket/socket.js";
 import authRouter from "./routes/auth.routes.js";
 import examRouter from "./routes/exam.routes.js";
 import dashboardRouter from "./routes/teacher.routes.js";
+import accRecoveryRouter from "./routes/accRecovery.routes.js";
 
 const app = express();
 
@@ -47,6 +48,7 @@ setupSocket(server);
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/exams", examRouter);
 app.use("/api/v1/teacher", dashboardRouter);
+app.use("/api/v1/forgot-password", accRecoveryRouter);
 
 server.listen(port, () => {
     console.log(`Server listening on PORT ${port}`);
