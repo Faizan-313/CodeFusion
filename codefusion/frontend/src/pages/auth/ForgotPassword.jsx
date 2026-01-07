@@ -1,8 +1,10 @@
 import { useState } from "react"
-import { Mail, ArrowLeft, Lock, EyeClosed,Eye } from "lucide-react"
+import { Mail, ArrowLeft, Lock, EyeClosed, Eye } from "lucide-react"
 import { Link, useNavigate } from "react-router-dom"
 import toast from "react-hot-toast"
+import axios from "axios"
 
+const url = import.meta.env.VITE_API_URL;
 
 function ForgotPassword() {
     const [formData, setFormData] = useState({
@@ -14,7 +16,6 @@ function ForgotPassword() {
     const [showPassword, setShowPassword] = useState(false);
     const [isLoading, setIsLoading] = useState(false)
     const [step, setStep] = useState("email")                        // email, verification-code, resetPassword
-    const [resetToken, setResetToken] = useState("")
     const [message, setMessage] = useState("")
 
     const navigate = useNavigate()
@@ -27,7 +28,7 @@ function ForgotPassword() {
         }));
     }
 
-    const handleEmailSubmit = (e) => {
+    const handleEmailSubmit = async (e) => {
         e.preventDefault()
         setMessage("")
 
@@ -39,51 +40,110 @@ function ForgotPassword() {
             toast.error("Please enter a valid email address")
             return;
         }
+        const email = formData.email
 
         setIsLoading(true)
-        // TODO update the api logic here 
-        setTimeout(() => {
+
+        try {
+            const response = await axios.post(
+                `${url}/api/v1/forgot-password/verify-email`,
+                { email },
+                { withCredentials: true }
+            );
+            if (response.status == 200) {
+                setMessage(response.data.message || `verfication code sent to ${email}`);
+                setStep("verification-code")
+            }
+        } catch (error) {
+            console.log(error);
+            toast.error(
+                error?.response?.data?.message ||
+                "Something went wrong. Please try again"
+            );
+        } finally {
             setIsLoading(false)
-            setResetToken("test-reset-token")
-            setMessage("A verification code has been sent to your email.")
-            setStep("verification-code")
-        }, 800)
+        }
     }
 
-    const handleCodeVerification = (e) => {
+    const handleCodeVerification = async (e) => {
         e?.preventDefault?.()
         setMessage("")
 
         const code = (formData.verificationCode || "").trim()
-        //TODO update the verifying logic here
-        if (!code || !/^\d{4,6}$/.test(code)) {
-            toast.error("Please enter a valid verification code (4-6 digits).")
+        if (!code || !/^\d{6}$/.test(code)) {
+            toast.error("Please enter a valid verification code (6 digits).")
             return
         }
 
-        // TODO handle the verifying code
         setIsLoading(true)
-        setTimeout(() => {
+        try {
+            const response = await axios.post(
+                `${url}/api/v1/forgot-password/verify-reset-code`,
+                { code },
+                { withCredentials: true }
+            );
+            if (response.status == 200) {
+                setMessage(response.data.message || "verification sucessfull")
+                setStep("resetPassword")
+            }
+        } catch (error) {
+            console.log(error);
+            toast.error(
+                error?.response?.data?.message ||
+                "Something went wrong. Please try again"
+            );
+        } finally {
             setIsLoading(false)
-            setMessage("Code verified. Please enter a new password.")
-            setStep("resetPassword")
-        }, 600)
+        }
     }
 
-    const handlePasswordReset = (e) => {
-        e?.preventDefault?.()
-        setMessage("")
+    const handlePasswordReset = async (e) => {
+        e?.preventDefault?.();
+        setMessage("");
 
-        //TODO handle confirm password and password check and updating db then redirecting to sigin
-        setIsLoading(true)
-        setTimeout(() => {
-            setIsLoading(false)
-            setMessage("Password Updated Successfully")
-            
-            navigate("/signin")
-        }, 600)
-        
-    }
+        const password = (formData.password || "").trim();
+        const confirmPassword = (formData.confirmPassword || "").trim();
+
+        // basic validations
+        if (!password || !confirmPassword) {
+            toast.error("Both password fields are required");
+            return;
+        }
+
+        if (password.length < 6) {
+            toast.error("Password must be at least 6 characters long");
+            return;
+        }
+
+        if (password !== confirmPassword) {
+            toast.error("Passwords do not match");
+            return;
+        }
+
+        setIsLoading(true);
+
+        try {
+            const response = await axios.post(
+                `${url}/api/v1/forgot-password/reset-password`,
+                { password },
+                { withCredentials: true }
+            );
+
+            if (response.status === 200) {
+                setMessage(response.data.message || "Password updated successfully");
+                navigate("/signin");
+            }
+        } catch (error) {
+            console.error(error);
+            toast.error(
+                error?.response?.data?.message ||
+                "Something went wrong. Please try again"
+            );
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
 
     return (
         <div className='min-h-screen flex items-center justify-center bg-gradient-to-br from-[#092635] via-[#1b4242] to-[#5c8374] px-4 py-12 relative overflow-hidden'>
@@ -107,9 +167,9 @@ function ForgotPassword() {
                                     <p className="text-sm text-gray-600">
                                         Enter your email address and we'll send you a verification code to reset your password.
                                     </p>
-                                {message && (
-                                    <div className="text-sm text-green-700 bg-green-50 px-3 py-2 rounded">{message}</div>
-                                )}
+                                    {message && (
+                                        <div className="text-sm text-green-700 bg-green-50 px-3 py-2 rounded">{message}</div>
+                                    )}
                                 </div>
 
                                 <div>
@@ -183,7 +243,7 @@ function ForgotPassword() {
 
                                     <button
                                         type="button"
-                                        onClick={() => { setStep("email"); setMessage("")}}
+                                        onClick={() => { setStep("email"); setMessage("") }}
                                         className="w-full text-gray-600 hover:text-gray-800 hover:bg-amber-50 font-medium py-2 rounded-lg border border-gray-300 transition-colors"
                                     >
                                         Back
@@ -206,8 +266,8 @@ function ForgotPassword() {
                                     <label htmlFor="password" className="block text-sm font-medium text-gray-700">New Password</label>
                                     <div className="relative">
                                         <Lock className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
-                                        <div className="cursor-pointer" onClick={()=> setShowPassword((prev)=> !prev)}>
-                                            {showPassword ?<Eye className="absolute right-3 top-3.5 h-5 w-5 text-gray-600"/> : <EyeClosed  className="absolute right-3 top-3.5 h-5 w-5 text-gray-600"/>}
+                                        <div className="cursor-pointer" onClick={() => setShowPassword((prev) => !prev)}>
+                                            {showPassword ? <Eye className="absolute right-3 top-3.5 h-5 w-5 text-gray-600" /> : <EyeClosed className="absolute right-3 top-3.5 h-5 w-5 text-gray-600" />}
                                         </div>
                                         <input
                                             type={showPassword ? "text" : "password"}

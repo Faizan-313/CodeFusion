@@ -70,6 +70,11 @@ const register = async (req, res)=>{
         if([name, email, password].some((field)=> !field || field?.trim === "")){
             return res.status(400).json({ message: "All fields are required" })
         }
+        if (password.length < 6) {
+            return res.status(400).json({
+                message: "Password must be at least 6 characters long"
+            });
+        }
 
         const alreadyRegistered = await User.findOne({ email: email.toLowerCase() })
         if(alreadyRegistered){
