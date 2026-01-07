@@ -34,19 +34,6 @@ const verifyEmail = async (req, res) => {
 
         const expiresAt = new Date(Date.now() + 10 * 60 * 1000);
 
-        await sendEmail({
-            to: user.email,
-            subject: "Reset Verification Code",
-            text: `Hello ${user.name},
-
-                Your reset verification code is : ${resetCode}.
-
-                Please login to accept or reject the booking.`,
-            html: `<p>Hello <strong>${user.name}
-                <p>Your reset verification code is: <strong>${resetCode}</strong></p>
-                <p>The forgot session will expire at <strong>${expiresAt}</strong><.</p>`
-        });
-
         const resetCodeHash = await bcrypt.hash(resetCode, 10);
 
         const tempToken = jwt.sign({
@@ -62,6 +49,18 @@ const verifyEmail = async (req, res) => {
             resetCodeHash: resetCodeHash,
             expiresAt: expiresAt
         })
+
+        sendEmail({
+            to: user.email,
+            subject: "Reset Verification Code",
+            text: `Hello ${user.name},
+                Your reset verification code is : ${resetCode}.`,
+            html: `<p>Hello <strong>${user.name}</strong>
+                <p>Your reset verification code is: <strong>${resetCode}</strong></p>
+                <p>The forgot session will expire in <strong>10 minutes</strong></p>`
+        }).catch((err) => {
+            console.error("Error sending reset email:", err);
+        });
 
         return res.status(200)
             .cookie("tempToken", tempToken, options)
