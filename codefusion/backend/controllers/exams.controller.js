@@ -13,7 +13,7 @@ const createExam = async (req, res) => {
         const questionsParsed = JSON.parse(req.body.questions);
         const totalMarks = parseInt(req.body.totalMarks);
 
-        //Attach images to corresponding questions
+        //Attach images to corresponding questions and upload to cloudinary
         if (req.files && req.files.length > 0) {
             for (const file of req.files) {
                 const index = parseInt(file.fieldname.split("_")[1]);

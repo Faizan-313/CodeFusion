@@ -9,7 +9,7 @@ const upload = multer({
     },
 });
 
-export const uploadMiddleware = (req, res, next) => {
+export const multipartRequestHandlerMiddleware = (req, res, next) => {
     upload.any()(req, res, (err) => {
         if (err instanceof multer.MulterError) {
             if (err.code === "LIMIT_FILE_SIZE") {
