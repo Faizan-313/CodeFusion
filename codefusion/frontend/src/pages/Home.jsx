@@ -1,15 +1,6 @@
-import { useState, useEffect } from 'react';
 import { FaGithub, FaLinkedin, FaTwitter, FaCode, FaShieldAlt, FaChartLine, FaLaptopCode, FaUsers, FaBrain } from "react-icons/fa";
 
 function Home() {
-    const [scrollY, setScrollY] = useState(0);
-
-    useEffect(() => {
-        const handleScroll = () => setScrollY(window.scrollY);
-        window.addEventListener('scroll', handleScroll);
-        return () => window.removeEventListener('scroll', handleScroll);
-    }, []);
-
     const features = [
         {
             icon: <FaShieldAlt className="text-5xl text-[#5c8374]" />,
@@ -35,19 +26,7 @@ function Home() {
 
     return (
         <div className="flex flex-col min-h-screen bg-gray-50 dark:bg-gray-900" id='home'>
-            {/* Hero Section with Parallax */}
-            <div className="relative h-screen overflow-hidden">
-                <div
-                    className="absolute inset-0 bg-gradient-to-br from-[#092635] via-[#1b4242] to-[#5c8374]"
-                    style={{ transform: `translateY(${scrollY * 0.5}px)` }}
-                >
-                    <div className="absolute inset-0 opacity-20">
-                        <div className="absolute top-20 left-10 w-72 h-72 bg-[#5c8374] rounded-full mix-blend-multiply filter blur-xl animate-pulse"></div>
-                        <div className="absolute top-40 right-10 w-72 h-72 bg-[#9ec8b9] rounded-full mix-blend-multiply filter blur-xl animate-pulse delay-700"></div>
-                        <div className="absolute bottom-20 left-1/2 w-72 h-72 bg-[#5c8374] rounded-full mix-blend-multiply filter blur-xl animate-pulse delay-1000"></div>
-                    </div>
-                </div>
-
+            <div className="relative h-screen overflow-hidden inset-0 bg-gradient-to-br from-[#092635] via-[#1b4242] to-[#5c8374]">
                 <div className="relative h-full flex flex-col items-center justify-center text-center text-white px-4 z-10">
                     <div className="mb-6 animate-bounce">
                         <FaBrain className="text-7xl text-[#9ec8b9] drop-shadow-2xl" />
@@ -68,7 +47,6 @@ function Home() {
                     </div>
                 </div>
 
-                {/* Scroll Indicator */}
                 <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
                     <div className="w-6 h-10 border-2 border-white/50 rounded-full flex items-start justify-center p-2">
                         <div className="w-1 h-3 bg-white/70 rounded-full animate-pulse"></div>
@@ -155,7 +133,7 @@ function Home() {
                                         step: "01", title: "Enter Exam Portal", desc: (
                                             <>
                                                 Click on{" "}
-                                                <span className='text-[#092635] font-bold hover:text-[#5c8374]'>
+                                                <span className='text-[#03608e] font-bold hover:text-[#5c8374]'>
                                                     <a href='/exam'>Enter Exam</a>
                                                 </span>
                                                 , read instructions, enter the exam code, fill in details and start the exam
@@ -226,7 +204,6 @@ function Home() {
                 </div>
             </section>
 
-            {/* Footer */}
             <footer className="bg-gray-900 text-gray-300 px-4 py-12 border-t border-gray-800">
                 <div className="max-w-7xl mx-auto">
                     <div className="grid md:grid-cols-3 gap-12 mb-8">
@@ -253,10 +230,10 @@ function Home() {
                         <div>
                             <h3 className="text-xl font-bold text-white mb-4">Connect With Us</h3>
                             <div className="flex gap-4 text-3xl">
-                                <a target="_blank" href="https://github.com/Faizan-313" className="hover:text-[#5c8374] transition-colors transform hover:scale-110">
+                                <a target="_blank" href="#" className="hover:text-[#5c8374] transition-colors transform hover:scale-110">
                                     <FaGithub />
                                 </a>
-                                <a target="_blank" href="https://www.linkedin.com/in/faizan-syed-4370152b9" className="hover:text-[#5c8374] transition-colors transform hover:scale-110">
+                                <a target="_blank" href="#" className="hover:text-[#5c8374] transition-colors transform hover:scale-110">
                                     <FaLinkedin />
                                 </a>
                                 <a target="_blank" href="#" className="hover:text-[#5c8374] transition-colors transform hover:scale-110">

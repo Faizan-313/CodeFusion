@@ -64,7 +64,6 @@ export default function TeacherDashboard() {
     return (
         <div className="min-h-screen bg-gradient-to-br from-gray-100 via-gray-50 to-gray-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 p-4 sm:p-6 lg:p-8 pt-20 sm:pt-24 lg:pt-28">
             <div className="max-w-7xl mx-auto">
-                {/* Header Section */}
                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6 mb-10">
                     <div>
                         <h1 className="text-4xl sm:text-5xl font-bold text-gray-900 dark:text-gray-100 mb-2">
@@ -88,7 +87,6 @@ export default function TeacherDashboard() {
                     </Link>
                 </div>
 
-                {/* Error State */}
                 {error && (
                     <div className="mb-6 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl flex items-start gap-3">
                         <AlertCircle className="w-5 h-5 text-red-600 dark:text-red-400 flex-shrink-0 mt-0.5" />
@@ -98,7 +96,6 @@ export default function TeacherDashboard() {
                     </div>
                 )}
 
-                {/* Stats Cards */}
                 {exams.length > 0 && (
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
                         <StatsCard
@@ -128,7 +125,6 @@ export default function TeacherDashboard() {
                     </div>
                 )}
 
-                {/* Empty State */}
                 {exams.length === 0 ? (
                     <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-12 text-center">
                         <div className="max-w-md mx-auto">
@@ -165,8 +161,6 @@ export default function TeacherDashboard() {
                     </div>
                 )}
             </div>
-
-            {/* Exam Details Modal */}
             {selectedExam && (
                 <ExamDetailsModal
                     exam={selectedExam}

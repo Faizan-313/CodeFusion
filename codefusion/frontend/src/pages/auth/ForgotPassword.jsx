@@ -104,7 +104,6 @@ function ForgotPassword() {
         const password = (formData.password || "").trim();
         const confirmPassword = (formData.confirmPassword || "").trim();
 
-        // basic validations
         if (!password || !confirmPassword) {
             toast.error("Both password fields are required");
             return;

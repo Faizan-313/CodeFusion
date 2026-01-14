@@ -138,7 +138,6 @@ function Signin() {
                     </motion.button>
                 </form>
 
-                {/* Divider */}
                 <div className="relative my-6">
                     <div className="absolute inset-0 flex items-center">
                         <div className="w-full border-t border-gray-300"></div>
@@ -162,7 +161,6 @@ function Signin() {
                     </Link>
                 </div>
 
-                {/* Footer Text */}
                 <p className="text-center text-gray-500 text-xs mt-6">
                     By signing in, you agree to our Terms of Service and Privacy Policy
                 </p>

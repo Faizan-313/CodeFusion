@@ -21,7 +21,7 @@ export const TeacherProvider = ({ children }) => {
     const [examsLoading, setExamsLoading] = useState(false);
     const [examsError, setExamsError] = useState(null);
 
-    const fetchStudents = useCallback(async (examId, page = 1, limit = 4) => {
+    const fetchStudents = useCallback(async (examId, page = 1, limit = 20) => {
         try {
             setStudentsLoading(true);
             setStudentsError(null);

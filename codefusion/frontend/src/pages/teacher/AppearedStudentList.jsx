@@ -60,7 +60,6 @@ function AppearedStudentList() {
     return (
         <div className="min-h-screen bg-gradient-to-br from-[#f0f8f7] via-[#e8f5f3] to-[#dff1ee] dark:from-[#092635] dark:via-[#1b4242] dark:to-[#0d3a47] py-8 px-4 sm:px-6 lg:px-8">
             <div className="max-w-7xl mx-auto pt-20">
-                {/* Header Section */}
                 <div className="mb-8">
                     <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
                         <div>
@@ -77,7 +76,6 @@ function AppearedStudentList() {
                             </p>
                         </div>
 
-                        {/* Search Bar */}
                         <div className="relative w-full lg:w-80">
                             <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500 w-5 h-5" />
                             <input
@@ -96,7 +94,6 @@ function AppearedStudentList() {
                     </div>
                 </div>
 
-                {/* Exam Details Card */}
                 <div className="mb-8">
                     <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl shadow-lg overflow-hidden">
                         <div className="bg-gradient-to-r from-[#5c8374] to-[#1b4242] dark:from-[#9ec8b9] dark:to-[#5c8374] px-6 py-4">
@@ -144,7 +141,6 @@ function AppearedStudentList() {
                     </div>
                 </div>
 
-                {/* Error State */}
                 {studentsError && (
                     <div className="mb-6 p-4 bg-red-50 dark:bg-red-900/20 border-l-4 border-red-500 dark:border-red-400 rounded-lg shadow-md">
                         <div className="flex items-start gap-3">
@@ -165,7 +161,6 @@ function AppearedStudentList() {
                     </div>
                 )}
 
-                {/* Empty State */}
                 {filteredStudents.length === 0 && !studentsError && (
                     <div className="bg-white dark:bg-gray-800 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-2xl p-12 text-center">
                         <div className="flex flex-col items-center">
@@ -192,7 +187,6 @@ function AppearedStudentList() {
                     </div>
                 )}
 
-                {/* Students Table */}
                 {filteredStudents.length > 0 && (
                     <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl shadow-lg overflow-hidden">
                         <div className="overflow-x-auto">
@@ -211,7 +205,6 @@ function AppearedStudentList() {
                             </table>
                         </div>
                         
-                        {/* Results Counter and Pagination */}
                         <div className="px-6 py-4 bg-gray-50 dark:bg-gray-900/50 border-t border-gray-200 dark:border-gray-700">
                             <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
                                 <p className="text-sm text-gray-600 dark:text-gray-400">

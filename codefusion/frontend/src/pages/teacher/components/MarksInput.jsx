@@ -108,13 +108,11 @@ const MarksInput = ({ question, studentAnswer, setLocalExamAttempt }) => {
     const handleBlur = () => {
         isUserTypingRef.current = false;
         
-        // Validate and format on blur
         if (inputValue !== "" && !isNaN(parseFloat(inputValue))) {
             const numValue = parseFloat(inputValue);
             const maxMarks = question.marks || 0;
             
             if (numValue < 0 || numValue > maxMarks) {
-                // Reset to previous valid value
                 setInputValue(studentAnswer?.marksObtained ?? "");
                 toast.error(`Marks must be between 0 and ${maxMarks}`);
             }

@@ -44,32 +44,28 @@ const StudentDetailsFilling = () => {
             return;
         }
 
-        // Validation: Full name should have at least 2 words
+        // Full name should have at least 2 words
         const nameParts = formData.fullName.trim().split(/\s+/);
         if (nameParts.length < 2) {
             toast.error("Please enter your full name (first and last name)");
             return;
         }
 
-        // Validation: Name should only contain letters and spaces
         if (!/^[a-zA-Z\s]+$/.test(formData.fullName)) {
             toast.error("Name should only contain letters and spaces");
             return;
         }
 
-        // Validation: Roll number format (adjust regex based on your format)
         if (formData.rollNumber.length < 3) {
             toast.error("Please enter a valid roll number");
             return;
         }
 
-        // Validation: College ID format
         if (formData.collegeId.length < 6) {
             toast.error("Please enter a valid college ID");
             return;
         }
 
-        // Handle form submission
         const res = await submitStudentDetails(formData);
         if(res.success){
             toast.dismiss();
@@ -90,7 +86,6 @@ const StudentDetailsFilling = () => {
     return (
         <div className="min-h-screen bg-gradient-to-br from-[#9ec8b9] via-[#9ec8b9] to-[#5c8374] py-8 px-4">
             <div className="max-w-5xl mx-auto">
-                {/* Exam Information Banner */}
                 <div className="bg-gradient-to-r from-[#1b4242] to-[#092635] rounded-2xl shadow-2xl p-8 mb-8 text-white">
                     <div className="flex items-center gap-3 mb-6">
                         <div className="p-2 bg-white/20 rounded-lg backdrop-blur-sm">
@@ -150,7 +145,6 @@ const StudentDetailsFilling = () => {
                     </div>
                 </div>
 
-                {/* Registration Form */}
                 <div className="bg-white rounded-2xl shadow-2xl overflow-hidden">
                     <div className="bg-gradient-to-r from-[#9ec8b9] to-[#5c8374] px-8 py-6 border-b border-gray-200">
                         <div className="flex items-center gap-3">
@@ -164,7 +158,6 @@ const StudentDetailsFilling = () => {
                         </div>
                     </div>
 
-                    {/*Student Form Body */}
                     <div className="p-8">
                         <div className="space-y-6">
                             <div>

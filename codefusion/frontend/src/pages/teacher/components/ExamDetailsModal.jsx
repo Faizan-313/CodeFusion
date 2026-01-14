@@ -52,7 +52,6 @@ function ExamDetailsModal({ exam, onClose, copiedCode, onCopyCode }) {
                 </div>
 
                 <div className="p-8 space-y-8">
-                    {/* Description */}
                     <div>
                         <h3 className="text-sm font-bold text-gray-500 dark:text-gray-400 uppercase mb-3 tracking-wide">
                             Description
@@ -62,7 +61,6 @@ function ExamDetailsModal({ exam, onClose, copiedCode, onCopyCode }) {
                         </p>
                     </div>
 
-                    {/* Key Details */}
                     <div>
                         <h3 className="text-sm font-bold text-gray-500 dark:text-gray-400 uppercase mb-4 tracking-wide">
                             Exam Details
@@ -96,7 +94,6 @@ function ExamDetailsModal({ exam, onClose, copiedCode, onCopyCode }) {
                         </div>
                     </div>
 
-                    {/* Questions */}
                     <div>
                         <h3 className="text-sm font-bold text-gray-500 dark:text-gray-400 uppercase mb-4 tracking-wide">
                             Questions ({exam.questions?.length || 0})
@@ -141,7 +138,6 @@ function ExamDetailsModal({ exam, onClose, copiedCode, onCopyCode }) {
                         </div>
                     </div>
 
-                    {/* Schedule */}
                     <div>
                         <h3 className="text-sm font-bold text-gray-500 dark:text-gray-400 uppercase mb-4 tracking-wide">
                             Schedule
@@ -183,7 +179,6 @@ function ExamDetailsModal({ exam, onClose, copiedCode, onCopyCode }) {
                         </div>
                     </div>
 
-                    {/* Additional Info */}
                     <div>
                         <h3 className="text-sm font-bold text-gray-500 dark:text-gray-400 uppercase mb-3 tracking-wide">
                             Additional Information

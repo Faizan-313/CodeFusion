@@ -103,7 +103,7 @@ function NavBar() {
                                     }`}>
                                     <div className="p-3 border-b border-gray-700/50">
                                         <div className="flex items-center space-x-2">
-                                            <div className="w-10 h-10 rounded-full bg-gradient-to-r from-cyan-500 to-blue-600 flex items-center justify-center">
+                                            <div className="w-10 h-10 rounded-full bg-gradient-to-r from-green-700 to-cyan-800 flex items-center justify-center">
                                                 <FaUser className="text-white" />
                                             </div>
                                             <div className="flex-1 min-w-0">

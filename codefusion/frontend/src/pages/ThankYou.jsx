@@ -1,5 +1,4 @@
-import React from 'react';
-import { CheckCircle, Clock, FileText, User, Home, Award } from 'lucide-react';
+import { CheckCircle, Clock, FileText, Home, Award } from 'lucide-react';
 import { useNavigate, useParams } from 'react-router-dom';
 
 function ThankYou() {
@@ -14,7 +13,6 @@ function ThankYou() {
                         <CheckCircle className="w-12 h-12 text-green-600 dark:text-green-400" />
                     </div>
 
-                    {/* Main Message */}
                     <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
                         Exam Submitted Successfully!
                     </h1>
@@ -29,7 +27,6 @@ function ThankYou() {
                     </p>
 
 
-                    {/* Summary Cards */}
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
                         <div className="bg-[#9ec8b9] dark:bg-[#092635]/20 rounded-xl p-4 border border-[#9ec8b9] dark:border-[#092635]">
                             <div className="flex items-center justify-center gap-2 mb-2">
@@ -58,7 +55,6 @@ function ThankYou() {
                         </div>
                     </div>
 
-                    {/* Action Buttons */}
                     <div className="flex flex-col sm:flex-row gap-4 justify-center">
                         <button
                             onClick={() => navigate('/')}

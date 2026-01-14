@@ -35,7 +35,6 @@ function Signup() {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        //checks before submission
         if(!checkCheckBox()) return;
         if(([formData.name, formData.email, formData.password]).some(field => field.trim() === "")){
             toast.error("Please fill in all fields")

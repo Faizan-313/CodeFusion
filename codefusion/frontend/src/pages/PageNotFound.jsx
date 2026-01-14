@@ -12,9 +12,8 @@ export default function PageNotFound() {
         <div className="min-h-screen bg-gradient-to-br from-red-900 via-teal-900 to-black-900 flex items-center justify-center p-4 relative overflow-hidden">
 
             <div className="max-w-2xl w-full text-center relative z-10">
-                <div className="absolute inset-0 bg-red-500 opacity-10 animate-ping rounded-lg" />
+                <div className="absolute inset-0 bg-red-900 opacity-15 h-95 animate-pulse rounded-4xl" />
 
-                {/* 404 Number with glitch effect */}
                 <div className="relative mb-8">
                     <h1
                         className={`text-9xl md:text-[12rem] font-black text-transparent bg-clip-text bg-gradient-to-r from-teal-400 via-pink-500 to-red-500 leading-none select-none`}
@@ -22,7 +21,6 @@ export default function PageNotFound() {
                         404
                     </h1>
 
-                    {/* Floating elements around 404 */}
                     <div className="absolute top-4 left-4 animate-bounce">
                         <Zap className="w-8 h-8 text-yellow-400" />
                     </div>
@@ -34,7 +32,6 @@ export default function PageNotFound() {
                     </div>
                 </div>
 
-                {/* Error message */}
                 <div className="mb-8 space-y-4">
                     <h2 className="text-2xl md:text-3xl font-bold text-white mb-4">
                         Oops! Page Not Found
@@ -45,7 +42,6 @@ export default function PageNotFound() {
                     </p>
                 </div>
 
-                {/* Action buttons */}
                 <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-8">
                     <button
                         onClick={handleGoHome}
@@ -59,18 +55,12 @@ export default function PageNotFound() {
                     </button>
                 </div>
 
-                {/* Fun fact */}
                 <div className="mt-8 text-sm text-gray-200">
-                    <p className="animate-pulse">
+                    <p>
                         Fun fact: Colleges waste your precious time in the most useless things, and pretend like this will benefit you in the future.🌐
                     </p>
                 </div>
             </div>
-
-            {/* Decorative elements */}
-            <div className="absolute top-20 left-20 w-32 h-32 bg-[#5c8374]/20 rounded-full blur-xl animate-pulse" />
-            <div className="absolute bottom-20 right-20 w-40 h-40 bg-[#1b4242]/20 rounded-full blur-xl animate-pulse delay-1000" />
-            <div className="absolute top-1/2 left-10 w-24 h-24 bg-[#5c8374]/20 rounded-full blur-xl animate-pulse delay-500" />
         </div>
     );
 }

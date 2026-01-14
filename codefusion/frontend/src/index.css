@@ -1,10 +1,10 @@
 @import "tailwindcss";
 
 :root {
-  --palette-900: #092635; /* darkest */
-  --palette-700: #1b4242; /* primary */
-  --palette-500: #5c8374; /* accent */
-  --palette-200: #9ec8b9; /* light */
+    --palette-900: #092635;
+    --palette-700: #1b4242; 
+    --palette-500: #5c8374; 
+    --palette-200: #9ec8b9; 
 }
 
 input[type=number]::-webkit-inner-spin-button,
