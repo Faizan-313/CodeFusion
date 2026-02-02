@@ -11,16 +11,16 @@ const options = {
     path: "/"
 }
 
-const generateAccessAndRefreshToken = async (id) => {
+const generateAccessAndRefreshToken = async (user) => {
     try {
-        const user = await User.findById(id);
-        const accessToken = user.generateAccessToken()
-        const refreshToken = user.generateRefreshToken()
+        const accessToken = user.generateAccessToken();
+        const refreshToken = user.generateRefreshToken();
 
         user.refreshToken = refreshToken;
         user.save({ validateBeforeSave: false })
+            .catch(console.error);
 
-        return { accessToken, refreshToken }
+        return { accessToken, refreshToken };
 
     } catch (error) {
         console.log("Error in generating tokens: ", error);
@@ -37,27 +37,19 @@ const login = async (req, res)=>{
             return res.status(400).json({ message: "All fields are required" })
         }
 
-        console.time("LOGIN_TOTAL");
-
-        console.time("DB");
         const user = await User.findOne({ email: email.toLowerCase() })
-        console.timeEnd("DB");
 
         if(!user){
             return res.status(400).json({ message: "Invalid email" })
         }
         
-        console.time("bcrypt")
         const checkPassword = await user.isPasswordCorrect(password);
-        console.timeEnd("bcrypt")
 
         if(!checkPassword){
             return res.status(400).json({  message: "Invalid password" })
         }
 
-        console.time("generate token");
-        const tokens = await generateAccessAndRefreshToken(user._id);
-        console.timeEnd("generate token")
+        const tokens = await generateAccessAndRefreshToken(user);
         if(tokens.error){
             return res.status(500).json({ message: "Something went wrong" })
         }

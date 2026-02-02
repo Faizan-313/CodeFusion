@@ -88,15 +88,18 @@ const verifyResetCode = async (req, res) =>{
             attempts: { $lt: MAX_ATTEMPTS }
         });
 
+        const providedHash = resetDetails.resetCodeHash || "dummy_hash_9a7f3c2b8e4d1f6a"
+        const isValid = await bcrypt.compare(code, providedHash);
+
         if (!resetDetails) {
             return res.status(400).json({ message: "Invalid or expired code" });
         }
 
         if (resetDetails.expiresAt < Date.now()) {
-            return res.status(400).json({ message: "Verification code expired" });
+            return res.status(400).json({ message: "Invalid or expired code" });
         }
 
-        const isValid = await bcrypt.compare(code, resetDetails.resetCodeHash);
+        
         if (!isValid) {
             resetDetails.attempts += 1;
             await resetDetails.save();

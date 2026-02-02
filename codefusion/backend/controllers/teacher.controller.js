@@ -50,7 +50,7 @@ const dashboardData = async (req, res) => {
 
 const studentList = async (req, res) => {
     try {
-        const { examId, page = 1, limit = 20 } = req.query;
+        const { examId, page = 1, limit = 30 } = req.query;
         if (!examId) {
             return res.status(400).json({ message: "Exam ID is required." });
         }
@@ -144,7 +144,7 @@ const evaluatedPaper = async (req, res) => {
         });
 
         studentSubmission.totalScore = totalScore;
-        studentSubmission.evaluatorComments = evaluatorComments || "";
+        studentSubmission.evaluatorsComments = evaluatorComments || "";
         studentSubmission.evaluateStatus = "Evaluated";
 
         await studentSubmission.save();
@@ -176,19 +176,6 @@ const getStudent = async (req, res) => {
                 },
             })
             .lean();
-
-        if (!student) {
-            student = await Student.findOne({
-                $or: [{ studentId: studentId }, { rollNumber: studentId }],
-            })
-            .populate({
-                path: "examsAttempted",
-                populate: {
-                    path: "examId",
-                },
-            })
-            .lean();
-        }
 
         if (!student) {
             return res.status(404).json({ message: "Student not found" });
