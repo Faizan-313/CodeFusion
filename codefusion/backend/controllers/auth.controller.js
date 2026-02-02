@@ -42,7 +42,7 @@ const login = async (req, res)=>{
         console.time("DB");
         const user = await User.findOne({ email: email.toLowerCase() })
         console.timeEnd("DB");
-        
+
         if(!user){
             return res.status(400).json({ message: "Invalid email" })
         }
@@ -55,7 +55,9 @@ const login = async (req, res)=>{
             return res.status(400).json({  message: "Invalid password" })
         }
 
+        console.time("generate token");
         const tokens = await generateAccessAndRefreshToken(user._id);
+        console.timeEnd("generate token")
         if(tokens.error){
             return res.status(500).json({ message: "Something went wrong" })
         }
