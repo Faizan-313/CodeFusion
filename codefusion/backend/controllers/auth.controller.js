@@ -36,12 +36,21 @@ const login = async (req, res)=>{
         if([email,password].some((field)=> !field || field?.trim === "")){
             return res.status(400).json({ message: "All fields are required" })
         }
+
+        console.time("LOGIN_TOTAL");
+
+        console.time("DB");
         const user = await User.findOne({ email: email.toLowerCase() })
+        console.timeEnd("DB");
+        
         if(!user){
             return res.status(400).json({ message: "Invalid email" })
         }
         
+        console.time("bcrypt")
         const checkPassword = await user.isPasswordCorrect(password);
+        console.timeEnd("bcrypt")
+
         if(!checkPassword){
             return res.status(400).json({  message: "Invalid password" })
         }
@@ -51,7 +60,11 @@ const login = async (req, res)=>{
             return res.status(500).json({ message: "Something went wrong" })
         }
         const { accessToken, refreshToken } = tokens;
-        const loggedInUser = await User.findById(user._id).select( "-password -refreshToken -examsCreated -createdAt -updatedAt" )
+        const loggedInUser = {
+            _id: user._id,
+            name: user.name,
+            email: user.email
+        }
 
         return res.status(200)
             .cookie("accessToken", accessToken, options)
