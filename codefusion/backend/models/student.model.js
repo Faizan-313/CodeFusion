@@ -15,4 +15,8 @@ const StudentSchema = new mongoose.Schema({
     ],
 }, { timestamps: true });
 
+StudentSchema.index({ rollNumber: 1 });
+StudentSchema.index({ collegeId: 1 });
+StudentSchema.index({ batch: 1 });
+
 export const Student = mongoose.model("Student", StudentSchema);

@@ -7,10 +7,11 @@ const TeacherSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    email: {
+    email: { 
         type: String,
         required: true,
-        unique: true
+        unique: true,
+        index: true
     },
     password: {
         type: String,
@@ -36,6 +37,10 @@ TeacherSchema.pre("save", async function (next){
     }
     next();
 });
+
+// Add indexes for frequently queried fields
+TeacherSchema.index({ name: 1 });
+TeacherSchema.index({ createdAt: -1 });
 
 TeacherSchema.methods.isPasswordCorrect = async function (password){
     return await bcrypt.compare(password, this.password);

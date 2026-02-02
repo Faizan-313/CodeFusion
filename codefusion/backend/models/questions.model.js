@@ -17,4 +17,6 @@ const QuestionPaperSchema = new mongoose.Schema({
     ],
 });
 
+QuestionPaperSchema.index({ examId: 1 });
+
 export const QuestionPaper = mongoose.model("QuestionPaper", QuestionPaperSchema);

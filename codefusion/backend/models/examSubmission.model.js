@@ -42,8 +42,21 @@ const ExamSubmissionSchema = new mongoose.Schema({
         marksObtained: { type: Number, default: 0 },
         },
     ],
-    totalScore: { type: Number, default: 0 },
-    submittedAt: { type: Date, default: Date.now }
-},{timestamps: true });
+    totalScore: { 
+        type: Number, 
+        default: 0 
+    },
+    submittedAt: { 
+        type: Date, 
+        default: Date.now 
+    }
+},{
+    timestamps: true 
+});
+
+ExamSubmissionSchema.index({ examId: 1 });
+ExamSubmissionSchema.index({ studentId: 1 });
+ExamSubmissionSchema.index({ teacherId: 1 });
+ExamSubmissionSchema.index({ examId: 1, studentId: 1 });
 
 export const ExamSubmission = mongoose.model("ExamSubmission", ExamSubmissionSchema);
