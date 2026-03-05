@@ -139,6 +139,7 @@ const refreshAccessToken = async (req, res)=>{
         const decodedToken = jwt.verify( incomingRefreshToken, process.env.REFRESH_TOKEN_SECRET )
         
         const user = await User.findById( decodedToken?._id )
+        
         if(!user) {
             return res.status(401).json({ message: "invalid refresh token" })
         }
@@ -147,7 +148,7 @@ const refreshAccessToken = async (req, res)=>{
             return res.status(401).json({ message: "refresh token is expired or used" })
         }
     
-        const tokens = await generateAccessAndRefreshToken(user._id)
+        const tokens = await generateAccessAndRefreshToken(user)
         if( tokens.error ){
             return res.status(500).json({ message: tokens.error })
         }
