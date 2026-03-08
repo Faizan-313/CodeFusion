@@ -25,6 +25,9 @@ const createExam = async (req, res) => {
             }
         }
 
+        examDetailsParsed.startTime = new Date(examDetailsParsed.startTime);
+        examDetailsParsed.endTime = new Date(examDetailsParsed.endTime);
+
         //Generate unique exam code
         const baseCode = examDetailsParsed.examCode;
         const uniqueCode = `${baseCode}-${uuidv4()

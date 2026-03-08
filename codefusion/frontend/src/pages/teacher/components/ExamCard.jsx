@@ -72,7 +72,8 @@ function ExamCard({ exam, onViewDetails, onEvaluate, onCopyCode, copiedCode }) {
                     <div className="flex items-center gap-2 text-gray-600 dark:text-gray-400">
                         <Calendar size={14} className="flex-shrink-0" />
                         <span>
-                            {new Date(exam.startTime).toLocaleString("en-US", {
+                            {new Date(exam.startTime).toLocaleString("en-IN", {
+                                timeZone: "Asia/Kolkata",
                                 month: "short",
                                 day: "numeric",
                                 hour: "2-digit",
@@ -83,7 +84,8 @@ function ExamCard({ exam, onViewDetails, onEvaluate, onCopyCode, copiedCode }) {
                     <div className="flex items-center gap-2 text-gray-600 dark:text-gray-400">
                         <Clock size={14} className="flex-shrink-0" />
                         <span>
-                            {new Date(exam.endTime).toLocaleString("en-US", {
+                            {new Date(exam.endTime).toLocaleString("en-IN", {
+                                timeZone: "Asia/Kolkata",
                                 month: "short",
                                 day: "numeric",
                                 hour: "2-digit",
