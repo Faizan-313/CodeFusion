@@ -36,6 +36,7 @@ function Home() {
                     </h1>
                     <p className="text-xl md:text-2xl max-w-3xl mb-8 drop-shadow-lg leading-relaxed">
                         Next-Generation Online Programming Assessments with AI-Powered Proctoring
+                        By Mir Mohsin
                     </p>
                     <div className="flex gap-4 flex-wrap justify-center">
                         <a href="/exam" className="px-8 py-4 bg-[#5c8374] hover:bg-[#1b4242] rounded-full font-semibold text-lg transition-all transform hover:scale-105 shadow-lg">
