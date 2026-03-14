@@ -44,9 +44,6 @@ function Home() {
                         <a href="#features" className="px-8 py-4 bg-white/10 backdrop-blur-md hover:bg-white/20 rounded-full font-semibold text-lg transition-all transform hover:scale-105 border-2 border-white/30">
                             Learn More
                         </a>
-                        <a href="https://www.instagram.com/mmohsin_pvt_?igsh=andlZTQ0eWI2empn&utm_source=qr" target="_blank" className="px-8 py-4 bg-white/20 backdrop-blur-md hover:bg-white/30 rounded-full font-bold text-lg transition-all transform hover:scale-105 border-2 border-white/60">
-                            Mir Mohsin
-                        </a>
                     </div>
                 </div>
 
