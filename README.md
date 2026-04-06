@@ -108,6 +108,14 @@ REFRESH_TOKEN_EXPIRY=7d
 CLOUDINARY_CLOUD_NAME=
 CLOUDINARY_API_KEY=
 CLOUDINARY_API_SECRET=
+
+# Password reset
+TEMP_TOKEN_SECRET=
+
+# For Email Sending
+EMAIL_USER=
+EMAIL_PASS=
+
 ```
 
 3. Frontend — install, configure, and run
