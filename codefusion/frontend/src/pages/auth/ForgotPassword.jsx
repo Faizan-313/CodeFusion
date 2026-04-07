@@ -218,7 +218,10 @@ function ForgotPassword() {
                                     <p className="text-sm text-gray-600">Enter the verification code sent to {formData.email}</p>
                                 </div>
                                 {message && (
-                                    <div className="text-sm text-green-700 bg-green-50 px-3 py-2 rounded">{message}</div>
+                                    <div className="text-sm text-green-700 bg-green-50 px-3 py-2 rounded text-center">{message}
+                                                    <p className="text-sm text-cyan-600">It may take 4-5 minutes to receive. Please wait!</p>                                    
+                                    </div>
+                                    
                                 )}
 
                                 <div className="flex flex-col mt-1 gap-3">
