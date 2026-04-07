@@ -19,7 +19,7 @@ transporter.verify((error) => {
 export const sendEmail = async ({ to, subject, text, html }) => {
     try {
         const mailOptions = {
-            from: "CodeFusion",
+            from: "CodeFusion Team ",
             to,
             subject,
             text,

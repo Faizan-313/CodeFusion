@@ -57,7 +57,7 @@ const verifyEmail = async (req, res) => {
                 Your reset verification code is : ${resetCode}.`,
             html: `<p>Hello <strong>${user.name}</strong>
                 <p>Your reset verification code is: <strong>${resetCode}</strong></p>
-                <p>The forgot session will expire in <strong>10 minutes</strong></p>`
+                <p>The code will expire in <strong>10 minutes</strong></p>`
         }).catch((err) => {
             console.error("Error sending reset email:", err);
         });
