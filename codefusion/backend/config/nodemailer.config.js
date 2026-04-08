@@ -1,14 +1,22 @@
 import nodemailer from "nodemailer"
 
 const transporter = nodemailer.createTransport({
-    service: 'gmail',  
+    host: 'smtp.gmail.com',
+    port: 587,
+    secure: false, //TLS
     auth: {
         user: process.env.EMAIL_USER,      
         pass: process.env.EMAIL_PASS      
     },
+    connectionTimeout: 10000, // 10 seconds
+    socketTimeout: 10000,   
+    pool: {
+        maxConnections: 1,
+        maxMessages: 5
+    }
 });
 
-// Verify connection (non-blocking - for logging purposes only)
+// Verify connection (for logging only)
 transporter.verify((error) => {
     if (error) {
         console.error("Nodemailer verification warning:", error);
