@@ -5,7 +5,7 @@ const transporter = nodemailer.createTransport({
     auth: {
         user: process.env.EMAIL_USER,      
         pass: process.env.EMAIL_PASS      
-    }
+    },
 });
 
 transporter.verify((error) => {
@@ -19,14 +19,13 @@ transporter.verify((error) => {
 export const sendEmail = async ({ to, subject, text, html }) => {
     try {
         const mailOptions = {
-            from: "CodeFusion Team ",
+            from: "CodeFusion Team " + process.env.EMAIL_USER,
             to,
             subject,
             text,
             html
         };
-        const result = await transporter.sendMail(mailOptions);
-        console.log("Email sent: ", result.response);
+        await transporter.sendMail(mailOptions);
         return { success: true };
     } catch (error) {
         console.error("Error sending email:", error);
