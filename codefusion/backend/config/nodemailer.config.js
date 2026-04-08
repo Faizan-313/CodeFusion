@@ -1,6 +1,9 @@
 import nodemailer from "nodemailer"
 
-const transporter = nodemailer.createTransport({
+let transporter;
+let transporterError = null;
+
+const transporter_instance = nodemailer.createTransport({
     service: 'gmail',  
     auth: {
         user: process.env.EMAIL_USER,      
@@ -8,24 +11,36 @@ const transporter = nodemailer.createTransport({
     },
 });
 
-transporter.verify((error) => {
+transporter_instance.verify((error) => {
     if (error) {
         console.error("Nodemailer transporter error:", error);
-    }else{
-        console.log("Nodemailer Connected")
+        transporterError = error;
+        transporter = null;
+    } else {
+        console.log("Nodemailer Connected");
+        transporter = transporter_instance;
     }
 });
 
 export const sendEmail = async ({ to, subject, text, html }) => {
     try {
+        if (!transporter || transporterError) {
+            console.error("Transporter not initialized:", transporterError?.message);
+            return { 
+                success: false, 
+                error: "Email service is not available." + (transporterError ? ` ${transporterError.message}` : "")
+            };
+        }
+        const fromEmail = `CodeFusion Support <${process.env.EMAIL_USER}>`;
         const mailOptions = {
-            from: "CodeFusion Team " + process.env.EMAIL_USER,
+            from: fromEmail,
             to,
             subject,
             text,
             html
         };
         await transporter.sendMail(mailOptions);
+
         return { success: true };
     } catch (error) {
         console.error("Error sending email:", error);

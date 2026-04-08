@@ -50,7 +50,7 @@ const verifyEmail = async (req, res) => {
             expiresAt: expiresAt
         })
 
-        sendEmail({
+        const emailResult = await sendEmail({
             to: user.email,
             subject: "Reset Verification Code",
             text: `Hello ${user.name},
@@ -58,9 +58,13 @@ const verifyEmail = async (req, res) => {
             html: `<p>Hello <strong>${user.name}</strong>
                 <p>Your reset verification code is: <strong>${resetCode}</strong></p>
                 <p>The code will expire in <strong>10 minutes</strong></p>`
-        }).catch((err) => {
-            console.error("Error sending reset email:", err);
         });
+
+        if (!emailResult.success) {
+            return res.status(500).json({ 
+                message: "Could not send the mail. Please email us for further assistance."
+            });
+        }
 
         return res.status(200)
             .cookie("tempToken", tempToken, options)

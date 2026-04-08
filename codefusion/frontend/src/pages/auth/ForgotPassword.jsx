@@ -56,10 +56,9 @@ function ForgotPassword() {
             }
         } catch (error) {
             console.log(error);
-            toast.error(
-                error?.response?.data?.message ||
-                "Something went wrong. Please try again"
-            );
+            const errorMessage = error?.response?.data?.message || "Could not send the mail. Please try again later.";
+            setMessage(errorMessage);
+            toast.error(errorMessage);
         } finally {
             setIsLoading(false)
         }
@@ -167,7 +166,13 @@ function ForgotPassword() {
                                         Enter your email address and we'll send you a verification code to reset your password.
                                     </p>
                                     {message && (
-                                        <div className="text-sm text-green-700 bg-green-50 px-3 py-2 rounded">{message}</div>
+                                        <div className={`text-sm px-3 py-2 rounded mt-3 ${
+                                            message.includes("Could not") || message.includes("could not") 
+                                                ? "text-red-700 bg-red-50" 
+                                                : "text-green-700 bg-green-50"
+                                        }`}>
+                                            {message}
+                                        </div>
                                     )}
                                 </div>
 
@@ -218,10 +223,7 @@ function ForgotPassword() {
                                     <p className="text-sm text-gray-600">Enter the verification code sent to {formData.email}</p>
                                 </div>
                                 {message && (
-                                    <div className="text-sm text-green-700 bg-green-50 px-3 py-2 rounded text-center">{message}
-                                                    <p className="text-sm text-cyan-600">It may take 4-5 minutes to receive. Please wait!</p>                                    
-                                    </div>
-                                    
+                                    <div className="text-sm text-green-700 bg-green-50 px-3 py-2 rounded text-center">{message}</div>    
                                 )}
 
                                 <div className="flex flex-col mt-1 gap-3">
