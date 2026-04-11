@@ -1,6 +1,14 @@
 import { Violation } from "../models/violation.model.js";
 import { ExamSubmission } from "../models/examSubmission.model.js";
 
+async function isStudentExamFinished(examId, studentId) {
+    if (!examId || !studentId) return false;
+    const submitted = await ExamSubmission.exists({ examId, studentId });
+    if (submitted) return true;
+    const doc = await Violation.findOne({ examId, studentId }).select("status").lean();
+    return doc?.status === "submitted";
+}
+
 export default function registerStudentEvents(io, socket) {
     // Handle student joining exam
     socket.on("student-joined", async (payload) => {
@@ -31,7 +39,26 @@ export default function registerStudentEvents(io, socket) {
     // Handle new violations
     socket.on("new-violation", async (payload) => {
         try {
-            const { examId, studentId, violation, studentDetails } = payload;
+            if (!payload || typeof payload !== "object") {
+                console.warn("Invalid new-violation payload:", payload);
+                return;
+            }
+            const {
+                examId,
+                studentId,
+                violation,
+                studentDetails
+            } = payload;
+
+            const clientSaysSubmitted = payload.isSubmitted === true;
+
+            if (clientSaysSubmitted) {
+                return;
+            }
+
+            if (await isStudentExamFinished(examId, studentId)) {
+                return;
+            }
 
             if (!studentId || !examId || !violation?.type) {
                 console.warn("Invalid violation payload:", payload);

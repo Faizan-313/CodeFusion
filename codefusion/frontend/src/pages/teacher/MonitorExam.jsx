@@ -17,7 +17,7 @@ export default function MonitorExam() {
     const [showWindow, setShowWindow] = useState(false);
     const [selectedStudent, setSelectedStudent] = useState(null);
     const { fetchParticularExamDetails } = useExam();
-    const [students, setStudents] = useState(null);
+    // const [students, setStudents] = useState(null);
     const [view, setView] = useState("active"); // 'active' | 'submitted'
 
     // Fetch exam details
@@ -29,7 +29,7 @@ export default function MonitorExam() {
                 const response = await fetchParticularExamDetails(examId);
                 const data = response?.data ?? response;
                 setExamDetails(data);
-            } catch (error) {
+            } catch {
                 toast.error("Failed to load exam details");
             } finally {
                 setLoading(false);
@@ -63,7 +63,7 @@ export default function MonitorExam() {
             toast.error("Connection lost");
         });
 
-        s.on("connect_error", (error) => {
+        s.on("connect_error", () => {
             setIsConnected(false);
         });
 
@@ -316,12 +316,12 @@ export default function MonitorExam() {
         return <span className="px-3 py-1 bg-[#00cf87]  text-[#000000]  rounded-full text-xs font-bold animate-pulse">ACTIVE</span>; 
     };
 
-    const formatTime = (seconds) => {
-        if (!seconds) return "--:--";
-        const m = Math.floor(seconds / 60);
-        const s = seconds % 60;
-        return `${m}:${s < 10 ? "0" : ""}${s}`;
-    };
+    // const formatTime = (seconds) => {
+    //     if (!seconds) return "--:--";
+    //     const m = Math.floor(seconds / 60);
+    //     const s = seconds % 60;
+    //     return `${m}:${s < 10 ? "0" : ""}${s}`;
+    // };
 
     if (loading) {
         return (
@@ -338,7 +338,7 @@ export default function MonitorExam() {
         try {
             await navigator.clipboard.writeText(code);
             toast.success("Exam code copied!");
-        } catch (err) {
+        } catch {
             toast.error("Failed to copy code");
         }
     };
@@ -455,7 +455,7 @@ export default function MonitorExam() {
                                                 ) : (
                                                     <div className="space-y-3">
                                                         {activeStudents.map((student) => (
-                                                            console.log(student),
+                                                            // console.log(student),
                                                             <div key={student.studentId} className="bg-white dark:bg-gray-800 rounded-xl shadow-md border border-gray-200 dark:border-gray-700 overflow-hidden">
                                                                 <div className="p-4">
                                                                     <div className="flex items-center justify-between">

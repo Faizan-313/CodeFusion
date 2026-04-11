@@ -1,3 +1,5 @@
+import toast from "react-hot-toast";
+
 const validateExamDetails = (examDetails, questions = []) => {
     let isValid = true;
 
