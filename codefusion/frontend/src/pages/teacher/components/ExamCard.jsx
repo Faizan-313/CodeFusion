@@ -107,7 +107,7 @@ function ExamCard({ exam, onViewDetails, onEvaluate, onCopyCode, copiedCode, onD
                     {status.label === "Live" && (
                         <button
                             onClick={() => navigate(`/teacher/monitor/${exam._id}`)}
-                            className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-[#724c4c] to-[#d01d16] hover:from-[#c73b3b] hover:to-[#351209] text-white py-2.5 rounded-lg transition-all font-semibold text-sm group-hover:shadow-lg"
+                            className="w-full flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white py-2.5 rounded-lg transition-all font-semibold text-sm shadow-sm"
                         >
                             <Users size={16} />
                             Monitor Exam
