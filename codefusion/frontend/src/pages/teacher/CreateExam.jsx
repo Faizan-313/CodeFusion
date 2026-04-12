@@ -189,7 +189,11 @@ export default function CreateExam() {
 
         // Prepare FormData to send as multipart/form-data so we are able to include File objects directly
         const formData = new FormData();
-        formData.append('examDetails', JSON.stringify({ ...examDetails, duration: parseInt(examDetails.duration) }));
+        formData.append('examDetails', JSON.stringify({ ...examDetails, 
+                            duration: parseInt(examDetails.duration), 
+                            startTime: new Date(examDetails.startTime).toISOString(), 
+                            endTime: new Date(examDetails.endTime).toISOString() 
+                        }));
 
         // Questions payload (without files) include a hasImage flag for each question
         const questionsPayload = questions.map((q) => ({
@@ -199,6 +203,7 @@ export default function CreateExam() {
             ...(q.type === 'mcq' ? { options: q.options } : {}),
             hasImage: !!q.image
         }));
+        
         formData.append('questions', JSON.stringify(questionsPayload));
         formData.append('totalMarks', String(totalMarks));
 
