@@ -275,13 +275,53 @@ const getExamData = async (req, res) => {
     }
 };
 
+const deleteExam = async (req, res) => {
+    try {
+        const { id } = req.params;
+        if(!id){
+            return res.status(400).json({ message: "Exam ID is required" });
+        }
 
+        const exam = await Exam.findById(id).lean();
+        if (!exam) {
+            return res.status(404).json({ message: "Exam not found" });
+        }
 
+        // Authorization check
+        if (exam.createdBy.toString() !== req.user._id.toString()) {
+            return res.status(403).json({ message: "You are not authorized to delete this exam" });
+        }
+
+        // Prevent deletion of live or already-completed exams
+        const now = new Date();
+        const isLive = exam.startTime <= now && exam.endTime >= now;
+        const isCompleted = exam.endTime < now;
+
+        if (isLive || isCompleted) {
+            return res.status(409).json({
+                message: "Only upcoming exams can be deleted"
+            });
+        }
+
+        //delete exam + question paper together
+        await Promise.all([
+            Exam.findByIdAndDelete(id),
+            exam.questionPaper && QuestionPaper.findByIdAndDelete(exam.questionPaper),
+        ]);
+
+        return res.status(200).json({ message: "Exam deleted successfully" });
+
+    } catch (error) {
+        console.error(`[deleteExam] Error deleting exam ${req.params?.id}:`, error);
+        return res.status(500).json({ message: "An unexpected error occurred. Please try again." });
+    }
+};
 
 export {
     createExam,
     validateCode,
     storeStudentDetails,
     submitExam,
-    getExamData
+    getExamData,
+    deleteExam
 }

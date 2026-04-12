@@ -37,7 +37,7 @@ export const TeacherProvider = ({ children }) => {
                     total: response.data.total || 0,
                 });
             }
-        } catch (err) {
+        } catch {
             setStudentsError("Failed to load students");
             toast.error("Failed to load students");
         } finally {
@@ -57,12 +57,16 @@ export const TeacherProvider = ({ children }) => {
                 setExamsError("Failed to load exams");
                 toast.error("Failed to load exams");
             }
-        } catch (err) {
+        } catch  {
             setExamsError("Error loading dashboard");
             toast.error("Error loading dashboard");
         } finally {
             setExamsLoading(false);
         }
+    }, []);
+
+    const removeExam = useCallback((id) => {
+        setExams(prev => prev.filter(exam => exam._id !== id));
     }, []);
 
     return (
@@ -77,6 +81,7 @@ export const TeacherProvider = ({ children }) => {
                 examsLoading,
                 examsError,
                 fetchExams,
+                removeExam,
             }}
         >
             {children}

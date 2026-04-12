@@ -1,28 +1,28 @@
 import { useEffect, useState } from "react";
 import {
     Clock, FileText, PlusCircle, Award, BookOpen, TrendingUp,
-    Loader2, AlertCircle, ChevronRight
+    Loader2, AlertCircle
 } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import { useTeacher } from "../../context/TeacherContext";
 import ExamCard from "./components/ExamCard";
 import ExamDetailsModal from "./components/ExamDetailsModal";
+import { apiCall } from "../../api/api";
 
 
 export default function TeacherDashboard() {
 
     const [selectedExam, setSelectedExam] = useState(null);
     const [copiedCode, setCopiedCode] = useState(null);
-    const { exams, loading, error, fetchExams } = useTeacher();
+    const [deletingId, setDeletingId] = useState(null); 
+    const { exams, loading, error, fetchExams, removeExam } = useTeacher();
 
     const navigate = useNavigate();
 
     useEffect(() => {
         fetchExams();
     }, [fetchExams]);
-
-
 
     const copyToClipboard = async (code) => {
         try {
@@ -34,6 +34,52 @@ export default function TeacherDashboard() {
             console.error("Failed to copy:", err);
             toast.error("Failed to copy code");
         }
+    };
+
+    const handleDeleteAction = async (id, toastId) => {
+        toast.dismiss(toastId);
+        setDeletingId(id);
+        try {
+            const res = await apiCall(`${import.meta.env.VITE_API_URL}/api/v1/exams/${id}`, "DELETE");
+            // console.log("Delete response:", res);
+            if (res?.status === 200)  {
+                removeExam(id);           
+                toast.success("Exam deleted successfully.");
+            } else {
+                toast.error(res.message || "Failed to delete exam");
+            }
+        } catch (err) {
+            console.error("Failed to delete exam:", err);
+            toast.error("Failed to delete exam");
+        } finally {
+            setDeletingId(null);
+        }
+    };
+
+    const handleDeleteExam = (id) => {
+        toast.custom((t) => (
+            <div className="bg-white dark:bg-gray-900 p-4 rounded-lg shadow-lg border text-sm flex flex-col gap-3 w-72">
+                <p className="text-gray-800 dark:text-gray-200">
+                    Are you sure you want to{" "}
+                    <span className="font-semibold text-red-600">delete</span> this exam?
+                    This action cannot be undone.
+                </p>
+                <div className="flex justify-end gap-2">
+                    <button
+                        onClick={() => toast.dismiss(t.id)}
+                        className="px-3 cursor-pointer py-1 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded-md text-xs font-medium hover:bg-gray-300"
+                    >
+                        Cancel
+                    </button>
+                    <button
+                        onClick={() => handleDeleteAction(id, t.id)} // ✅ pass t.id, not exam id
+                        className="px-3 cursor-pointer py-1 bg-red-600 hover:bg-red-700 text-white rounded-md text-xs font-medium"
+                    >
+                        Confirm
+                    </button>
+                </div>
+            </div>
+        ));
     };
 
     const handleEvaluate = (id) => {
@@ -155,7 +201,9 @@ export default function TeacherDashboard() {
                                 onViewDetails={() => setSelectedExam(exam)}
                                 onEvaluate={() => handleEvaluate(exam._id)}
                                 onCopyCode={() => copyToClipboard(exam.examCode)}
+                                onDeleteExam={() => handleDeleteExam(exam._id)}
                                 copiedCode={copiedCode}
+                                isDeleting={deletingId === exam._id}
                             />
                         ))}
                     </div>

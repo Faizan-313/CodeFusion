@@ -1,11 +1,12 @@
 import {
     Calendar, Clock, Award, Copy, Check,
-    Users, ChevronRight
+    Users, ChevronRight, Trash2,
+    Loader2
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import getExamStatusHelper from "../helpers/examStatusHelper.js";
 
-function ExamCard({ exam, onViewDetails, onEvaluate, onCopyCode, copiedCode }) {
+function ExamCard({ exam, onViewDetails, onEvaluate, onCopyCode, copiedCode, onDeleteExam, isDeleting }) {
     const status = getExamStatusHelper(exam.startTime, exam.endTime);
     const questionCount = exam.questions?.length || 0;
     const isCompleted = status.label === "Completed";
@@ -112,7 +113,17 @@ function ExamCard({ exam, onViewDetails, onEvaluate, onCopyCode, copiedCode }) {
                             Monitor Exam
                         </button>
                     )}
+                    {status.label !== "Live" && !isCompleted &&(
+                        <button
+                            onClick={onDeleteExam}
+                            disabled={isDeleting}
+                            className="w-full flex items-center cursor-pointer justify-center gap-2 bg-gradient-to-r from-red-400 to-red-600 hover:from-red-700 hover:to-red-800 text-white py-2.5 rounded-lg transition-all font-semibold text-sm group-hover:shadow-lg"
+                        >
+                            {isDeleting ? <Loader2 size={16} className="animate-spin" /> : <Trash2 size={16} />}
 
+                            Delete Exam
+                        </button>
+                    )}
 
                     {isCompleted && (
                         <button
