@@ -26,8 +26,8 @@ Built using modern technologies such as **React.js**, **Node.js**, and **MongoDB
 |-------|-------------------|
 | **Frontend** | React.js, Tailwind CSS, CodeMirror |
 | **Backend** | Node.js, Express.js, Socket.io |
-| **Database** | MongoDB | Cloudinary
-| **AI Monitoring** | TensorFlow, MediaPipe 
+| **Database** | MongoDB, Cloudinary |
+| **AI Monitoring** | TensorFlow, MediaPipe |
 
 ---
 
@@ -94,9 +94,14 @@ PORT=3000
 NODE_ENV=dev
 CORS_ORIGIN=
 
-# Database
+# Database 
+
+#local
 MONGO_DB_URL=
 DB_NAME=
+
+#atlas
+MONGO=
 
 # Auth tokens
 ACCESS_TOKEN_SECRET=your_access_token_secret
