@@ -1,7 +1,7 @@
 import {
     Calendar, Clock, Award, X, Copy, Check,
 } from "lucide-react";
-import getExamStatusHelper from "../helpers/examStatusHelper.js";
+import getExamStatusHelper from "../utils/examStatusHelper.js";
 
 
 function ExamDetailsModal({ exam, onClose, copiedCode, onCopyCode }) {

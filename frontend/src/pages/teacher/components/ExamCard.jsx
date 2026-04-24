@@ -4,7 +4,7 @@ import {
     Loader2
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import getExamStatusHelper from "../helpers/examStatusHelper.js";
+import getExamStatusHelper from "../utils/examStatusHelper.js";
 
 function ExamCard({ exam, onViewDetails, onEvaluate, onCopyCode, copiedCode, onDeleteExam, isDeleting }) {
     const status = getExamStatusHelper(exam.startTime, exam.endTime);

@@ -28,6 +28,12 @@ function ExamInstructions() {
                 <li className="flex items-start gap-3">
                     <span className="text-[#5c8374] mt-1">•</span>
                     <span className="text-sm md:text-base leading-relaxed">
+                        Avoid having multiple people in the camera frame — facial recognition will be active.
+                    </span>
+                </li>
+                <li className="flex items-start gap-3">
+                    <span className="text-[#5c8374] mt-1">•</span>
+                    <span className="text-sm md:text-base leading-relaxed">
                         Copy-pasting answers is strictly prohibited.
                     </span>
                 </li>
@@ -59,7 +65,7 @@ function ExamInstructions() {
             {/* Warning Footer */}
             <div className="mt-6 sm:mt-8 p-4 sm:p-5 bg-gradient-to-r from-red-50 to-orange-50 dark:from-red-900/20 dark:to-orange-900/20 border-l-4 border-red-500 dark:border-red-400 rounded-lg">
                 <p className="text-xs sm:text-sm md:text-base text-gray-700 dark:text-gray-300 font-medium">
-                    <span className="text-red-600 dark:text-red-400 font-bold">⚠️ Important:</span> Violation of any instruction may result in automatic exam termination and disqualification.
+                    <span className="text-red-600 dark:text-red-400 font-bold">🥷 Important:</span> Violation of any instruction may result in automatic exam termination and disqualification.
                 </p>
             </div>
         </div>

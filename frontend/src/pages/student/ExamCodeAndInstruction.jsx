@@ -1,13 +1,16 @@
-import React, { useEffect } from "react";
+import React from "react";
 import ExamInstructions from "./components/ExamInstruction"
 import { toast } from "react-hot-toast";
 import { useExam } from "../../context/ExamContext";
 import { useNavigate } from "react-router-dom";
+import { checkCamera } from "../../features/ai-monitoring/hooks/checkCamera.js";
 
 function ExamCodeAndInstruction() {
     const [openCodeWindow, setOpenCodeWindow] = React.useState(false);
     const [examCode, setExamCode] = React.useState("");
     const [loading, setLoading] = React.useState(false)
+    const [checkingCamera, setCheckingCamera] = React.useState(false);
+
     const { validateExamCode } = useExam();
     const navigate = useNavigate();
 
@@ -20,8 +23,17 @@ function ExamCodeAndInstruction() {
         return true;
     }
 
-    const handleClick = () => {
+    const handleClick = async () => {
         if(!checkCheckBox()) return;
+        setCheckingCamera(true);
+
+        const result = await checkCamera();
+        if(!result.ok){
+            toast.error(result.reason);
+            setCheckingCamera(false);
+            return;
+        }
+        toast.success("Camera access granted. You will be monitored during the exam.");
         setOpenCodeWindow(true);
     }
 
@@ -86,7 +98,7 @@ function ExamCodeAndInstruction() {
                     </button>
                 </div>
 
-                {openCodeWindow && (
+                {openCodeWindow && !checkingCamera && (
                     <div className="fixed inset-0 bg-black bg-opacity-40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
                         <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-6 sm:p-8 w-full max-w-md text-center relative animate-fade-in">
                             <button
