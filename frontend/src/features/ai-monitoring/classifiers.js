@@ -2,23 +2,20 @@ import {
   YAW_THRESHOLD,
   PITCH_UP_THRESHOLD,
   PITCH_DOWN_THRESHOLD,
-  ROLL_THRESHOLD_DEG,
   GAZE_X_THRESHOLD,
   GAZE_Y_THRESHOLD,
 } from "./constants.js";
 
 
 // Classify head pose relative to a calibrated baseline.
-export function classifyHead({ yaw, pitch, roll }, baseline) {
+export function classifyHead({ yaw, pitch }, baseline) {
   const y = yaw - (baseline?.yaw ?? 0);
   const p = pitch - (baseline?.pitch ?? 0);
-  const r = roll - (baseline?.roll ?? 0);
 
   if (y > YAW_THRESHOLD) return "head_right";
   if (y < -YAW_THRESHOLD) return "head_left";
   if (p < -PITCH_UP_THRESHOLD) return "head_up";
   if (p > PITCH_DOWN_THRESHOLD) return "head_down";
-  if (Math.abs(r) > ROLL_THRESHOLD_DEG) return "head_tilted";
   return null;
 }
 
@@ -40,7 +37,6 @@ export const HEAD_KEYS = [
   "head_right",
   "head_up",
   "head_down",
-  "head_tilted",
 ];
 
 export const GAZE_KEYS = ["gaze_left", "gaze_right", "gaze_up", "gaze_down"];

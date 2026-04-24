@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { flushSync } from 'react-dom'
 import { useExam } from '../../context/ExamContext'
-import { useProctoringCtx } from '../../context/ProctoringContext'
+import { useProctoringCtx } from '../../context/proctoringContextCore'
 import toast from 'react-hot-toast'
 import { User, Hash, Calendar, Users, Clock, BookOpen, Award, FileText, Target } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
@@ -105,6 +105,18 @@ const StudentDetailsFilling = () => {
         if (formData.collegeId.length < 6) {
             toast.error("Please enter a valid college ID");
             return;
+        }
+
+        // Request fullscreen here (synchronously, inside the click gesture) so the browser allows it. By the time we navigate to ExamSection the tab is already fullscreen.
+        try {
+            const elem = document.documentElement;
+            const req =
+                elem.requestFullscreen?.bind(elem) ??
+                elem.webkitRequestFullscreen?.bind(elem) ??
+                elem.msRequestFullscreen?.bind(elem);
+            req?.();
+        } catch (err) {
+            console.error("Fullscreen request failed:", err);
         }
 
         // Kick off details submission and camera calibration in parallel.

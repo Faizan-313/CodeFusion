@@ -8,13 +8,12 @@ export const CALIBRATION_MS = 2000;
 
 // Head-pose thresholds. These are applied AFTER baseline subtraction.
 export const YAW_THRESHOLD = 0.16;        //deg of head rotation
-export const PITCH_UP_THRESHOLD = 0.08;   //nose.y negative = looking up
-export const PITCH_DOWN_THRESHOLD = 0.08; // looking down (notes/keyboard)
-export const ROLL_THRESHOLD_DEG = 15;     // allow a head tilt while reading
+export const PITCH_UP_THRESHOLD = 0.06;   //nose.y negative = looking up
+export const PITCH_DOWN_THRESHOLD = 0.09; // looking down (notes/keyboard)
 
 // Gaze thresholds — iris offset from eye-corner midpoint, normalized by eye width. These are applied AFTER baseline subtraction.
 export const GAZE_X_THRESHOLD = 0.12;     // was 0.07
-export const GAZE_Y_THRESHOLD = 0.08;     // was 0.04
+export const GAZE_Y_THRESHOLD = 0.06;     // was 0.04
 
 // Phone detection — how often (ms) we run the object detector, and the minimum model confidence to accept a "cell phone" detection.
 export const PHONE_DETECT_INTERVAL_MS = 600;
@@ -50,7 +49,6 @@ export const ANOMALY_MESSAGES = {
   head_right: "Head turned right",
   head_up: "Head tilted up",
   head_down: "Head tilted down",
-  head_tilted: "Head tilted sideways",
   gaze_left: "Looking left",
   gaze_right: "Looking right",
   gaze_up: "Looking up",

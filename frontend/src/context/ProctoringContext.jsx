@@ -1,27 +1,33 @@
-import { createContext, useCallback, useContext, useMemo, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 import Webcam from "react-webcam";
 import toast from "react-hot-toast";
 import { useProctoring } from "../features/ai-monitoring/useProctoring.js";
-
-const ProctoringContext = createContext(null);
-
-export function useProctoringCtx() {
-  const ctx = useContext(ProctoringContext);
-  if (!ctx) {
-    throw new Error("useProctoringCtx must be used inside <ProctoringProvider>");
-  }
-  return ctx;
-}
+import { ProctoringContext } from "./proctoringContextCore.js";
 
 export function ProctoringProvider({ children }) {
   const [enabled, setEnabled] = useState(false);
   const [showOverlay, setShowOverlay] = useState(false);
   const [statusMessage, setStatusMessage] = useState(null);
 
+  //  ExamSection can register a handler so AI-monitoring anomalies
+  // get forwarded into the same violation pipeline as DOM-based events. If no
+  // handler is registered (during calibration), we fall back to a toast.
+  const anomalyHandlerRef = useRef(null);
+
   const { webcamRef, phase } = useProctoring({
     enabled,
-    onAnomalyStart: (anomaly) => toast.error(anomaly.message),
+    onAnomalyStart: (anomaly) => {
+      if (anomalyHandlerRef.current) {
+        anomalyHandlerRef.current(anomaly);
+      } else {
+        toast.error(anomaly.message);
+      }
+    },
   });
+
+  const setAnomalyHandler = useCallback((handler) => {
+    anomalyHandlerRef.current = handler ?? null;
+  }, []);
 
   const startCalibration = useCallback(() => {
     setEnabled(true);
@@ -40,7 +46,7 @@ export function ProctoringProvider({ children }) {
     setStatusMessage(null);
   }, []);
 
-  // Memoize the context value so consumers don't re-render on every provider
+  // Memoize the context value so ExamSection don't re-render on every provider
   // re-render. startCalibration/finishCalibration/stop/setStatusMessage are all
   // stable, so the value only changes when phase, enabled, or showOverlay do.
   const value = useMemo(
@@ -52,8 +58,9 @@ export function ProctoringProvider({ children }) {
       finishCalibration,
       stop,
       setStatusMessage,
+      setAnomalyHandler,
     }),
-    [phase, enabled, showOverlay, startCalibration, finishCalibration, stop, setStatusMessage]
+    [phase, enabled, showOverlay, startCalibration, finishCalibration, stop, setStatusMessage, setAnomalyHandler]
   );
 
   return (

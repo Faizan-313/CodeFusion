@@ -21,12 +21,25 @@ const violationSchema = new mongoose.Schema({
             type: {
                 type: String,
                 enum: [
-                    "tab_switch",
-                    "window_blur",
-                    "devtools_opened",
-                    "right_click_attempt",
-                    "blocked_shortcut",
-                    "fullscreen_exit"
+                    // DOM / browser-based proctoring events
+                    "TAB_SWITCH",
+                    "WINDOW_BLUR",
+                    "DEVTOOLS_OPENED",
+                    "RIGHT_CLICK_ATTEMPT",
+                    "BLOCKED_SHORTCUT",
+                    "FULLSCREEN_EXIT",
+                    // AI-monitoring anomalies 
+                    "AI_NO_FACE",
+                    "AI_MULTIPLE_FACES",
+                    "AI_HEAD_LEFT",
+                    "AI_HEAD_RIGHT",
+                    "AI_HEAD_UP",
+                    "AI_HEAD_DOWN",
+                    "AI_GAZE_LEFT",
+                    "AI_GAZE_RIGHT",
+                    "AI_GAZE_UP",
+                    "AI_GAZE_DOWN",
+                    "AI_PHONE_DETECTED"
                 ],
                 required: true
             },

@@ -1,7 +1,7 @@
 import { useEffect, useLayoutEffect, useState, useCallback, useRef } from "react";
 import { flushSync } from "react-dom";
 import { useExam } from "../../context/ExamContext";
-import { useProctoringCtx } from "../../context/ProctoringContext";
+import { useProctoringCtx } from "../../context/proctoringContextCore";
 import toast from "react-hot-toast";
 import CodeMirror from "@uiw/react-codemirror";
 import { javascript } from "@codemirror/lang-javascript";
@@ -17,7 +17,7 @@ import { io } from "socket.io-client";
 
 function ExamSection() {
     const { exam, studentDetails, questionPaper } = useExam();
-    const { stop: stopProctoring } = useProctoringCtx();
+    const { stop: stopProctoring, setAnomalyHandler } = useProctoringCtx();
     const [questions, setQuestions] = useState([]);
     const [answers, setAnswers] = useState({});
     const [selectedLanguages, setSelectedLanguages] = useState({});
@@ -27,6 +27,7 @@ function ExamSection() {
     const [devToolsOpen, setDevToolsOpen] = useState(false);
     const [examPaused, setExamPaused] = useState(false);
     const [pauseReason, setPauseReason] = useState(null);
+    const [needsFullscreen, setNeedsFullscreen] = useState(false);
 
     const submitAttemptedRef = useRef(false);
     const timerRef = useRef(null);
@@ -115,6 +116,7 @@ function ExamSection() {
         proctoringSuppressedUntilRef.current = Date.now() + 8000;
         submitAttemptedRef.current = true;
         isSubmittedRef.current = true;
+
         clearInterval(timerRef.current);
         toast.dismiss();
         // Synchronous commit so useLayoutEffect runs now and removes proctoring listeners before any further events.
@@ -449,20 +451,117 @@ function ExamSection() {
         };
     }, [isSubmitted, devToolsOpen, recordProctoringSignal]); // isSubmitted triggers cleanup on submit
 
-    //Security: Fullscreen enforcement
+    // Silent block: copy / cut / paste and screenshot-ish shortcuts. not added to violation. A brief toast lets the student know.
     useLayoutEffect(() => {
         if (isSubmitted || submitAttemptedRef.current) return;
 
-        const requestFullscreen = async () => {
-            try {
-                const elem = document.documentElement;
-                if (elem.requestFullscreen) await elem.requestFullscreen();
-                else if (elem.webkitRequestFullscreen) await elem.webkitRequestFullscreen();
-                else if (elem.msRequestFullscreen) await elem.msRequestFullscreen();
-            } catch (error) {
-                console.error("Fullscreen request failed:", error);
+        let lastToastAt = 0;
+        const notify = (msg) => {
+            const now = Date.now();
+            if (now - lastToastAt < 1200) return; // throttle — PrintScreen can fire repeatedly
+            lastToastAt = now;
+            toast.error(msg, { id: "exam-block" });
+        };
+
+        const blockClipboardEvent = (label) => (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            notify(`${label} is disabled during the exam`);
+        };
+
+        const handleCopy = blockClipboardEvent("Copy");
+        const handleCut = blockClipboardEvent("Cut");
+        const handlePaste = blockClipboardEvent("Paste");
+
+        const wipeClipboard = () => {
+            // on PrintScreen Windows.
+            if (navigator.clipboard?.writeText) {
+                navigator.clipboard.writeText("").catch(() => {});
             }
         };
+
+        const handleKeyDown = (e) => {
+            const key = (e.key || "").toLowerCase();
+
+            // PrintScreen on Windows / macOS screenshot combos.
+            if (
+                e.key === "PrintScreen" ||
+                e.keyCode === 44 ||
+                (e.metaKey && e.shiftKey && ["3", "4", "5"].includes(key)) // macOS: ⌘⇧3/4/5
+            ) {
+                e.preventDefault();
+                wipeClipboard();
+                notify("Screenshots are disabled during the exam");
+                return;
+            }
+
+            // Ctrl/Cmd + C / X / V / P — clipboard + print (print path is a screenshot vector).
+            if ((e.ctrlKey || e.metaKey) && !e.altKey) {
+                if (["c", "x", "v", "p"].includes(key)) {
+                    e.preventDefault();
+                    const labelMap = { c: "Copy", x: "Cut", v: "Paste", p: "Print" };
+                    notify(`${labelMap[key]} is disabled during the exam`);
+                }
+            }
+        };
+
+        const handleKeyUp = (e) => {
+            if (e.key === "PrintScreen" || e.keyCode === 44) {
+                wipeClipboard();
+                notify("Screenshots are disabled during the exam");
+            }
+        };
+
+        document.addEventListener("copy", handleCopy, true);
+        document.addEventListener("cut", handleCut, true);
+        document.addEventListener("paste", handlePaste, true);
+        document.addEventListener("keydown", handleKeyDown, true);
+        document.addEventListener("keyup", handleKeyUp, true);
+
+        return () => {
+            document.removeEventListener("copy", handleCopy, true);
+            document.removeEventListener("cut", handleCut, true);
+            document.removeEventListener("paste", handlePaste, true);
+            document.removeEventListener("keydown", handleKeyDown, true);
+            document.removeEventListener("keyup", handleKeyUp, true);
+        };
+    }, [isSubmitted]);
+
+    //Security: Fullscreen enforcement
+    const enterFullscreen = useCallback(async () => {
+        if (document.fullscreenElement) {
+            setNeedsFullscreen(false);
+            return true;
+        }
+        try {
+            const elem = document.documentElement;
+            const req =
+                elem.requestFullscreen?.bind(elem) ??
+                elem.webkitRequestFullscreen?.bind(elem) ??
+                elem.msRequestFullscreen?.bind(elem);
+            if (!req) {
+                setNeedsFullscreen(false);
+                return false;
+            }
+            await req();
+            setNeedsFullscreen(false);
+            return true;
+        } catch (error) {
+            console.warn("Fullscreen request rejected, awaiting user gesture:", error?.message || error);
+            setNeedsFullscreen(true);
+            return false;
+        }
+    }, []);
+
+    useLayoutEffect(() => {
+        if (isSubmitted || submitAttemptedRef.current) return;
+
+        // Try to enter on mount. If the navigation from StudentDetailsFilling preserved the gesture we're already fullscreen; if not, this will fail silently and the overlay prompt takes over.
+        if (!document.fullscreenElement) {
+            enterFullscreen();
+        } else {
+            setNeedsFullscreen(false);
+        }
 
         const handleFullscreenChange = () => {
             if (!document.fullscreenElement) {
@@ -474,11 +573,12 @@ function ExamSection() {
                     },
                     "Please remain in fullscreen mode during the exam"
                 );
-                if (proctoringMayRecord()) requestFullscreen();
+                if (proctoringMayRecord()) setNeedsFullscreen(true);
+            } else {
+                setNeedsFullscreen(false);
             }
         };
 
-        requestFullscreen();
         document.addEventListener("fullscreenchange", handleFullscreenChange);
 
         return () => {
@@ -487,7 +587,29 @@ function ExamSection() {
                 document.exitFullscreen().catch(err => console.error(err));
             }
         };
-    }, [isSubmitted, recordProctoringSignal]);
+    }, [isSubmitted, recordProctoringSignal, enterFullscreen]);
+
+    //Security: AI monitoring - forward anomalies (no_face, multiple_faces, head/gaze off-axis, phone_detected, ...) through the same violation pipeline as DOM-based events so they hit the socket, the teacher dashboard, and the DB.
+    useLayoutEffect(() => {
+        if (isSubmitted || submitAttemptedRef.current) return;
+
+        const handleAnomaly = (anomaly) => {
+            // anomaly: { id, key, message, startTime } from AnomalyTracker
+            const type = `AI_${String(anomaly.key || "UNKNOWN").toUpperCase()}`;
+            recordProctoringSignal(
+                {
+                    type,
+                    timestamp: new Date(anomaly.startTime || Date.now()).toISOString(),
+                    message: anomaly.message,
+                    source: "ai_monitoring"
+                },
+                `AI monitoring detected: ${anomaly.message}`
+            );
+        };
+
+        setAnomalyHandler(handleAnomaly);
+        return () => setAnomalyHandler(null);
+    }, [isSubmitted, recordProctoringSignal, setAnomalyHandler]);
 
     // Helpers
     const handleAnswerChange = useCallback((questionId, value) => {
@@ -537,6 +659,32 @@ function ExamSection() {
     }
     return (
         <div className="min-h-screen bg-gradient-to-br from-[#f0f8f7] via-[#e8f5f3] to-[#dff1ee] dark:from-[#092635] dark:via-[#1b4242] dark:to-[#0d3a47] py-8 px-4 sm:px-6 lg:px-8">
+
+            {/* Fullscreen gate — only mounted when we lose fullscreen. The user-gesture on this button is what lets the browser honor the request. */}
+            {needsFullscreen && !isSubmitted && (
+                <div className="fixed inset-0 z-[70] bg-black/80 backdrop-blur-sm flex items-center justify-center px-4">
+                    <div className="max-w-md w-full bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-8 text-center border-2 border-red-400 dark:border-red-600">
+                        <div className="w-16 h-16 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <Shield className="w-8 h-8 text-red-600 dark:text-red-400" />
+                        </div>
+                        <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">Fullscreen Required</h2>
+                        <p className="text-gray-600 dark:text-gray-300 mb-6">
+                            This exam must be taken in fullscreen mode. Please click the button below to continue.
+                        </p>
+                        <button
+                            type="button"
+                            onClick={enterFullscreen}
+                            className="w-full px-6 py-3 bg-gradient-to-r from-[#5c8374] to-[#1b4242] hover:from-[#1b4242] hover:to-[#092635] text-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 font-semibold"
+                        >
+                            Enter Fullscreen
+                        </button>
+                        <p className="text-xs text-gray-500 dark:text-gray-400 mt-4">
+                            Exiting fullscreen during the exam will be recorded as a violation.
+                        </p>
+                    </div>
+                </div>
+            )}
+
             <div className="max-w-5xl mx-auto">
 
                 {/* Security Warning */}
