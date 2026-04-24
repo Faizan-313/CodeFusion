@@ -1,6 +1,7 @@
 import { useEffect, useLayoutEffect, useState, useCallback, useRef } from "react";
 import { flushSync } from "react-dom";
 import { useExam } from "../../context/ExamContext";
+import { useProctoringCtx } from "../../context/ProctoringContext";
 import toast from "react-hot-toast";
 import CodeMirror from "@uiw/react-codemirror";
 import { javascript } from "@codemirror/lang-javascript";
@@ -16,6 +17,7 @@ import { io } from "socket.io-client";
 
 function ExamSection() {
     const { exam, studentDetails, questionPaper } = useExam();
+    const { stop: stopProctoring } = useProctoringCtx();
     const [questions, setQuestions] = useState([]);
     const [answers, setAnswers] = useState({});
     const [selectedLanguages, setSelectedLanguages] = useState({});
@@ -32,7 +34,7 @@ function ExamSection() {
     const studentJoinedEmittedRef = useRef(false);
     
     const isSubmittedRef = useRef(false);
-    /** Suppress proctoring UI during submit click sequence (blur/visibility fire before onClick). ms timestamp. */
+    //Suppress proctoring UI during submit click sequence (blur/visibility fire before onClick). ms timestamp. 
     const proctoringSuppressedUntilRef = useRef(0);
 
     const questionsRef = useRef([]);
@@ -47,8 +49,6 @@ function ExamSection() {
         java: { ext: java(), label: "Java" },
         cpp: { ext: cpp(), label: "C++" }
     };
-
-    // Refs isSubmittedRef / submitAttemptedRef are updated only in handleSubmit (and rollback) so they stay in sync during the async submit gap — do not mirror isSubmitted state into refs (that can race with handlers).
 
     // Initialize questions and answers
     useEffect(() => {
@@ -110,7 +110,6 @@ function ExamSection() {
         [reportViolation]
     );
 
-    // ─── handleSubmit ────────────────────────────────────────────────────────
     const handleSubmit = useCallback(async () => {
         if (submitAttemptedRef.current) return;
         proctoringSuppressedUntilRef.current = Date.now() + 8000;
@@ -118,8 +117,7 @@ function ExamSection() {
         isSubmittedRef.current = true;
         clearInterval(timerRef.current);
         toast.dismiss();
-        // Synchronous commit so useLayoutEffect runs NOW and removes proctoring listeners
-        // before any further blur/visibility/devtools events (useEffect runs too late).
+        // Synchronous commit so useLayoutEffect runs now and removes proctoring listeners before any further events.
         flushSync(() => {
             setIsSubmitted(true);
         });
@@ -166,6 +164,7 @@ function ExamSection() {
                 }
 
                 toast.success("Exam submitted successfully!");
+                stopProctoring();
                 const name = studentDetails?.name
                     ?.split(" ")
                     .map(n => n.charAt(0).toUpperCase() + n.slice(1))
@@ -184,7 +183,14 @@ function ExamSection() {
                 setIsSubmitted(false);
             });
         }
-    }, [exam, studentDetails, navigate]);
+    }, [exam, studentDetails, navigate, stopProctoring]);
+
+    // Safety net: if the exam page unmounts for any reason (forced redirect, page close, etc.) make sure the camera and detectors are released too.
+    useEffect(() => {
+        return () => {
+            stopProctoring();
+        };
+    }, [stopProctoring]);
 
     useLayoutEffect(() => {
         if (isSubmitted) {
@@ -195,7 +201,7 @@ function ExamSection() {
     const handleSubmitRef = useRef(handleSubmit);
     handleSubmitRef.current = handleSubmit;
 
-    // ─── Calculate initial time ───────────────────────────────────────────────
+    //Calculate initial time 
     useEffect(() => {
         if (!exam?.duration || !exam?.endTime) return;
 
@@ -213,7 +219,7 @@ function ExamSection() {
         }
     }, [exam]);
 
-    // ─── Timer countdown ──────────────────────────────────────────────────────
+    //Timer countdown
     useEffect(() => {
         if (isSubmitted || submitAttemptedRef.current || examPaused) return;
 
@@ -232,7 +238,7 @@ function ExamSection() {
         return () => clearInterval(timerRef.current);
     }, [isSubmitted, examPaused, handleSubmit]);
 
-    // ─── Socket connection ────────────────────────────────────────────────────
+    //Socket connection 
     useEffect(() => {
         if (!exam || !studentDetails) return;
 
@@ -290,7 +296,7 @@ function ExamSection() {
         };
     }, [exam, studentDetails]);
 
-    // ─── Heartbeat ────────────────────────────────────────────────────────────
+    //Heartbeat 
     useEffect(() => {
         const interval = setInterval(() => {
             if (
@@ -308,7 +314,7 @@ function ExamSection() {
         return () => clearInterval(interval);
     }, [exam, studentDetails, timeLeft]);
 
-    // ─── Security: Tab switching ──────────────────────────────────────────────
+    //Security: Tab switching 
     useLayoutEffect(() => {
         if (isSubmitted || submitAttemptedRef.current) return;
 
@@ -329,7 +335,7 @@ function ExamSection() {
         return () => document.removeEventListener("visibilitychange", handleVisibilityChange);
     }, [isSubmitted, recordProctoringSignal]);
 
-    // ─── Security: Window blur ────────────────────────────────────────────────
+    //Security: Window blur
     useLayoutEffect(() => {
         if (isSubmitted || submitAttemptedRef.current) return;
 
@@ -348,7 +354,7 @@ function ExamSection() {
         return () => window.removeEventListener("blur", handleBlur);
     }, [isSubmitted, recordProctoringSignal]);
 
-    // ─── Security: Prevent page refresh/close ────────────────────────────────
+    //Security: Prevent page refresh/close
     useLayoutEffect(() => {
         if (isSubmitted || submitAttemptedRef.current) return;
 
@@ -365,8 +371,7 @@ function ExamSection() {
         return () => window.removeEventListener("beforeunload", handleBeforeUnload);
     }, [isSubmitted]);
 
-    // ─── Security: DevTools / context menu / keyboard shortcuts ──────────────
-    // isSubmitted in deps ensures cleanup (clearInterval) runs on submission
+    // Security: DevTools / context menu / keyboard shortcuts 
     useLayoutEffect(() => {
         if (isSubmitted || submitAttemptedRef.current) return; // stops re-registering after submit
 
@@ -444,7 +449,7 @@ function ExamSection() {
         };
     }, [isSubmitted, devToolsOpen, recordProctoringSignal]); // isSubmitted triggers cleanup on submit
 
-    // ─── Security: Fullscreen enforcement ────────────────────────────────────
+    //Security: Fullscreen enforcement
     useLayoutEffect(() => {
         if (isSubmitted || submitAttemptedRef.current) return;
 
@@ -520,7 +525,6 @@ function ExamSection() {
         .map(n => n.charAt(0).toUpperCase() + n.slice(1))
         .join(" ");
 
-    // ─── Early exit ───────────────────────────────────────────────────────────
     if (!exam) {
         return (
             <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
@@ -531,8 +535,6 @@ function ExamSection() {
             </div>
         );
     }
-
-    // ─── Render ───────────────────────────────────────────────────────────────
     return (
         <div className="min-h-screen bg-gradient-to-br from-[#f0f8f7] via-[#e8f5f3] to-[#dff1ee] dark:from-[#092635] dark:via-[#1b4242] dark:to-[#0d3a47] py-8 px-4 sm:px-6 lg:px-8">
             <div className="max-w-5xl mx-auto">

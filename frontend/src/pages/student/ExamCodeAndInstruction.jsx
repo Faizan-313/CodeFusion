@@ -34,6 +34,7 @@ function ExamCodeAndInstruction() {
             return;
         }
         toast.success("Camera access granted. You will be monitored during the exam.");
+        setCheckingCamera(false);
         setOpenCodeWindow(true);
     }
 
@@ -74,7 +75,6 @@ function ExamCodeAndInstruction() {
                     Exam Portal
                 </h1>
 
-                {/* Instructions Section */}
                 <ExamInstructions />
                 
                 <div className="flex items-start sm:items-center justify-center mb-6 mt-4 px-2">
