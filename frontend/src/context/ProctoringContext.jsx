@@ -1,7 +1,7 @@
 import { createContext, useCallback, useContext, useMemo, useState } from "react";
 import Webcam from "react-webcam";
 import toast from "react-hot-toast";
-import { useProctoring } from "../features/ai-monitoring/hooks/useProctoring.js";
+import { useProctoring } from "../features/ai-monitoring/useProctoring.js";
 
 const ProctoringContext = createContext(null);
 

@@ -3,7 +3,7 @@ import ExamInstructions from "./components/ExamInstruction"
 import { toast } from "react-hot-toast";
 import { useExam } from "../../context/ExamContext";
 import { useNavigate } from "react-router-dom";
-import { checkCamera } from "../../features/ai-monitoring/hooks/checkCamera.js";
+import { checkCamera } from "../../features/ai-monitoring/checkCamera.js";
 
 function ExamCodeAndInstruction() {
     const [openCodeWindow, setOpenCodeWindow] = React.useState(false);
@@ -74,7 +74,7 @@ function ExamCodeAndInstruction() {
                 <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-center mb-5 text-[#5c8374] dark:text-[#9ec8b9]">
                     Exam Portal
                 </h1>
-
+                
                 <ExamInstructions />
                 
                 <div className="flex items-start sm:items-center justify-center mb-6 mt-4 px-2">
