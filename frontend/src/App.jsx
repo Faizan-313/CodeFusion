@@ -3,6 +3,7 @@ import { Toaster } from "react-hot-toast";
 import { AuthProvider } from "./context/AuthContext";
 import { ExamProvider } from "./context/ExamContext";
 import { TeacherProvider } from "./context/TeacherContext";
+import { ProctoringProvider } from "./context/ProctoringContext";
 
 //routes
 import ProtectedRoute from "./routes/ProtectedRoute";
@@ -86,7 +87,9 @@ function App() {
       <ExamProvider>
         <TeacherProvider>
           <Router>
-            <AppContent />
+            <ProctoringProvider>
+              <AppContent />
+            </ProctoringProvider>
           </Router>
         </TeacherProvider>
       </ExamProvider>

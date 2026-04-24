@@ -4,7 +4,7 @@ import toast from "react-hot-toast";
 import { apiCall } from "../../api/api";
 import { useNavigate } from "react-router-dom";
 import ImageUploadComponent from "./components/ImageUploadComponent";
-import validateExamDetails from "./helpers/validateExamDetails";
+import validateExamDetails from "./utils/validateExamDetails";
 
 
 export default function CreateExam() {
@@ -73,7 +73,7 @@ export default function CreateExam() {
                     setQuestions(sanitizedQuestions);
                     setTotalMarks(examData.totalMarks || 0);
                 }
-            } catch (e) {
+            } catch {
                 toast.error("Failed to load saved draft");
                 localStorage.removeItem("createExamDraft");
             }

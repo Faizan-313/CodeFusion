@@ -39,7 +39,7 @@ const ImageUploadComponent = ({questions, setQuestions, index}) => {
             const updatedQuestions = [...questions];
             const prevPreview = updatedQuestions[index]?.imagePreview;
             if (prevPreview && typeof prevPreview === 'string' && prevPreview.startsWith('blob:')) {
-                try { URL.revokeObjectURL(prevPreview); } catch (e) { /* ignore */ }
+                try { URL.revokeObjectURL(prevPreview); } catch { /* ignore */ }
             }
 
             updatedQuestions[index] = {
@@ -55,7 +55,7 @@ const ImageUploadComponent = ({questions, setQuestions, index}) => {
         const updatedQuestions = [...questions];
         const prev = updatedQuestions[index]?.imagePreview;
         if (prev && typeof prev === 'string' && prev.startsWith('blob:')) {
-            try { URL.revokeObjectURL(prev); } catch (e) {}
+            try { URL.revokeObjectURL(prev); } catch { /* ignore */ }
         }
         updatedQuestions[index] = {
             ...updatedQuestions[index],

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { io } from "socket.io-client";
 import { useParams } from "react-router-dom";
-import { AlertTriangle, Loader2, User, Clock, Shield, XCircle, ChevronDown, ChevronUp } from "lucide-react";
+import { AlertTriangle, Loader2, User, Clock, Shield, XCircle, ChevronDown, ChevronUp, Eye, Users, Smartphone, UserX } from "lucide-react";
 import toast from "react-hot-toast";
 import ReasonWindow from "./components/PauseReasonWindow";
 import { useExam } from "../../context/ExamContext";
@@ -286,6 +286,21 @@ export default function MonitorExam() {
                 return <Shield className="w-4 h-4" />;
             case "FULLSCREEN_EXIT":
                 return <AlertTriangle className="w-4 h-4" />;
+            case "AI_NO_FACE":
+                return <UserX className="w-4 h-4" />;
+            case "AI_MULTIPLE_FACES":
+                return <Users className="w-4 h-4" />;
+            case "AI_PHONE_DETECTED":
+                return <Smartphone className="w-4 h-4" />;
+            case "AI_HEAD_LEFT":
+            case "AI_HEAD_RIGHT":
+            case "AI_HEAD_UP":
+            case "AI_HEAD_DOWN":
+            case "AI_GAZE_LEFT":
+            case "AI_GAZE_RIGHT":
+            case "AI_GAZE_UP":
+            case "AI_GAZE_DOWN":
+                return <Eye className="w-4 h-4" />;
             default:
                 return <AlertTriangle className="w-4 h-4" />;
         }
@@ -294,10 +309,22 @@ export default function MonitorExam() {
     const getViolationColor = (type) => {
         switch (type) {
             case "DEVTOOLS_OPENED":
+            case "AI_PHONE_DETECTED":
+            case "AI_MULTIPLE_FACES":
                 return "text-red-600 dark:text-red-400";
             case "TAB_SWITCH":
             case "WINDOW_BLUR":
+            case "AI_NO_FACE":
                 return "text-orange-600 dark:text-orange-400";
+            case "AI_HEAD_LEFT":
+            case "AI_HEAD_RIGHT":
+            case "AI_HEAD_UP":
+            case "AI_HEAD_DOWN":
+            case "AI_GAZE_LEFT":
+            case "AI_GAZE_RIGHT":
+            case "AI_GAZE_UP":
+            case "AI_GAZE_DOWN":
+                return "text-amber-600 dark:text-amber-400";
             default:
                 return "text-yellow-600 dark:text-yellow-400";
         }
@@ -315,13 +342,6 @@ export default function MonitorExam() {
         }
         return <span className="px-3 py-1 bg-[#00cf87]  text-[#000000]  rounded-full text-xs font-bold animate-pulse">ACTIVE</span>; 
     };
-
-    // const formatTime = (seconds) => {
-    //     if (!seconds) return "--:--";
-    //     const m = Math.floor(seconds / 60);
-    //     const s = seconds % 60;
-    //     return `${m}:${s < 10 ? "0" : ""}${s}`;
-    // };
 
     if (loading) {
         return (

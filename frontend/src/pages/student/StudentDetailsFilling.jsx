@@ -1,11 +1,16 @@
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
+import { flushSync } from 'react-dom'
 import { useExam } from '../../context/ExamContext'
+import { useProctoringCtx } from '../../context/proctoringContextCore'
 import toast from 'react-hot-toast'
 import { User, Hash, Calendar, Users, Clock, BookOpen, Award, FileText, Target } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 
+
 const StudentDetailsFilling = () => {
     const { exam, submitStudentDetails } = useExam()
+    const { phase, startCalibration, finishCalibration, stop, setStatusMessage } = useProctoringCtx()
+
     const [formData, setFormData] = useState({
         examId: exam._id,
         fullName: '',
@@ -14,7 +19,44 @@ const StudentDetailsFilling = () => {
         session: '',
         batch: ''
     })
+
+    const [submitting, setSubmitting] = useState(false);
+    const submitPromiseRef = useRef(null);
+    const handledRef = useRef(false);
+
     const navigate = useNavigate();
+
+    // Once the proctoring pipeline reaches "monitoring", the baseline is locked in. 
+    // The overlay stays up (with an updated "finalizing…" status) until the submit request resolves, 
+    // so there's no dead interval where the form sits blurred with a tiny PIP.
+    useEffect(() => {
+        if (!submitting || phase !== "monitoring" || handledRef.current) return;
+        if (!submitPromiseRef.current) return;
+        handledRef.current = true;
+
+        const pending = submitPromiseRef.current;
+        submitPromiseRef.current = null;
+
+        setStatusMessage("Finalizing and securing your session…");
+
+        (async () => {
+            const res = await pending;
+            toast.dismiss();
+            if (res?.success) {
+                toast.success("You're all set. Starting exam…");
+                // flushSync forces React to commit the overlay-close and route change in a single synchronous pass. Without it, the route change would cause the overlay to briefly re-appear in the new page before disappearing again.
+                flushSync(() => {
+                    finishCalibration();
+                    navigate("/exam/student/section");
+                });
+            } else {
+                toast.error(res?.error || "Failed to submit details");
+                stop();
+                setSubmitting(false);
+                handledRef.current = false;
+            }
+        })();
+    }, [phase, submitting, finishCalibration, stop, setStatusMessage, navigate]);
 
     const handleSubmit = async (e) => {
         e.preventDefault()
@@ -23,28 +65,27 @@ const StudentDetailsFilling = () => {
             toast.error("Please enter your full name");
             return;
         }
-        
+
         if (!formData.rollNumber || !formData.rollNumber.trim()) {
             toast.error("Please enter your roll number");
             return;
         }
-        
+
         if (!formData.collegeId || !formData.collegeId.trim()) {
             toast.error("Please enter your college ID");
             return;
         }
-        
+
         if (!formData.session || !formData.session.trim()) {
             toast.error("Please enter the session");
             return;
         }
-        
+
         if (!formData.batch || !formData.batch.trim()) {
             toast.error("Please enter your batch");
             return;
         }
 
-        // Full name should have at least 2 words
         const nameParts = formData.fullName.trim().split(/\s+/);
         if (nameParts.length < 2) {
             toast.error("Please enter your full name (first and last name)");
@@ -66,17 +107,22 @@ const StudentDetailsFilling = () => {
             return;
         }
 
-        const res = await submitStudentDetails(formData);
-        if(res.success){
-            toast.dismiss();
-            toast.success("Details submitted successfully!");
-            navigate("/exam/student/section");
-            return;
-        }else{
-            toast.dismiss();
-            toast.error(res.error);
-            return;
+        // Request fullscreen here (synchronously, inside the click gesture) so the browser allows it. By the time we navigate to ExamSection the tab is already fullscreen.
+        try {
+            const elem = document.documentElement;
+            const req =
+                elem.requestFullscreen?.bind(elem) ??
+                elem.webkitRequestFullscreen?.bind(elem) ??
+                elem.msRequestFullscreen?.bind(elem);
+            req?.();
+        } catch (err) {
+            console.error("Fullscreen request failed:", err);
         }
+
+        // Kick off details submission and camera calibration in parallel.
+        submitPromiseRef.current = submitStudentDetails(formData);
+        setSubmitting(true);
+        startCalibration();
     }
 
     const handleChange = (e) => {
@@ -85,7 +131,7 @@ const StudentDetailsFilling = () => {
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-[#9ec8b9] via-[#9ec8b9] to-[#5c8374] py-8 px-4">
-            <div className="max-w-5xl mx-auto">
+            <div className={`max-w-5xl mx-auto transition-all ${submitting ? 'blur-sm pointer-events-none' : ''}`}>
                 <div className="bg-gradient-to-r from-[#1b4242] to-[#092635] rounded-2xl shadow-2xl p-8 mb-8 text-white">
                     <div className="flex items-center gap-3 mb-6">
                         <div className="p-2 bg-white/20 rounded-lg backdrop-blur-sm">
@@ -266,9 +312,10 @@ const StudentDetailsFilling = () => {
                             <div className="pt-4">
                                 <button
                                     onClick={handleSubmit}
-                                    className="w-full bg-gradient-to-r from-[#5c8374] to-[#1b4242] text-white py-4 px-6 rounded-xl font-semibold text-lg hover:from-[#1b4242] hover:to-[#092635] transform hover:scale-[1.01] transition-all duration-200 shadow-lg hover:shadow-xl"
+                                    disabled={submitting}
+                                    className="w-full bg-gradient-to-r from-[#5c8374] to-[#1b4242] text-white py-4 px-6 rounded-xl font-semibold text-lg hover:from-[#1b4242] hover:to-[#092635] transform hover:scale-[1.01] transition-all duration-200 shadow-lg hover:shadow-xl disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:scale-100"
                                 >
-                                    Proceed to Examination
+                                    {submitting ? "Calibrating camera…" : "Proceed to Examination"}
                                 </button>
                             </div>
 
