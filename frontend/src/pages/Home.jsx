@@ -6,11 +6,11 @@ import {
     FaChartLine,
     FaLaptopCode,
     FaUsers,
-    FaBrain,
     FaLock,
     FaArrowRight,
     FaPlay,
     FaCheckCircle,
+    FaEnvelope,
 } from "react-icons/fa";
 
 function Home() {
@@ -129,7 +129,7 @@ function Home() {
                         <img
                             src="/logo2.svg"
                             alt="CodeFusion"
-                            className="w-28 h-28 md:w-32 md:h-32 drop-shadow-[0_0_40px_rgba(139,92,246,0.45)]"
+                            className="w-28 h-28 md:w-32 md:h-32 cursor-pointer hover:rotate-12 transition-transform duration-300 drop-shadow-[0_0_40px_rgba(139,92,246,0.45)]"
                         />
                     </div>
 
@@ -180,7 +180,7 @@ function Home() {
                 </div>
             </section>
 
-            <section id="features" className="relative py-24 bg-gray-950">
+            <section id="features" className="relative py-24 bg-gray-950  scroll-smooth">
                 <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
                 <div className="max-w-7xl mx-auto px-6">
                     <div className="text-center mb-16 max-w-3xl mx-auto">
@@ -440,6 +440,15 @@ function Home() {
                                     className="w-10 h-10 inline-flex items-center justify-center rounded-lg border border-white/10 bg-white/5 text-gray-300 hover:text-white hover:border-indigo-500/40 hover:bg-indigo-500/10 transition-all"
                                 >
                                     <FaTwitter />
+                                </a>
+                                <a
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    href="https://mail.google.com/mail/?view=cm&fs=1&to=codefusion.iust@gmail.com"
+                                    aria-label="Email"
+                                    className="w-10 h-10 inline-flex items-center justify-center rounded-lg border border-white/10 bg-white/5 text-gray-300 hover:text-white hover:border-indigo-500/40 hover:bg-indigo-500/10 transition-all"
+                                >
+                                    <FaEnvelope />
                                 </a>
                             </div>
                         </div>
