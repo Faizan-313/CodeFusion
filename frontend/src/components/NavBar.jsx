@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { FaBrain, FaTimes, FaBars, FaUser, FaSignOutAlt, FaChevronDown, FaTachometerAlt } from 'react-icons/fa';
+import { FaTimes, FaBars, FaUser, FaSignOutAlt, FaChevronDown, FaTachometerAlt } from 'react-icons/fa';
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from '../context/AuthContext';
 
@@ -61,8 +61,12 @@ function NavBar() {
                 <div className="flex items-center justify-between">
                     <Link to="/" className="flex items-center space-x-2 group">
                         <div className="relative">
-                            <FaBrain className="text-3xl text-cyan-400 transform group-hover:rotate-12 transition-transform duration-300" />
-                            <div className="absolute inset-0 bg-cyan-400 blur-xl opacity-0 group-hover:opacity-50 transition-opacity duration-300"></div>
+                            <img
+                                src="/logo2.svg"
+                                alt="CodeFusion"
+                                className="w-10 h-10 transform group-hover:rotate-12 transition-transform duration-300 drop-shadow-[0_0_10px_rgba(139,92,246,0.45)]"
+                            />
+                            <div className="absolute inset-0 bg-cyan-400 blur-xl opacity-0 group-hover:opacity-40 transition-opacity duration-300"></div>
                         </div>
                         <span className="text-2xl font-bold">
                             <span className="text-cyan-400">Code</span>

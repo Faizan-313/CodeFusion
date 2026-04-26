@@ -189,11 +189,12 @@ export default function CreateExam() {
 
         // Prepare FormData to send as multipart/form-data so we are able to include File objects directly
         const formData = new FormData();
-        formData.append('examDetails', JSON.stringify({ ...examDetails, 
-                            duration: parseInt(examDetails.duration), 
-                            startTime: new Date(examDetails.startTime).toISOString(), 
-                            endTime: new Date(examDetails.endTime).toISOString() 
-                        }));
+        formData.append('examDetails', JSON.stringify({
+            ...examDetails,
+            duration: parseInt(examDetails.duration),
+            startTime: new Date(examDetails.startTime).toISOString(),
+            endTime: new Date(examDetails.endTime).toISOString()
+        }));
 
         // Questions payload (without files) include a hasImage flag for each question
         const questionsPayload = questions.map((q) => ({
@@ -203,7 +204,7 @@ export default function CreateExam() {
             ...(q.type === 'mcq' ? { options: q.options } : {}),
             hasImage: !!q.image
         }));
-        
+
         formData.append('questions', JSON.stringify(questionsPayload));
         formData.append('totalMarks', String(totalMarks));
 
@@ -238,7 +239,7 @@ export default function CreateExam() {
             }
         } catch (error) {
             console.error("Unexpected error during submission:", error);
-            if(error.status === 413)
+            if (error.status === 413)
                 toast.error("Image size must be less than 2mb")
             else
                 toast.error("An error occurred. Please try again.");
@@ -257,54 +258,60 @@ export default function CreateExam() {
         }
     };
 
+    const inputClass =
+        "w-full px-4 py-3 rounded-xl bg-white/[0.04] border border-white/10 text-gray-100 placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/40 focus:border-indigo-500/50 transition";
+    const inputIconClass = inputClass + " pl-11";
+
     const renderCompletedQuestion = (q, index) => {
         return (
-            <div className="border-2 border-[#9ec8b9] rounded-xl p-6 bg-white shadow-sm">
-                <div className="flex justify-between items-start mb-4">
+            <div className="rounded-2xl p-6 bg-gradient-to-b from-emerald-500/[0.07] to-white/[0.01] border border-emerald-500/30">
+                <div className="flex justify-between items-start mb-4 gap-4">
                     <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-full bg-green-100 text-green-700 flex items-center justify-center">
+                        <div className="w-10 h-10 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 flex items-center justify-center">
                             <Check className="w-5 h-5" />
                         </div>
                         <div>
-                            <h4 className="font-bold text-gray-800 text-lg">Question {index + 1}</h4>
-                            <span className="text-sm text-gray-500">({q.type === "mcq" ? "Multiple Choice" : q.type === "code" ? "Code Question" : q.type === "diagram" ? "Diagram based" : "Text Answer"})</span>
+                            <h4 className="font-bold text-white text-lg">Question {index + 1}</h4>
+                            <span className="text-xs text-gray-400">
+                                {q.type === "mcq" ? "Multiple Choice" : q.type === "code" ? "Code Question" : q.type === "diagram" ? "Diagram based" : "Text Answer"}
+                            </span>
                         </div>
                     </div>
                     <div className="flex gap-2">
                         <button
                             onClick={() => editQuestion(index)}
-                            className="text-[#1b4242] hover:text-[#092635] hover:bg-[#9ec8b9] p-2 rounded-lg transition-all"
+                            className="text-indigo-300 hover:text-indigo-200 hover:bg-indigo-500/10 border border-transparent hover:border-indigo-500/30 p-2 rounded-lg transition-all"
                             title="Edit Question"
                         >
-                            <Edit2 className="w-5 h-5" />
+                            <Edit2 className="w-4 h-4" />
                         </button>
                         <button
                             onClick={() => confirmDelete(index)}
-                            className="text-red-500 hover:text-red-700 hover:bg-red-50 p-2 rounded-lg transition-all"
+                            className="text-red-300 hover:text-red-200 hover:bg-red-500/10 border border-transparent hover:border-red-500/30 p-2 rounded-lg transition-all"
                             title="Delete Question"
                         >
-                            <Trash2 className="w-5 h-5" />
+                            <Trash2 className="w-4 h-4" />
                         </button>
                     </div>
                 </div>
 
                 <div className="space-y-3">
-                    <div className="flex justify-between items-start">
-                        <p className="text-gray-800 text-base leading-relaxed flex-1">{q.questionText}</p>
-                        <span className="ml-4 px-3 py-1 bg-[#9ec8b9] text-[#092635] rounded-full text-sm font-semibold whitespace-nowrap">
+                    <div className="flex justify-between items-start gap-4">
+                        <p className="text-gray-200 text-base leading-relaxed flex-1 whitespace-pre-wrap">{q.questionText}</p>
+                        <span className="px-3 py-1 bg-violet-500/15 text-violet-300 border border-violet-500/30 rounded-full text-xs font-semibold whitespace-nowrap">
                             {q.marks} marks
                         </span>
                     </div>
 
                     {q.type === "mcq" && (
-                        <div className="mt-4 space-y-2 pl-4">
+                        <div className="mt-4 space-y-2 pl-1">
                             {q.options.map((option, optIndex) => (
                                 option.trim() && (
-                                    <div key={optIndex} className="flex items-start gap-2">
-                                        <span className={`font-semibold ${q.correctAnswer === optIndex ? 'text-green-600' : 'text-gray-600'}`}>
+                                    <div key={optIndex} className="flex items-start gap-2 text-sm">
+                                        <span className={`font-semibold ${q.correctAnswer === optIndex ? 'text-emerald-300' : 'text-gray-400'}`}>
                                             {String.fromCharCode(65 + optIndex)}.
                                         </span>
-                                        <span className={`${q.correctAnswer === optIndex ? 'text-green-600 font-medium' : 'text-gray-700'}`}>
+                                        <span className={`${q.correctAnswer === optIndex ? 'text-emerald-300 font-medium' : 'text-gray-300'}`}>
                                             {option}
                                             {q.correctAnswer === optIndex && ' ✓'}
                                         </span>
@@ -320,32 +327,32 @@ export default function CreateExam() {
 
     const renderEditableQuestion = (q, index) => {
         return (
-            <div className="border-2 border-[#9ec8b9] rounded-xl p-6 bg-white shadow-md hover:shadow-lg transition-shadow">
-                <div className="flex justify-between items-start mb-4">
+            <div className="rounded-2xl p-6 bg-gradient-to-b from-white/[0.04] to-white/[0.01] border border-white/10 hover:border-violet-500/30 transition-colors">
+                <div className="flex justify-between items-start mb-5 gap-4">
                     <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-full bg-[#9ec8b9] text-[#092635] flex items-center justify-center font-bold text-lg">
+                        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-violet-600 text-white flex items-center justify-center font-bold shadow-lg shadow-violet-500/20">
                             {index + 1}
                         </div>
-                        <h4 className="font-bold text-[#1b4242] text-lg">
+                        <h4 className="font-bold text-white text-lg">
                             Question {index + 1}
                         </h4>
                     </div>
                     <button
                         onClick={() => confirmDelete(index)}
-                        className="text-red-500 hover:text-red-700 hover:bg-red-50 p-2 rounded-lg transition-all"
+                        className="text-red-300 hover:text-red-200 hover:bg-red-500/10 border border-transparent hover:border-red-500/30 p-2 rounded-lg transition-all"
                         title="Delete Question"
                     >
-                        <Trash2 className="w-5 h-5" />
+                        <Trash2 className="w-4 h-4" />
                     </button>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                     <div>
-                        <label htmlFor={`type-${index}`} className="block text-sm font-semibold text-[#1b4242] mb-2">
+                        <label htmlFor={`type-${index}`} className="block text-xs font-semibold text-gray-300 mb-2 uppercase tracking-wider">
                             Question Type
                         </label>
                         <div className="relative">
-                            <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none">
+                            <div className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">
                                 {getQuestionIcon(q.type)}
                             </div>
                             <select
@@ -354,18 +361,18 @@ export default function CreateExam() {
                                 onChange={(e) =>
                                     handleQuestionChange(index, "type", e.target.value)
                                 }
-                                className="border-2 border-[#9ec8b9] p-3 pl-10 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-[#5c8374] focus:border-transparent transition appearance-none bg-white text-gray-800"
+                                className={inputIconClass + " appearance-none cursor-pointer"}
                             >
-                                <option value="code">Code Question</option>
-                                <option value="text">Text Answer</option>
-                                <option value="diagram">Diagram based</option>
-                                <option value="mcq">Multiple Choice</option>
+                                <option value="code" className="bg-gray-900">Code Question</option>
+                                <option value="text" className="bg-gray-900">Text Answer</option>
+                                <option value="diagram" className="bg-gray-900">Diagram based</option>
+                                <option value="mcq" className="bg-gray-900">Multiple Choice</option>
                             </select>
                         </div>
                     </div>
 
                     <div>
-                        <label htmlFor={`marks-${index}`} className="block text-sm font-semibold text-[#1b4242] mb-2">
+                        <label htmlFor={`marks-${index}`} className="block text-xs font-semibold text-gray-300 mb-2 uppercase tracking-wider">
                             Marks
                         </label>
                         <input
@@ -377,14 +384,14 @@ export default function CreateExam() {
                                 handleQuestionChange(index, "marks", e.target.value)
                             }
                             required
-                            className="border-2 border-[#9ec8b9] p-3 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-[#5c8374] focus:border-transparent transition text-gray-800"
+                            className={inputClass}
                             min="1"
                         />
                     </div>
                 </div>
 
                 <div className="mb-4">
-                    <label htmlFor={`questionText-${index}`} className="block text-sm font-semibold text-[#1b4242] mb-2">
+                    <label htmlFor={`questionText-${index}`} className="block text-xs font-semibold text-gray-300 mb-2 uppercase tracking-wider">
                         Question Text
                     </label>
                     <textarea
@@ -395,7 +402,7 @@ export default function CreateExam() {
                             handleQuestionChange(index, "questionText", e.target.value)
                         }
                         required
-                        className="border-2 border-[#9ec8b9] p-3 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-[#5c8374] focus:border-transparent transition resize-none text-gray-800"
+                        className={inputClass + " resize-none"}
                         rows={3}
                     />
                 </div>
@@ -403,13 +410,13 @@ export default function CreateExam() {
                 <ImageUploadComponent key={index} index={index} questions={questions} setQuestions={setQuestions} />
 
                 {q.type === "mcq" && (
-                    <div className="bg-[#f0f7f6] p-4 rounded-lg border border-[#5c8374] mb-4">
-                        <span className="block text-sm font-semibold text-[#1b4242] mb-3">
+                    <div className="bg-violet-500/[0.06] p-4 rounded-xl border border-violet-500/20 mb-4">
+                        <span className="block text-xs font-semibold text-violet-200 mb-3 uppercase tracking-wider">
                             Multiple Choice Options
                         </span>
                         <div className="space-y-2">
                             {q.options.map((option, optIndex) => (
-                                <div key={optIndex} className="flex items-center gap-2">
+                                <div key={optIndex} className="flex items-center gap-3">
                                     <input
                                         type="radio"
                                         id={`q-${index}-opt-${optIndex}`}
@@ -418,7 +425,7 @@ export default function CreateExam() {
                                         onChange={() =>
                                             handleQuestionChange(index, "correctAnswer", optIndex)
                                         }
-                                        className="w-4 h-4 text-[#1b4242] focus:ring-[#5c8374]"
+                                        className="w-4 h-4 accent-violet-500"
                                     />
                                     <label htmlFor={`q-${index}-opt-${optIndex}`} className="flex-1">
                                         <input
@@ -428,13 +435,13 @@ export default function CreateExam() {
                                             onChange={(e) =>
                                                 handleOptionChange(index, optIndex, e.target.value)
                                             }
-                                            className="border-2 border-[#9ec8b9] p-2.5 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-[#5c8374] focus:border-transparent transition bg-white text-gray-800"
+                                            className={inputClass + " py-2.5"}
                                         />
                                     </label>
                                 </div>
                             ))}
                         </div>
-                        <p className="text-xs text-[#5c8374] mt-2">
+                        <p className="text-xs text-violet-300/80 mt-3">
                             Select the correct answer
                         </p>
                     </div>
@@ -443,9 +450,9 @@ export default function CreateExam() {
                 <div className="flex justify-end">
                     <button
                         onClick={() => markQuestionComplete(index)}
-                        className="flex items-center gap-2 px-5 py-3 mt-2 bg-gradient-to-r from-[#5c8374] to-[#1b4242] text-white rounded-lg hover:from-[#1b4242] hover:to-[#092635] transition-all duration-200 shadow-md hover:shadow-lg font-medium"
+                        className="inline-flex items-center gap-2 px-5 py-2.5 mt-2 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white rounded-lg transition-all duration-200 shadow-lg shadow-emerald-500/20 hover:shadow-emerald-500/40 font-semibold text-sm"
                     >
-                        <Check className="w-5 h-5" />
+                        <Check className="w-4 h-4" />
                         Done
                     </button>
                 </div>
@@ -454,27 +461,42 @@ export default function CreateExam() {
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-[#9ec8b9] via-[#5c8374] to-[#092635] pb-8 pt-20 px-4 sm:px-6 lg:px-8">
-            <div className="max-w-5xl mx-auto">
-                <div className="bg-[#f5f5f5] rounded-2xl shadow-2xl p-8 mb-6 border-t-4 border-[#092635]">
-                    <div className="flex items-center justify-between mb-2">
-                        <h1 className="text-3xl font-bold text-[#092635]">Create New Exam</h1>
-                        <div className="bg-[#9ec8b9] text-[#092635] px-4 py-2 rounded-full font-semibold">
-                            Total: {totalMarks} marks
+        <div className="relative min-h-screen bg-gray-950 text-gray-100 overflow-hidden">
+            <div className="absolute -top-40 -left-40 w-[35rem] h-[35rem] bg-indigo-600/15 rounded-full blur-[130px] pointer-events-none" />
+            <div className="absolute top-1/3 -right-40 w-[35rem] h-[35rem] bg-violet-600/15 rounded-full blur-[130px] pointer-events-none" />
+
+            <div className="relative max-w-5xl mx-auto pb-12 pt-24 sm:pt-28 lg:pt-32 px-4 sm:px-6 lg:px-8">
+                <div className="rounded-2xl p-6 sm:p-8 mb-6 bg-gradient-to-br from-indigo-600/15 via-violet-600/15 to-fuchsia-600/15 border border-white/10">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-2">
+                        <div>
+                            <span className="inline-block px-3 py-1 mb-3 text-xs font-semibold tracking-wider uppercase rounded-full bg-violet-500/10 text-violet-300 border border-violet-500/20">
+                                New Assessment
+                            </span>
+                            <h1 className="text-3xl sm:text-4xl font-bold tracking-tight">
+                                Create New{" "}
+                                <span className="bg-gradient-to-r from-indigo-400 to-fuchsia-400 bg-clip-text text-transparent">
+                                    Exam
+                                </span>
+                            </h1>
+                            <p className="text-gray-400 mt-1 text-sm">
+                                Design your exam with custom questions and settings
+                            </p>
+                        </div>
+                        <div className="self-start sm:self-auto px-4 py-2 rounded-full font-semibold bg-white/5 border border-white/10 text-white whitespace-nowrap">
+                            Total: <span className="text-violet-300 tabular-nums">{totalMarks}</span> marks
                         </div>
                     </div>
-                    <p className="text-gray-600">Design your exam with custom questions and settings</p>
                 </div>
 
-                <div className="bg-white rounded-2xl shadow-2xl p-8 mb-6 border border-[#9ec8b9]">
-                    <h2 className="text-xl font-bold text-[#1b4242] mb-6 flex items-center gap-2">
-                        <Calendar className="w-5 h-5" />
+                <div className="rounded-2xl p-6 sm:p-8 mb-6 bg-gradient-to-b from-white/[0.04] to-white/[0.01] border border-white/10">
+                    <h2 className="text-lg font-bold text-white mb-6 flex items-center gap-2">
+                        <Calendar className="w-5 h-5 text-violet-400" />
                         Exam Details
                     </h2>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                         <div className="md:col-span-2">
-                            <label htmlFor="exam-title" className="block text-sm font-semibold text-gray-700 mb-2">
+                            <label htmlFor="exam-title" className="block text-xs font-semibold text-gray-300 mb-2 uppercase tracking-wider">
                                 Exam Title
                             </label>
                             <input
@@ -484,13 +506,13 @@ export default function CreateExam() {
                                 placeholder="e.g., Data Structures Final Exam"
                                 value={examDetails.title}
                                 onChange={handleExamChange}
-                                className="border-2 border-gray-300 p-3 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-[#5c8374] focus:border-transparent transition"
+                                className={inputClass}
                             />
                         </div>
 
                         <div>
-                            <label htmlFor="exam-duration" className="block text-sm font-semibold text-gray-700 mb-2 items-center gap-1">
-                                <Clock className="w-4 h-4" />
+                            <label htmlFor="exam-duration" className="block text-xs font-semibold text-gray-300 mb-2 uppercase tracking-wider flex items-center gap-1">
+                                <Clock className="w-3.5 h-3.5" />
                                 Duration (minutes)
                             </label>
                             <input
@@ -500,14 +522,14 @@ export default function CreateExam() {
                                 placeholder="60"
                                 value={examDetails.duration}
                                 onChange={handleExamChange}
-                                className="border-2 border-gray-300 p-3 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-[#5c8374] focus:border-transparent transition"
+                                className={inputClass}
                                 min="1"
                             />
                         </div>
 
                         <div>
-                            <label htmlFor="exam-code" className="block text-sm font-semibold text-gray-700 mb-2 items-center gap-1">
-                                <FileLock2 className="w-4 h-4" />
+                            <label htmlFor="exam-code" className="block text-xs font-semibold text-gray-300 mb-2 uppercase tracking-wider flex items-center gap-1">
+                                <FileLock2 className="w-3.5 h-3.5" />
                                 Exam Code
                             </label>
                             <input
@@ -517,12 +539,12 @@ export default function CreateExam() {
                                 placeholder="Set an exam code"
                                 value={examDetails.examCode}
                                 onChange={handleExamChange}
-                                className="border-2 border-gray-300 p-3 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-[#5c8374] focus:border-transparent transition"
+                                className={inputClass}
                             />
                         </div>
 
                         <div>
-                            <label htmlFor="exam-startTime" className="block text-sm font-semibold text-gray-700 mb-2">
+                            <label htmlFor="exam-startTime" className="block text-xs font-semibold text-gray-300 mb-2 uppercase tracking-wider">
                                 Start Time
                             </label>
                             <input
@@ -531,12 +553,12 @@ export default function CreateExam() {
                                 name="startTime"
                                 value={examDetails.startTime}
                                 onChange={handleExamChange}
-                                className="border-2 border-gray-300 p-3 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-[#5c8374] focus:border-transparent transition"
+                                className={inputClass + " [color-scheme:dark]"}
                             />
                         </div>
 
                         <div>
-                            <label htmlFor="exam-endTime" className="block text-sm font-semibold text-gray-700 mb-2">
+                            <label htmlFor="exam-endTime" className="block text-xs font-semibold text-gray-300 mb-2 uppercase tracking-wider">
                                 End Time
                             </label>
                             <input
@@ -545,13 +567,13 @@ export default function CreateExam() {
                                 name="endTime"
                                 value={examDetails.endTime}
                                 onChange={handleExamChange}
-                                className="border-2 border-gray-300 p-3 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-[#5c8374] focus:border-transparent transition"
+                                className={inputClass + " [color-scheme:dark]"}
                             />
                         </div>
                     </div>
 
                     <div>
-                        <label htmlFor="exam-description" className="block text-sm font-semibold text-gray-700 mb-2">
+                        <label htmlFor="exam-description" className="block text-xs font-semibold text-gray-300 mb-2 uppercase tracking-wider">
                             Description / Instructions
                         </label>
                         <textarea
@@ -560,32 +582,33 @@ export default function CreateExam() {
                             placeholder="Enter exam instructions, guidelines, or any important notes for students..."
                             value={examDetails.description}
                             onChange={handleExamChange}
-                            className="border-2 border-gray-300 p-3 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-[#5c8374] focus:border-transparent transition resize-none"
+                            className={inputClass + " resize-none"}
                             rows={4}
                         />
                     </div>
                 </div>
 
-                <div className="bg-white rounded-2xl shadow-2xl p-8 mb-6">
-                    <div className="flex justify-between items-center mb-6">
-                        <h2 className="text-xl font-bold text-[#1b4242] flex items-center gap-2">
-                            <FileText className="w-5 h-5" />
-                            Questions ({questions.length})
+                <div className="rounded-2xl p-6 sm:p-8 mb-6 bg-gradient-to-b from-white/[0.04] to-white/[0.01] border border-white/10">
+                    <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 mb-6">
+                        <h2 className="text-lg font-bold text-white flex items-center gap-2">
+                            <FileText className="w-5 h-5 text-violet-400" />
+                            Questions{" "}
+                            <span className="text-gray-500 font-normal">({questions.length})</span>
                         </h2>
                         <button
                             onClick={() => addQuestion("code")}
-                            className="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-[#5c8374] to-[#1b4242] text-white rounded-lg hover:from-[#1b4242] hover:to-[#092635] transition-all duration-200 shadow-md hover:shadow-lg font-medium"
+                            className="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-gradient-to-r from-indigo-500 to-violet-600 hover:from-indigo-400 hover:to-violet-500 text-white rounded-lg transition-all duration-200 shadow-lg shadow-violet-500/25 hover:shadow-violet-500/40 font-semibold text-sm"
                         >
-                            <Plus className="w-5 h-5" />
+                            <Plus className="w-4 h-4" />
                             Add Question
                         </button>
                     </div>
 
                     {questions.length === 0 ? (
-                        <div className="text-center py-12 bg-[#9ec8b9]/20 rounded-xl border-2 border-dashed border-[#5c8374]">
-                            <FileText className="w-16 h-16 text-[#5c8374] mx-auto mb-4" />
-                            <p className="text-gray-600 text-lg font-medium">No questions added yet</p>
-                            <p className="text-gray-500 mt-2">Click "Add Question" to get started</p>
+                        <div className="text-center py-12 rounded-xl border-2 border-dashed border-white/10 bg-white/[0.02]">
+                            <FileText className="w-14 h-14 text-violet-400/60 mx-auto mb-4" />
+                            <p className="text-gray-200 text-base font-medium">No questions added yet</p>
+                            <p className="text-gray-500 text-sm mt-1">Click "Add Question" to get started</p>
                         </div>
                     ) : (
                         <div className="space-y-4">
@@ -598,37 +621,41 @@ export default function CreateExam() {
                     )}
                 </div>
 
-                <div className="flex justify-end gap-4">
+                <div className="flex flex-col sm:flex-row sm:justify-end gap-3">
                     <button
                         onClick={() => handleSubmit(true)}
                         disabled={isSubmitting}
-                        className="flex items-center gap-2 px-6 py-3 bg-white border-2 border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 hover:border-gray-400 transition-all duration-200 shadow-md hover:shadow-lg font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/20 text-gray-200 rounded-xl transition-all duration-200 font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                        <Save className="w-5 h-5" />
+                        <Save className="w-4 h-4" />
                         Save as Draft
                     </button>
                     <button
                         onClick={() => handleSubmit(false)}
                         disabled={isSubmitting}
-                        className="flex items-center gap-2 px-8 py-3 bg-gradient-to-r from-[#1b4242] to-[#092635] text-white rounded-lg hover:from-[#092635] hover:to-[#092635] transition-all duration-200 shadow-lg hover:shadow-xl font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="inline-flex items-center justify-center gap-2 px-8 py-3 bg-gradient-to-r from-indigo-500 to-violet-600 hover:from-indigo-400 hover:to-violet-500 text-white rounded-xl transition-all duration-200 shadow-lg shadow-violet-500/25 hover:shadow-violet-500/40 font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                        <Send className="w-5 h-5" />
+                        <Send className="w-4 h-4" />
                         {isSubmitting ? "Publishing..." : "Publish Exam"}
                     </button>
                 </div>
             </div>
 
             {showDeleteModal && (
-                <div className="fixed inset-0 bg-gray-700/70 flex items-center justify-center z-50 p-4">
-                    <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6">
+                <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+                    <div className="bg-gray-900 border border-white/10 rounded-2xl shadow-2xl max-w-md w-full p-6">
                         <div className="flex items-center gap-3 mb-4">
-                            <div className="w-12 h-12 rounded-full bg-red-100 flex items-center justify-center">
-                                <AlertCircle className="w-6 h-6 text-red-600" />
+                            <div className="w-12 h-12 rounded-full bg-red-500/15 border border-red-500/30 flex items-center justify-center">
+                                <AlertCircle className="w-6 h-6 text-red-400" />
                             </div>
-                            <h3 className="text-xl font-bold text-gray-800">Delete Question?</h3>
+                            <h3 className="text-xl font-bold text-white">Delete Question?</h3>
                         </div>
-                        <p className="text-gray-600 mb-6">
-                            Are you sure you want to delete Question {questionToDelete !== null ? questionToDelete + 1 : ''}? This action cannot be undone.
+                        <p className="text-gray-400 mb-6 text-sm leading-relaxed">
+                            Are you sure you want to delete Question{" "}
+                            <span className="text-white font-semibold">
+                                {questionToDelete !== null ? questionToDelete + 1 : ""}
+                            </span>
+                            ? This action cannot be undone.
                         </p>
                         <div className="flex gap-3 justify-end">
                             <button
@@ -636,13 +663,13 @@ export default function CreateExam() {
                                     setShowDeleteModal(false);
                                     setQuestionToDelete(null);
                                 }}
-                                className="px-5 py-2.5 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-all font-medium"
+                                className="px-5 py-2.5 bg-white/5 hover:bg-white/10 border border-white/10 text-gray-200 rounded-lg transition-all font-medium text-sm"
                             >
                                 Cancel
                             </button>
                             <button
                                 onClick={removeQuestion}
-                                className="px-5 py-2.5 bg-gradient-to-r from-red-600 to-red-700 text-white rounded-lg hover:from-red-700 hover:to-red-800 transition-all font-medium shadow-md"
+                                className="px-5 py-2.5 bg-gradient-to-r from-red-500 to-rose-600 hover:from-red-400 hover:to-rose-500 text-white rounded-lg transition-all font-semibold text-sm shadow-lg shadow-red-500/25"
                             >
                                 Delete
                             </button>

@@ -1,84 +1,219 @@
-import { FaGithub, FaLinkedin, FaTwitter, FaCode, FaShieldAlt, FaChartLine, FaLaptopCode, FaUsers, FaBrain } from "react-icons/fa";
+import {
+    FaGithub,
+    FaLinkedin,
+    FaTwitter,
+    FaShieldAlt,
+    FaChartLine,
+    FaLaptopCode,
+    FaUsers,
+    FaBrain,
+    FaLock,
+    FaArrowRight,
+    FaPlay,
+    FaCheckCircle,
+} from "react-icons/fa";
 
 function Home() {
     const features = [
         {
-            icon: <FaShieldAlt className="text-5xl text-[#5c8374]" />,
+            icon: <FaShieldAlt className="text-3xl text-white" />,
+            iconBg: "from-indigo-500 to-violet-600",
             title: "AI-Powered Proctoring",
-            description: "Advanced monitoring system ensures exam integrity with real-time behavioral analysis"
+            description:
+                "Real-time webcam analysis flags suspicious behavior the moment it happens keeping every exam fair.",
         },
         {
-            icon: <FaCode className="text-5xl text-green-500" />,
-            title: "Code Evaluation",
-            description: "Intelligent code assessment with syntax checking and automated test case execution"
+            icon: <FaLock className="text-3xl text-white" />,
+            iconBg: "from-violet-500 to-fuchsia-600",
+            title: "Lockdown Mode",
+            description:
+                "Prevents tab switching, copy-paste, and external app access so students stay focused on the exam.",
         },
         {
-            icon: <FaChartLine className="text-5xl text-[#5c8374]" />,
-            title: "Real-Time Analytics",
-            description: "Comprehensive performance metrics and instant result generation for educators"
+            icon: <FaLaptopCode className="text-3xl text-white" />,
+            iconBg: "from-fuchsia-500 to-pink-600",
+            title: "Multi-Format Workspace",
+            description:
+                "MCQs, code, descriptive text, and diagrams all answered in one unified, distraction-free editor.",
         },
         {
-            icon: <FaLaptopCode className="text-5xl text-[#9ec8b9]" />,
-            title: "Multi-Format Support",
-            description: "MCQs, coding challenges, and descriptive questions all in one seamless platform"
-        }
+            icon: <FaChartLine className="text-3xl text-white" />,
+            iconBg: "from-emerald-500 to-teal-600",
+            title: "Live Teacher Dashboard",
+            description:
+                "Monitor every student in real time, receive AI alerts, and intervene the moment integrity is at risk.",
+        },
+    ];
+
+    const studentSteps = [
+        {
+            step: "01",
+            title: "Enter Exam Portal",
+            desc: (
+                <>
+                    Click{" "}
+                    <a
+                        href="/exam"
+                        className="text-indigo-400 hover:text-indigo-300 font-semibold underline-offset-4 hover:underline transition-colors"
+                    >
+                        Start Exam
+                    </a>
+                    , read the instructions, and enter your exam code with your details to begin.
+                </>
+            ),
+        },
+        {
+            step: "02",
+            title: "Attempt Questions",
+            desc: "Answer MCQs, write code, draw diagrams, or compose text all from one unified workspace.",
+        },
+        {
+            step: "03",
+            title: "Submit & Done",
+            desc: "Submit when finished or let the timer auto-submit. Your responses are saved instantly and securely.",
+        },
+    ];
+
+    const teacherSteps = [
+        {
+            step: "01",
+            title: "Register & Login",
+            desc: "Create your instructor account and access the admin dashboard.",
+        },
+        {
+            step: "02",
+            title: "Create Assessment",
+            desc: "Design exams across multiple formats, set duration, and assign students.",
+        },
+        {
+            step: "03",
+            title: "Monitor Live",
+            desc: "Track student activity in real time with AI-driven proctoring alerts.",
+        },
+        {
+            step: "04",
+            title: "Generate Results",
+            desc: "Access detailed analytics and per-student performance reports instantly.",
+        },
     ];
 
     return (
-        <div className="flex flex-col min-h-screen bg-gray-50 dark:bg-gray-900" id='home'>
-            <div className="relative h-screen overflow-hidden inset-0 bg-gradient-to-br from-[#092635] via-[#1b4242] to-[#5c8374]">
-                <div className="relative h-full flex flex-col items-center justify-center text-center text-white px-4 z-10">
-                    <div className="mb-6 animate-bounce">
-                        <FaBrain className="text-7xl text-[#9ec8b9] drop-shadow-2xl" />
+        <div className="flex flex-col min-h-screen bg-gray-950 text-gray-100" id="home">
+            <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-br from-gray-950 via-slate-950 to-gray-950" />
+                <div className="absolute -top-40 -left-40 w-[40rem] h-[40rem] bg-indigo-600/20 rounded-full blur-[130px]" />
+                <div className="absolute top-1/2 -right-40 w-[40rem] h-[40rem] bg-violet-600/20 rounded-full blur-[130px]" />
+                <div className="absolute bottom-0 left-1/3 w-[30rem] h-[30rem] bg-fuchsia-600/15 rounded-full blur-[130px]" />
+
+                <div
+                    className="absolute inset-0 opacity-[0.04]"
+                    style={{
+                        backgroundImage:
+                            "linear-gradient(rgba(255,255,255,1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,1) 1px, transparent 1px)",
+                        backgroundSize: "44px 44px",
+                    }}
+                />
+
+                <div className="relative z-10 max-w-5xl mx-auto px-6 pt-28 pb-16 text-center">
+                    <div className="inline-flex items-center gap-2 px-4 py-1.5 mb-8 rounded-full border border-white/10 bg-white/5 backdrop-blur-md text-sm">
+                        <span className="relative flex h-2 w-2">
+                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+                            <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-400" />
+                        </span>
+                        <span className="text-gray-300">
+                            AI Proctoring · Lockdown Mode · Live Monitoring
+                        </span>
                     </div>
-                    <h1 className="text-5xl md:text-7xl font-extrabold mb-6 drop-shadow-2xl">
-                        Welcome to <span className="bg-gradient-to-r from-[#9ec8b9] to-[#5c8374] bg-clip-text text-transparent">CodeFusion</span>
+
+                    <div className="mb-8 flex justify-center">
+                        <img
+                            src="/logo2.svg"
+                            alt="CodeFusion"
+                            className="w-28 h-28 md:w-32 md:h-32 drop-shadow-[0_0_40px_rgba(139,92,246,0.45)]"
+                        />
+                    </div>
+
+                    <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight mb-6 leading-[1.05]">
+                        Online exams, reimagined with{" "}
+                        <span className="bg-gradient-to-r from-indigo-400 via-violet-400 to-fuchsia-400 bg-clip-text text-transparent">
+                            AI integrity
+                        </span>
                     </h1>
-                    <p className="text-xl md:text-2xl max-w-3xl mb-8 drop-shadow-lg leading-relaxed">
-                        Next-Generation Online Assessments with AI-Powered Proctoring
+
+                    <p className="text-lg md:text-xl text-gray-400 max-w-2xl mx-auto mb-10 leading-relaxed">
+                        CodeFusion is a secure, multi-format examination platform built for
+                        Computer Science programs code, MCQs, diagrams, and text in a single,
+                        proctored workspace.
                     </p>
+
                     <div className="flex gap-4 flex-wrap justify-center">
-                        <a href="/exam" className="px-8 py-4 bg-[#5c8374] hover:bg-[#1b4242] rounded-full font-semibold text-lg transition-all transform hover:scale-105 shadow-lg">
+                        <a
+                            href="/exam"
+                            className="group inline-flex items-center gap-2 px-7 py-3.5 bg-gradient-to-r from-indigo-500 to-violet-600 hover:from-indigo-400 hover:to-violet-500 rounded-full font-semibold text-white shadow-lg shadow-violet-500/25 hover:shadow-violet-500/40 transition-all duration-300 hover:scale-[1.03]"
+                        >
+                            <FaPlay className="text-sm" />
                             Start Exam
+                            <FaArrowRight className="text-sm group-hover:translate-x-1 transition-transform" />
                         </a>
-                        <a href="#features" className="px-8 py-4 bg-white/10 backdrop-blur-md hover:bg-white/20 rounded-full font-semibold text-lg transition-all transform hover:scale-105 border-2 border-white/30">
-                            Learn More
+                        <a
+                            href="#features"
+                            className="inline-flex items-center gap-2 px-7 py-3.5 bg-white/5 hover:bg-white/10 backdrop-blur-md rounded-full font-semibold text-white border border-white/15 hover:border-white/25 transition-all duration-300"
+                        >
+                            Explore Features
                         </a>
                     </div>
-                </div>
 
-                <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
-                    <div className="w-6 h-10 border-2 border-white/50 rounded-full flex items-start justify-center p-2">
-                        <div className="w-1 h-3 bg-white/70 rounded-full animate-pulse"></div>
+                    <div className="mt-14 flex flex-wrap justify-center items-center gap-x-10 gap-y-4 text-sm text-gray-400">
+                        <div className="flex items-center gap-2">
+                            <FaCheckCircle className="text-emerald-400" />
+                            Tamper-proof environment
+                        </div>
+                        <div className="flex items-center gap-2">
+                            <FaCheckCircle className="text-emerald-400" />
+                            Real-time AI alerts
+                        </div>
+                        <div className="flex items-center gap-2">
+                            <FaCheckCircle className="text-emerald-400" />
+                            Mainly Built for CS programs
+                        </div>
                     </div>
                 </div>
-            </div>
+            </section>
 
-            {/* Features Section */}
-            <section id="features" className="py-20 bg-white dark:bg-gray-800">
+            <section id="features" className="relative py-24 bg-gray-950">
+                <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
                 <div className="max-w-7xl mx-auto px-6">
-                    <div className="text-center mb-16">
-                        <h2 className="text-4xl md:text-5xl font-bold text-gray-800 dark:text-white mb-4">
-                            Why Choose <span className="text-[#9ec8b9]">CodeFusion?</span>
+                    <div className="text-center mb-16 max-w-3xl mx-auto">
+                        <span className="inline-block px-3 py-1 mb-4 text-xs font-semibold tracking-wider uppercase rounded-full bg-indigo-500/10 text-indigo-300 border border-indigo-500/20">
+                            Core Capabilities
+                        </span>
+                        <h2 className="text-4xl md:text-5xl font-bold mb-4 tracking-tight">
+                            Everything you need to run{" "}
+                            <span className="bg-gradient-to-r from-indigo-400 to-fuchsia-400 bg-clip-text text-transparent">
+                                fair, modern exams
+                            </span>
                         </h2>
-                        <p className="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
-                            A complete solution for secure, intelligent, and scalable online assessments
+                        <p className="text-lg text-gray-400">
+                            A complete, AI-driven solution for secure, intelligent, and
+                            scalable online assessments.
                         </p>
                     </div>
 
-                    <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                         {features.map((feature, index) => (
                             <div
                                 key={index}
-                                className="group p-8 bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-200 dark:border-gray-700"
+                                className="group relative p-6 rounded-2xl bg-gradient-to-b from-white/[0.04] to-white/[0.01] border border-white/10 hover:border-white/20 transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl hover:shadow-violet-500/10"
                             >
-                                <div className="mb-4 transform group-hover:scale-110 transition-transform duration-300">
+                                <div
+                                    className={`inline-flex items-center justify-center w-14 h-14 mb-5 rounded-xl bg-gradient-to-br ${feature.iconBg} shadow-lg group-hover:scale-110 transition-transform duration-300`}
+                                >
                                     {feature.icon}
                                 </div>
-                                <h3 className="text-xl font-bold text-gray-800 dark:text-white mb-3">
+                                <h3 className="text-lg font-semibold text-white mb-2">
                                     {feature.title}
                                 </h3>
-                                <p className="text-gray-600 dark:text-gray-300">
+                                <p className="text-sm text-gray-400 leading-relaxed">
                                     {feature.description}
                                 </p>
                             </div>
@@ -87,164 +222,232 @@ function Home() {
                 </div>
             </section>
 
-            {/* Stats Section */}
-            <section className="py-20 bg-gradient-to-r from-[#1b4242] to-[#092635] text-white">
-                <div className="max-w-7xl mx-auto px-6">
-                    <div className="grid md:grid-cols-3 gap-12 text-center">
-                        <div className="transform hover:scale-105 transition-transform">
-                            <div className="text-5xl font-bold mb-2">99.9%</div>
-                            <div className="text-xl opacity-90">Uptime Reliability</div>
-                        </div>
-                        <div className="transform hover:scale-105 transition-transform">
-                            <div className="text-5xl font-bold mb-2">
-                                <FaUsers className="inline text-4xl mr-2" />1000+
+            <section className="relative py-20 overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-r from-indigo-600/10 via-violet-600/10 to-fuchsia-600/10" />
+                <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/15 to-transparent" />
+                <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-white/15 to-transparent" />
+
+                <div className="relative max-w-6xl mx-auto px-6">
+                    <div className="grid md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-white/10 text-center">
+                        <div className="py-8 md:py-0 md:px-6">
+                            <div className="text-5xl md:text-6xl font-extrabold bg-gradient-to-r from-indigo-300 to-violet-400 bg-clip-text text-transparent mb-2">
+                                99.9%
                             </div>
-                            <div className="text-xl opacity-90">Active Users</div>
+                            <div className="text-gray-400 uppercase tracking-wider text-sm">
+                                Uptime Reliability
+                            </div>
                         </div>
-                        <div className="transform hover:scale-105 transition-transform">
-                            <div className="text-5xl font-bold mb-2">24/7</div>
-                            <div className="text-xl opacity-90">Support Available</div>
+                        <div className="py-8 md:py-0 md:px-6">
+                            <div className="text-5xl md:text-6xl font-extrabold bg-gradient-to-r from-violet-300 to-fuchsia-400 bg-clip-text text-transparent mb-2 flex items-center justify-center gap-3">
+                                <FaUsers className="text-4xl text-violet-300" />
+                                1000+
+                            </div>
+                            <div className="text-gray-400 uppercase tracking-wider text-sm">
+                                Active Users
+                            </div>
+                        </div>
+                        <div className="py-8 md:py-0 md:px-6">
+                            <div className="text-5xl md:text-6xl font-extrabold bg-gradient-to-r from-fuchsia-300 to-pink-400 bg-clip-text text-transparent mb-2">
+                                24/7
+                            </div>
+                            <div className="text-gray-400 uppercase tracking-wider text-sm">
+                                Support Available
+                            </div>
                         </div>
                     </div>
                 </div>
             </section>
 
-            {/* How It Works Section */}
-            <section className="py-20 bg-gray-50 dark:bg-gray-900">
+            <section className="relative py-24 bg-gray-950">
                 <div className="max-w-7xl mx-auto px-6">
-                    <h2 className="text-4xl md:text-5xl font-bold text-center text-gray-800 dark:text-white mb-16">
-                        How It Works
-                    </h2>
-                    <div className="space-y-20">
+                    <div className="text-center mb-20 max-w-3xl mx-auto">
+                        <span className="inline-block px-3 py-1 mb-4 text-xs font-semibold tracking-wider uppercase rounded-full bg-violet-500/10 text-violet-300 border border-violet-500/20">
+                            Workflow
+                        </span>
+                        <h2 className="text-4xl md:text-5xl font-bold tracking-tight">
+                            How CodeFusion works
+                        </h2>
+                        <p className="text-lg text-gray-400 mt-4">
+                            A streamlined journey for both students and instructors.
+                        </p>
+                    </div>
 
-                        {/* Student Flow */}
-                        <div>
-                            <div className="flex items-center justify-center mb-10">
-                                <div className="flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-[#5c8374] to-[#1b4242] rounded-full shadow-lg">
-                                    <FaUsers className="text-2xl text-white" />
-                                    <h3 className="text-3xl font-bold text-white">
-                                        For Students
-                                    </h3>
-                                </div>
-                            </div>
-                            <div className="grid md:grid-cols-3 gap-8">
-                                {[
-                                    {
-                                        step: "01", title: "Enter Exam Portal", desc: (
-                                            <>
-                                                Click on{" "}
-                                                <span className='text-[#03608e] font-bold hover:text-[#5c8374]'>
-                                                    <a href='/exam'>Enter Exam</a>
-                                                </span>
-                                                , read instructions, enter the exam code, fill in details and start the exam
-                                            </>
-                                        )
-                                    },
-                                    { step: "02", title: "Start Assessment", desc: "Attempt multi format questions in a unified workspace" },
-                                    { step: "03", title: "Submit", desc: "On complete click on submit or wait till time runs out" }
-                                ].map((item, index) => (
-                                    <div key={index} className="relative group">
-                                        <div className="text-center p-6 bg-white dark:bg-gray-800 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border-2 border-transparent hover:border-[#5c8374]">
-                                            <div className="inline-block mb-4 w-20 h-20 rounded-full bg-gradient-to-br from-[#5c8374] to-[#1b4242] items-center justify-center text-white text-2xl font-bold shadow-lg group-hover:scale-110 transition-transform duration-300">
-                                                {item.step}
-                                            </div>
-                                            <h4 className="text-xl font-bold text-gray-800 dark:text-white mb-3">
-                                                {item.title}
-                                            </h4>
-                                            <p className="text-gray-600 dark:text-gray-300">
-                                                {item.desc}
-                                            </p>
-                                        </div>
-                                        {index < 2 && (
-                                            <div className="hidden md:block absolute top-10 left-full w-full h-1 bg-gradient-to-r from-[#5c8374] to-[#1b4242] transform -translate-x-1/2 opacity-30"></div>
-                                        )}
-                                    </div>
-                                ))}
+                    <div className="mb-24">
+                        <div className="flex items-center justify-center mb-12">
+                            <div className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-gradient-to-r from-indigo-500/20 to-violet-500/20 border border-indigo-500/30 text-indigo-200">
+                                <FaUsers className="text-base" />
+                                <span className="text-sm font-semibold tracking-wide uppercase">
+                                    For Students
+                                </span>
                             </div>
                         </div>
 
-                        {/* Teacher Flow */}
-                        <div>
-                            <div className="flex items-center justify-center mb-10">
-                                <div className="flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-green-500 to-emerald-600 rounded-full shadow-lg">
-                                    <FaChartLine className="text-2xl text-white" />
-                                    <h3 className="text-3xl font-bold text-white">
-                                        For Teachers
-                                    </h3>
-                                </div>
-                            </div>
-                            <div className="grid md:grid-cols-4 gap-8">
-                                {[
-                                    { step: "01", title: "Register & Login", desc: "Create your instructor account and access the admin dashboard" },
-                                    { step: "02", title: "Create Assessment", desc: "Design exams with code and text formats, set duration, and assign students" },
-                                    { step: "03", title: "Monitor in Real-Time", desc: "Track student activity with AI-based proctoring and receive alerts" },
-                                    { step: "04", title: "Generate Results", desc: "Access comprehensive results and analytics for each student" }
-                                ].map((item, index) => (
-                                    <div key={index} className="relative group">
-                                        <div className="text-center p-6 bg-white dark:bg-gray-800 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border-2 border-transparent hover:border-green-500">
-                                            <div className="inline-block mb-4 w-20 h-20 rounded-full bg-gradient-to-br from-green-400 to-emerald-600 items-center justify-center text-white text-2xl font-bold shadow-lg group-hover:scale-110 transition-transform duration-300">
-                                                {item.step}
-                                            </div>
-                                            <h4 className="text-xl font-bold text-gray-800 dark:text-white mb-3">
-                                                {item.title}
-                                            </h4>
-                                            <p className="text-gray-600 dark:text-gray-300">
-                                                {item.desc}
-                                            </p>
-                                        </div>
-                                        {index < 3 && (
-                                            <div className="hidden md:block absolute top-10 left-full w-full h-1 bg-gradient-to-r from-green-400 to-emerald-600 transform -translate-x-1/2 opacity-30"></div>
-                                        )}
+                        <div className="grid md:grid-cols-3 gap-6">
+                            {studentSteps.map((item, index) => (
+                                <div
+                                    key={index}
+                                    className="group relative p-7 rounded-2xl bg-gradient-to-b from-white/[0.04] to-white/[0.01] border border-white/10 hover:border-indigo-500/40 transition-all duration-300 hover:-translate-y-1"
+                                >
+                                    <div className="absolute -top-4 left-7 inline-flex items-center justify-center w-12 h-12 rounded-xl bg-gradient-to-br from-indigo-500 to-violet-600 text-white font-bold shadow-lg shadow-indigo-500/25 group-hover:scale-110 transition-transform">
+                                        {item.step}
                                     </div>
-                                ))}
+                                    <h4 className="text-xl font-semibold text-white mt-6 mb-3">
+                                        {item.title}
+                                    </h4>
+                                    <p className="text-gray-400 leading-relaxed text-sm">
+                                        {item.desc}
+                                    </p>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+
+                    <div>
+                        <div className="flex items-center justify-center mb-12">
+                            <div className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-gradient-to-r from-violet-500/20 to-fuchsia-500/20 border border-violet-500/30 text-violet-200">
+                                <FaChartLine className="text-base" />
+                                <span className="text-sm font-semibold tracking-wide uppercase">
+                                    For Teachers
+                                </span>
                             </div>
                         </div>
 
+                        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                            {teacherSteps.map((item, index) => (
+                                <div
+                                    key={index}
+                                    className="group relative p-7 rounded-2xl bg-gradient-to-b from-white/[0.04] to-white/[0.01] border border-white/10 hover:border-violet-500/40 transition-all duration-300 hover:-translate-y-1"
+                                >
+                                    <div className="absolute -top-4 left-7 inline-flex items-center justify-center w-12 h-12 rounded-xl bg-gradient-to-br from-violet-500 to-fuchsia-600 text-white font-bold shadow-lg shadow-violet-500/25 group-hover:scale-110 transition-transform">
+                                        {item.step}
+                                    </div>
+                                    <h4 className="text-xl font-semibold text-white mt-6 mb-3">
+                                        {item.title}
+                                    </h4>
+                                    <p className="text-gray-400 leading-relaxed text-sm">
+                                        {item.desc}
+                                    </p>
+                                </div>
+                            ))}
+                        </div>
                     </div>
                 </div>
             </section>
 
-            <footer className="bg-gray-900 text-gray-300 px-4 py-12 border-t border-gray-800">
-                <div className="max-w-7xl mx-auto">
-                    <div className="grid md:grid-cols-3 gap-12 mb-8">
+            <section className="relative py-20">
+                <div className="max-w-5xl mx-auto px-6">
+                    <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-br from-indigo-600/20 via-violet-600/20 to-fuchsia-600/20 p-10 md:p-14 text-center">
+                        <div className="absolute -top-20 -left-20 w-60 h-60 bg-indigo-500/30 rounded-full blur-3xl" />
+                        <div className="absolute -bottom-20 -right-20 w-60 h-60 bg-fuchsia-500/30 rounded-full blur-3xl" />
+                        <div className="relative">
+                            <h3 className="text-3xl md:text-4xl font-bold mb-3 tracking-tight">
+                                Ready to host your next exam with confidence?
+                            </h3>
+                            <p className="text-gray-300 mb-8 max-w-xl mx-auto">
+                                Join instructors and institutions running secure, AI-proctored
+                                assessments on CodeFusion.
+                            </p>
+                            <a
+                                href="/create-exam"
+                                className="inline-flex items-center gap-2 px-7 py-3.5 bg-white text-gray-900 hover:bg-gray-100 rounded-full font-semibold shadow-lg transition-all duration-300 hover:scale-[1.03]"
+                            >
+                                Get Started
+                                <FaArrowRight className="text-sm" />
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <footer className="border-t border-white/10 bg-gray-950">
+                <div className="max-w-7xl mx-auto px-6 py-14">
+                    <div className="grid md:grid-cols-3 gap-12 mb-10">
                         <div>
-                            <div className="text-4xl font-bold mb-4">
-                                <span className="text-[#9ec8b9]">Code</span>
-                                <span className="text-white">Fusion</span>
-                                <span className="text-green-500">.</span>
+                            <div className="flex items-center gap-2 mb-4">
+                                <img src="/logo2.svg" alt="CodeFusion" className="w-9 h-9" />
+                                <span className="text-2xl font-bold">
+                                    <span className="text-indigo-400">Code</span>
+                                    <span className="text-white">Fusion</span>
+                                    <span className="text-emerald-500">.</span>
+                                </span>
                             </div>
-                            <p className="text-gray-400">
-                                Revolutionizing online assessments with AI-powered security and intelligent evaluation.
+                            <p className="text-gray-400 text-sm leading-relaxed max-w-sm">
+                                Revolutionizing online assessments with AI-powered security and
+                                intelligent evaluation.
                             </p>
                         </div>
 
                         <div>
-                            <h3 className="text-xl font-bold text-white mb-4">Quick Links</h3>
-                            <ul className="space-y-2">
-                                <li><a href="#home" className="hover:text-[#5c8374] transition-colors">Home</a></li>
-                                <li><a href="/exam" className="hover:text-[#5c8374] transition-colors">Start Exam</a></li>
-                                <li><a href="#features" className="hover:text-[#5c8374] transition-colors">Features</a></li>
+                            <h3 className="text-sm font-semibold text-white mb-4 uppercase tracking-wider">
+                                Quick Links
+                            </h3>
+                            <ul className="space-y-3 text-sm">
+                                <li>
+                                    <a
+                                        href="#home"
+                                        className="text-gray-400 hover:text-indigo-300 transition-colors"
+                                    >
+                                        Home
+                                    </a>
+                                </li>
+                                <li>
+                                    <a
+                                        href="/exam"
+                                        className="text-gray-400 hover:text-indigo-300 transition-colors"
+                                    >
+                                        Start Exam
+                                    </a>
+                                </li>
+                                <li>
+                                    <a
+                                        href="#features"
+                                        className="text-gray-400 hover:text-indigo-300 transition-colors"
+                                    >
+                                        Features
+                                    </a>
+                                </li>
                             </ul>
                         </div>
 
                         <div>
-                            <h3 className="text-xl font-bold text-white mb-4">Connect With Us</h3>
-                            <div className="flex gap-4 text-3xl">
-                                <a target="_blank" href="#" className="hover:text-[#5c8374] transition-colors transform hover:scale-110">
+                            <h3 className="text-sm font-semibold text-white mb-4 uppercase tracking-wider">
+                                Connect
+                            </h3>
+                            <div className="flex gap-3">
+                                <a
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    href="#"
+                                    aria-label="GitHub"
+                                    className="w-10 h-10 inline-flex items-center justify-center rounded-lg border border-white/10 bg-white/5 text-gray-300 hover:text-white hover:border-indigo-500/40 hover:bg-indigo-500/10 transition-all"
+                                >
                                     <FaGithub />
                                 </a>
-                                <a target="_blank" href="#" className="hover:text-[#5c8374] transition-colors transform hover:scale-110">
+                                <a
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    href="#"
+                                    aria-label="LinkedIn"
+                                    className="w-10 h-10 inline-flex items-center justify-center rounded-lg border border-white/10 bg-white/5 text-gray-300 hover:text-white hover:border-indigo-500/40 hover:bg-indigo-500/10 transition-all"
+                                >
                                     <FaLinkedin />
                                 </a>
-                                <a target="_blank" href="#" className="hover:text-[#5c8374] transition-colors transform hover:scale-110">
+                                <a
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    href="#"
+                                    aria-label="Twitter"
+                                    className="w-10 h-10 inline-flex items-center justify-center rounded-lg border border-white/10 bg-white/5 text-gray-300 hover:text-white hover:border-indigo-500/40 hover:bg-indigo-500/10 transition-all"
+                                >
                                     <FaTwitter />
                                 </a>
                             </div>
                         </div>
                     </div>
 
-                    <div className="border-t border-gray-800 pt-8 text-center text-gray-400">
-                        <p>© {new Date().getFullYear()} CodeFusion. All rights reserved. Built with passion for education.</p>
+                    <div className="border-t border-white/10 pt-6 text-center text-gray-500 text-sm">
+                        © {new Date().getFullYear()} CodeFusion. All rights reserved. Built
+                        with passion for education.
                     </div>
                 </div>
             </footer>

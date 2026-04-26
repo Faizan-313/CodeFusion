@@ -4,12 +4,21 @@ const getExamStatusHelper = (startTime, endTime) => {
     const end = new Date(endTime);
 
     if (now < start) {
-        return { label: "Upcoming", color: "bg-[#9ec8b9] dark:bg-[#092635]/30 text-[#092635] dark:text-[#9ec8b9]" };
+        return {
+            label: "Upcoming",
+            color: "bg-amber-500/15 text-amber-300 border-amber-500/30",
+        };
     }
     if (now >= start && now <= end) {
-        return { label: "Live", color: "bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300" };
+        return {
+            label: "Live",
+            color: "bg-emerald-500/15 text-emerald-300 border-emerald-500/30",
+        };
     }
-    return { label: "Completed", color: "bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300" };
+    return {
+        label: "Completed",
+        color: "bg-white/5 text-gray-300 border-white/15",
+    };
 };
 
 export default getExamStatusHelper;

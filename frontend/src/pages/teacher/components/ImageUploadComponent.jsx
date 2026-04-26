@@ -1,6 +1,7 @@
 import toast from 'react-hot-toast';
+import { ImagePlus, FileImage, X, Check } from 'lucide-react';
 
-const ImageUploadComponent = ({questions, setQuestions, index}) => {
+const ImageUploadComponent = ({ questions, setQuestions, index }) => {
 
     const getImageFileName = (img, index) => {
         if (!img) return "";
@@ -13,28 +14,25 @@ const ImageUploadComponent = ({questions, setQuestions, index}) => {
             const parts = img.split(',');
             const b64 = parts[1] || '';
             const sizeBytes = Math.ceil((b64.length * 3) / 4);
-            return `Size: ${(sizeBytes / 1024).toFixed(2)} KB`;
+            return `${(sizeBytes / 1024).toFixed(2)} KB`;
         }
-        if (img.size) return `Size: ${(img.size / 1024).toFixed(2)} KB`;
+        if (img.size) return `${(img.size / 1024).toFixed(2)} KB`;
         return null;
     };
 
     const handleFileSelect = (index, event) => {
         const file = event.target.files[0];
         if (file) {
-            // Validate file size (2MB)
             if (file.size > 2 * 1024 * 1024) {
                 toast.error('File size must be less than 2MB');
                 return;
             }
 
-            // Validate file type
             if (!file.type.startsWith('image/')) {
                 toast.error('Please upload an image file');
                 return;
             }
 
-            // Create preview URL and revoke previous blob url if present
             const previewUrl = URL.createObjectURL(file);
             const updatedQuestions = [...questions];
             const prevPreview = updatedQuestions[index]?.imagePreview;
@@ -68,57 +66,70 @@ const ImageUploadComponent = ({questions, setQuestions, index}) => {
     const question = questions?.[index];
     if (!question) return null;
 
+    const sizeText = getImageSizeText(question.image);
+
     return (
-        <div className="bg-gradient-to-br from-slate-50 to-[#9ec8b9] p-4 rounded-lg">
-            <div className="max-w-full">
-                <div className="mb-6 p-4 bg-white rounded-xl shadow-lg border border-gray-200">
-                    <label htmlFor={`fileUpload-${index}`} className="block text-sm font-semibold text-gray-700 mb-4">
-                        Upload Question Image (Optional)
-                    </label>
+        <div className="mb-4 rounded-xl bg-white/[0.03] border border-white/10 p-4">
+            <label
+                htmlFor={`fileUpload-${index}`}
+                className="flex items-center gap-2 text-xs font-semibold text-gray-300 mb-3 uppercase tracking-wider"
+            >
+                <ImagePlus className="w-3.5 h-3.5 text-violet-400" />
+                Question Image
+                <span className="text-gray-500 normal-case font-normal tracking-normal">(optional)</span>
+            </label>
 
-                    <div className="flex gap-3 mb-4">
-                        <input
-                            type="file"
-                            id={`fileUpload-${index}`}
-                            accept="image/*"
-                            onChange={(e) => handleFileSelect(index, e)}
-                            className="flex-1 text-sm text-gray-600 file:mr-2 file:px-4 file:py-2 file:rounded-lg file:border-0 file:bg-[#9ec8b9] file:text-[#092635] file:font-medium hover:file:bg-[#9ec8b9] file:cursor-pointer transition"
+            <input
+                type="file"
+                id={`fileUpload-${index}`}
+                accept="image/*"
+                onChange={(e) => handleFileSelect(index, e)}
+                className="block w-full text-sm text-gray-400
+                    file:mr-3 file:px-4 file:py-2 file:rounded-lg file:border-0
+                    file:bg-gradient-to-r file:from-indigo-500 file:to-violet-600
+                    hover:file:from-indigo-400 hover:file:to-violet-500
+                    file:text-white file:font-semibold file:cursor-pointer
+                    file:transition-all file:shadow-md file:shadow-violet-500/20
+                    cursor-pointer"
+            />
+
+            {question.imagePreview ? (
+                <div className="mt-4 rounded-xl border border-emerald-500/30 bg-emerald-500/[0.06] p-4">
+                    <div className="flex items-start gap-4">
+                        <img
+                            src={question.imagePreview}
+                            alt="Preview"
+                            className="w-28 h-28 object-cover rounded-lg border border-white/10 shadow-lg"
                         />
+                        <div className="flex-1 min-w-0">
+                            <p className="inline-flex items-center gap-1.5 text-sm font-semibold text-emerald-300 mb-1">
+                                <Check className="w-4 h-4" />
+                                Image Selected
+                            </p>
+                            <p className="text-xs text-gray-300 truncate" title={getImageFileName(question.image, index)}>
+                                {getImageFileName(question.image, index)}
+                            </p>
+                            {sizeText && (
+                                <p className="text-xs text-gray-500 mb-3">{sizeText}</p>
+                            )}
+                            <button
+                                type="button"
+                                onClick={() => handleRemove(index)}
+                                className="inline-flex items-center gap-1.5 px-3 py-1 rounded-md text-xs font-medium bg-red-500/10 hover:bg-red-500/20 border border-red-500/30 hover:border-red-500/50 text-red-300 hover:text-red-200 transition-all"
+                            >
+                                <X className="w-3 h-3" />
+                                Remove
+                            </button>
+                        </div>
                     </div>
-
-                    {question.imagePreview ? (
-                        <div className="bg-gradient-to-br from-[#9ec8b9] to-[#5c8374] border-2 border-[#9ec8b9] rounded-lg p-4">
-                            <div className="flex items-start gap-4">
-                                <img
-                                    src={question.imagePreview}
-                                    alt="Preview"
-                                    className="w-32 h-32 object-cover rounded-lg border-2 border-[#9ec8b9] shadow-md"
-                                />
-                                <div className="flex-1">
-                                    <p className="text-sm font-semibold text-[#092635] mb-1">✓ Image Selected</p>
-                                    <p className="text-xs text-gray-600 mb-1">{getImageFileName(question.image, index)}</p>
-                                    {getImageSizeText(question.image) && (
-                                        <p className="text-xs text-gray-500 mb-3">{getImageSizeText(question.image)}</p>
-                                    )}
-                                    <button
-                                        type="button"
-                                        onClick={() => handleRemove(index)}
-                                        className="px-3 py-1 bg-red-100 text-red-700 rounded-md hover:bg-red-200 transition text-xs font-medium"
-                                    >
-                                        Remove
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    ) : (
-                        <div className="bg-gradient-to-br from-gray-50 to-slate-50 border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
-                            <div className="text-4xl mb-2">📁</div>
-                            <p className="text-sm text-gray-600 font-medium mb-1">No image uploaded</p>
-                            <p className="text-xs text-gray-500">Supported formats: JPG, PNG (Max 2MB)</p>
-                        </div>
-                    )}
                 </div>
-            </div>
+            ) : (
+                <div className="mt-4 rounded-xl border-2 border-dashed border-white/10 bg-white/[0.02] p-6 text-center">
+                    <FileImage className="w-10 h-10 text-violet-400/60 mx-auto mb-2" />
+                    <p className="text-sm text-gray-300 font-medium mb-0.5">No image uploaded</p>
+                    <p className="text-xs text-gray-500">Supported formats: JPG, PNG · Max 2MB</p>
+                </div>
+            )}
         </div>
     );
 };
