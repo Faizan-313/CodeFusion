@@ -149,7 +149,7 @@ Notes
 - If using MongoDB Atlas, whitelist your server IP / add proper network & user credentials.
 
 ## License
-This project is licensed under the MIT License — see the LICENSE file for details.
+This project is licensed under the MIT License.
 
 ## Conclusion
 CodeFusion is a next-generation online programming examination system that blends security, flexibility, and AI intelligence.
