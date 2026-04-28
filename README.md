@@ -45,7 +45,7 @@ Built using modern technologies such as **React.js**, **Node.js**, and **MongoDB
 
 ---
 
-## 🧩 Modules Overview
+## Modules Overview
 
 | Module  | Description |
 |--------|-------------|
