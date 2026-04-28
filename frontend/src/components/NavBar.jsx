@@ -62,31 +62,36 @@ function NavBar() {
                     <Link to="/" className="flex items-center space-x-2 group">
                         <div className="relative">
                             <img
-                                src="/logo2.svg"
-                                alt="CodeFusion"
-                                className="w-10 h-10 transform group-hover:rotate-12 transition-transform duration-300 drop-shadow-[0_0_10px_rgba(139,92,246,0.45)]"
+                                src="/logo3.svg"
+                                alt="Assessify"
+                                className="w-10 h-10 transform group-hover:rotate-12 transition-transform duration-300 drop-shadow-[0_0_10px_rgba(236,72,153,0.45)]"
                             />
-                            <div className="absolute inset-0 bg-cyan-400 blur-xl opacity-0 group-hover:opacity-40 transition-opacity duration-300"></div>
+                            <div className="absolute inset-0 bg-pink-400 blur-xl opacity-0 group-hover:opacity-40 transition-opacity duration-300"></div>
                         </div>
                         <span className="text-2xl font-bold">
-                            <span className="text-cyan-400">Code</span>
-                            <span className="text-white">Fusion</span>
-                            <span className="text-green-500">.</span>
+                            <span className="text-white">Assess</span>
+                            <span className="bg-gradient-to-r from-pink-400 to-violet-400 bg-clip-text text-transparent">ify</span>
+                            <span className="text-fuchsia-400">.</span>
                         </span>
                     </Link>
 
                     {/* Desktop Navigation */}
                     <div className="hidden lg:flex items-center space-x-1">
-                        {navLinks.map((link, index) => (
-                            <Link
-                                key={index}
-                                to={link.href}
-                                className="relative px-4 py-2 text-white/90 hover:text-white font-medium transition-colors group"
-                            >
-                                {link.name}
-                                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-cyan-400 to-blue-500 group-hover:w-full transition-all duration-300"></span>
-                            </Link>
-                        ))}
+                        {navLinks.map((link, index) => {
+                            const isActive = location.pathname === link.href;
+                            return (
+                                <Link
+                                    key={index}
+                                    to={link.href}
+                                    className={`relative px-4 py-2 font-medium transition-colors group ${isActive ? 'text-white' : 'text-white/70 hover:text-white'}`}
+                                >
+                                    {link.name}
+                                    <span
+                                        className={`absolute bottom-0 left-0 h-0.5 bg-gradient-to-r from-indigo-400 to-violet-500 transition-all duration-300 ${isActive ? 'w-full' : 'w-0 group-hover:w-full'}`}
+                                    ></span>
+                                </Link>
+                            );
+                        })}
                     </div>
 
                     {/* Desktop Auth Buttons */}
@@ -139,13 +144,16 @@ function NavBar() {
                             <>
                                 <Link
                                     to="/signin"
-                                    className="px-5 py-2 text-white/90 hover:text-white font-medium transition-colors"
+                                    className={`relative px-5 py-2 font-medium transition-colors group ${location.pathname === '/signin' ? 'text-white' : 'text-white/70 hover:text-white'}`}
                                 >
                                     Login
+                                    <span
+                                        className={`absolute bottom-0 left-0 h-0.5 bg-gradient-to-r from-indigo-400 to-violet-500 transition-all duration-300 ${location.pathname === '/signin' ? 'w-full' : 'w-0 group-hover:w-full'}`}
+                                    ></span>
                                 </Link>
                                 <Link
                                     to="/signup"
-                                    className="px-6 py-2 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white font-semibold rounded-full transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-cyan-500/50"
+                                    className={`px-6 py-2 bg-gradient-to-r from-indigo-500 to-violet-600 hover:from-indigo-400 hover:to-violet-500 text-white font-semibold rounded-full transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-violet-500/50 ${location.pathname === '/signup' ? 'ring-2 ring-violet-300/70 ring-offset-2 ring-offset-gray-900' : ''}`}
                                 >
                                     Register
                                 </Link>
@@ -183,16 +191,22 @@ function NavBar() {
                             </div>
                         )}
 
-                        {navLinks.map((link, index) => (
-                            <Link
-                                key={index}
-                                to={link.href}
-                                onClick={() => setIsOpen(false)}
-                                className="block px-4 py-3 text-white/90 hover:text-white hover:bg-white/10 rounded-lg transition-all duration-200 font-medium"
-                            >
-                                {link.name}
-                            </Link>
-                        ))}
+                        {navLinks.map((link, index) => {
+                            const isActive = location.pathname === link.href;
+                            return (
+                                <Link
+                                    key={index}
+                                    to={link.href}
+                                    onClick={() => setIsOpen(false)}
+                                    className={`block px-4 py-3 rounded-lg transition-all duration-200 font-medium border ${isActive
+                                        ? 'text-white bg-gradient-to-r from-indigo-500/20 to-violet-500/20 border-indigo-400/40'
+                                        : 'text-white/80 hover:text-white hover:bg-white/10 border-transparent'
+                                        }`}
+                                >
+                                    {link.name}
+                                </Link>
+                            );
+                        })}
 
                         {user && (
                             <>
@@ -223,14 +237,17 @@ function NavBar() {
                                     <Link
                                         to="/signin"
                                         onClick={() => setIsOpen(false)}
-                                        className="block px-4 py-3 text-white/90 hover:text-white hover:bg-white/10 rounded-lg transition-all duration-200 font-medium"
+                                        className={`block px-4 py-3 rounded-lg transition-all duration-200 font-medium border ${location.pathname === '/signin'
+                                            ? 'text-white bg-gradient-to-r from-indigo-500/20 to-violet-500/20 border-indigo-400/40'
+                                            : 'text-white/80 hover:text-white hover:bg-white/10 border-transparent'
+                                            }`}
                                     >
                                         Login
                                     </Link>
                                     <Link
                                         to="/signup"
                                         onClick={() => setIsOpen(false)}
-                                        className="block px-4 py-3 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white font-semibold rounded-lg transition-all duration-300 text-center"
+                                        className={`block px-4 py-3 bg-gradient-to-r from-indigo-500 to-violet-600 hover:from-indigo-400 hover:to-violet-500 text-white font-semibold rounded-lg transition-all duration-300 text-center ${location.pathname === '/signup' ? 'ring-2 ring-violet-300/70 ring-offset-2 ring-offset-gray-800' : ''}`}
                                     >
                                         Register
                                     </Link>

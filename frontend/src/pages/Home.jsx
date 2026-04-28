@@ -127,8 +127,8 @@ function Home() {
 
                     <div className="mb-8 flex justify-center">
                         <img
-                            src="/logo2.svg"
-                            alt="CodeFusion"
+                            src="/logo3.svg"
+                            alt="Assessify"
                             className="w-28 h-28 md:w-32 md:h-32 cursor-pointer hover:rotate-12 transition-transform duration-300 drop-shadow-[0_0_40px_rgba(139,92,246,0.45)]"
                         />
                     </div>
@@ -141,7 +141,7 @@ function Home() {
                     </h1>
 
                     <p className="text-lg md:text-xl text-gray-400 max-w-2xl mx-auto mb-10 leading-relaxed">
-                        CodeFusion is a secure, multi-format examination platform built for
+                        Assessify is a secure, multi-format examination platform built for
                         Computer Science programs code, MCQs, diagrams, and text in a single,
                         proctored workspace.
                     </p>
@@ -180,7 +180,7 @@ function Home() {
                 </div>
             </section>
 
-            <section id="features" className="relative py-24 bg-gray-950  scroll-smooth">
+            <section id="features" className="relative py-24 bg-gray-950">
                 <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
                 <div className="max-w-7xl mx-auto px-6">
                     <div className="text-center mb-16 max-w-3xl mx-auto">
@@ -222,50 +222,19 @@ function Home() {
                 </div>
             </section>
 
-            <section className="relative py-20 overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-r from-indigo-600/10 via-violet-600/10 to-fuchsia-600/10" />
-                <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/15 to-transparent" />
-                <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-white/15 to-transparent" />
-
-                <div className="relative max-w-6xl mx-auto px-6">
-                    <div className="grid md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-white/10 text-center">
-                        <div className="py-8 md:py-0 md:px-6">
-                            <div className="text-5xl md:text-6xl font-extrabold bg-gradient-to-r from-indigo-300 to-violet-400 bg-clip-text text-transparent mb-2">
-                                99.9%
-                            </div>
-                            <div className="text-gray-400 uppercase tracking-wider text-sm">
-                                Uptime Reliability
-                            </div>
-                        </div>
-                        <div className="py-8 md:py-0 md:px-6">
-                            <div className="text-5xl md:text-6xl font-extrabold bg-gradient-to-r from-violet-300 to-fuchsia-400 bg-clip-text text-transparent mb-2 flex items-center justify-center gap-3">
-                                <FaUsers className="text-4xl text-violet-300" />
-                                1000+
-                            </div>
-                            <div className="text-gray-400 uppercase tracking-wider text-sm">
-                                Active Users
-                            </div>
-                        </div>
-                        <div className="py-8 md:py-0 md:px-6">
-                            <div className="text-5xl md:text-6xl font-extrabold bg-gradient-to-r from-fuchsia-300 to-pink-400 bg-clip-text text-transparent mb-2">
-                                24/7
-                            </div>
-                            <div className="text-gray-400 uppercase tracking-wider text-sm">
-                                Support Available
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
             <section className="relative py-24 bg-gray-950">
+                <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
                 <div className="max-w-7xl mx-auto px-6">
                     <div className="text-center mb-20 max-w-3xl mx-auto">
                         <span className="inline-block px-3 py-1 mb-4 text-xs font-semibold tracking-wider uppercase rounded-full bg-violet-500/10 text-violet-300 border border-violet-500/20">
                             Workflow
                         </span>
                         <h2 className="text-4xl md:text-5xl font-bold tracking-tight">
-                            How CodeFusion works
+                            How{" "}
+                            <span className="bg-gradient-to-r from-violet-400 to-fuchsia-400 bg-clip-text text-transparent">
+                                Assessify
+                            </span>{" "}
+                            works
                         </h2>
                         <p className="text-lg text-gray-400 mt-4">
                             A streamlined journey for both students and instructors.
@@ -335,6 +304,7 @@ function Home() {
             </section>
 
             <section className="relative py-20">
+                <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
                 <div className="max-w-5xl mx-auto px-6">
                     <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-br from-indigo-600/20 via-violet-600/20 to-fuchsia-600/20 p-10 md:p-14 text-center">
                         <div className="absolute -top-20 -left-20 w-60 h-60 bg-indigo-500/30 rounded-full blur-3xl" />
@@ -345,7 +315,7 @@ function Home() {
                             </h3>
                             <p className="text-gray-300 mb-8 max-w-xl mx-auto">
                                 Join instructors and institutions running secure, AI-proctored
-                                assessments on CodeFusion.
+                                assessments on Assessify.
                             </p>
                             <a
                                 href="/create-exam"
@@ -364,11 +334,11 @@ function Home() {
                     <div className="grid md:grid-cols-3 gap-12 mb-10">
                         <div>
                             <div className="flex items-center gap-2 mb-4">
-                                <img src="/logo2.svg" alt="CodeFusion" className="w-9 h-9" />
+                                <img src="/logo3.svg" alt="Assessify" className="w-9 h-9" />
                                 <span className="text-2xl font-bold">
-                                    <span className="text-indigo-400">Code</span>
-                                    <span className="text-white">Fusion</span>
-                                    <span className="text-emerald-500">.</span>
+                                    <span className="text-white">Assess</span>
+                                    <span className="bg-gradient-to-r from-violet-400 to-fuchsia-400 bg-clip-text text-transparent">ify</span>
+                                    <span className="text-fuchsia-400">.</span>
                                 </span>
                             </div>
                             <p className="text-gray-400 text-sm leading-relaxed max-w-sm">
@@ -455,7 +425,7 @@ function Home() {
                     </div>
 
                     <div className="border-t border-white/10 pt-6 text-center text-gray-500 text-sm">
-                        © {new Date().getFullYear()} CodeFusion. All rights reserved. Built
+                        © {new Date().getFullYear()} Assessify. All rights reserved. Built
                         with passion for education.
                     </div>
                 </div>

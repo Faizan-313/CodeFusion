@@ -25,7 +25,7 @@ transporter.verify((error) => {
 
 export const sendEmail = async ({ to, subject, text, html }) => {
     try {
-        const fromEmail = `CodeFusion Support <${process.env.EMAIL_USER}>`;
+        const fromEmail = `Assessify Support <${process.env.EMAIL_USER}>`;
         const mailOptions = {
             from: fromEmail,
             to,

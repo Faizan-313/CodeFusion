@@ -2,9 +2,9 @@ import { Mail, Lock, LogIn, Eye, EyeClosed } from "lucide-react"
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom"
 import { motion } from "framer-motion";
-import { FaBrain } from "react-icons/fa";
 import toast from "react-hot-toast";
 import { useAuth } from "../../context/AuthContext";
+import logo from "/logo3.svg";
 
 function Signin() {
     const navigate = useNavigate();
@@ -53,14 +53,20 @@ function Signin() {
                     transition={{ delay: 0.3, duration: 0.5 }}
                     className="flex flex-col items-center text-center mb-8"
                 >
-                    <div className="relative mb-4">
-                        <FaBrain className="text-5xl text-[#9ec8b9]" />
-                        <div className="absolute inset-0 bg-[#9ec8b9] blur-xl opacity-50"></div>
+                    <div className="flex items-center gap-3 mb-6">
+                        <div className="relative">
+                            <div className="absolute -inset-2 bg-gradient-to-br from-violet-400/40 to-fuchsia-400/40 blur-xl rounded-full"></div>
+                            <img
+                                src={logo}
+                                alt="Assessify"
+                                className="relative w-14 h-14 drop-shadow-[0_0_14px_rgba(168,85,247,0.5)]"
+                            />
+                        </div>
+                        <h1 className="text-3xl font-bold leading-none">
+                            <span className="text-[#1b4242]">Assess</span>
+                            <span className="bg-gradient-to-r from-violet-500 to-fuchsia-600 bg-clip-text text-transparent">ify</span>
+                        </h1>
                     </div>
-                    <h1 className="text-3xl font-bold mb-2">
-                        <span className="text-[#5c8374]">Code</span>
-                        <span className="text-[#092635]">Fusion</span>
-                    </h1>
                     <h2 className="text-2xl font-bold text-[#092635] mb-2">Welcome Back</h2>
                     <p className="text-[#1b4242]">Sign in to continue your journey</p>
                 </motion.div>

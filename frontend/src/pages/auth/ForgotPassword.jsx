@@ -152,7 +152,10 @@ function ForgotPassword() {
 
             <div className="w-full max-w-md relative z-10">
                 <div className="text-center mb-8">
-                    <h1 className="text-4xl font-bold text-white mb-2">CodeFusion</h1>
+                    <h1 className="text-4xl font-bold mb-2">
+                        <span className="text-white">Assess</span>
+                        <span className="bg-gradient-to-r from-pink-400 to-violet-400 bg-clip-text text-transparent">ify</span>
+                    </h1>
                     <p className="text-sm text-gray-300">Password Recovery</p>
                 </div>
 
