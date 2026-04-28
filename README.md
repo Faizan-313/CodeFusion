@@ -1,4 +1,4 @@
-# CodeFusion: AI-Driven Online Programming Examination Platform
+# Assessify: AI-Driven Online Programming Examination Platform
 
 **Assessify** is a **secure, intelligent, and multi-format web-based platform** designed to revolutionize the way **Computer Science Engineering exams** are conducted online.  
 By integrating **AI-driven proctoring**, a **Smart Teacher Dashboard**, and **multi-format answer support**, it ensures **academic integrity**, **accessibility**, and **fairness** — all within a seamless, real-time environment.
@@ -152,6 +152,6 @@ Notes
 This project is licensed under the MIT License.
 
 ## Conclusion
-CodeFusion is a next-generation online programming examination system that blends security, flexibility, and AI intelligence.
+Assessify is a next-generation online programming examination system that blends security, flexibility, and AI intelligence.
 By providing a unified platform for multi-format exams and real-time monitoring, it advances the future of fair, scalable, and intelligent remote assessments.
 
