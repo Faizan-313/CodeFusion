@@ -1,11 +1,15 @@
+<<<<<<< HEAD
 # 💻 Assessify: AI-Driven Online Programming Examination Platform
+=======
+# CodeFusion: AI-Driven Online Programming Examination Platform
+>>>>>>> e6899e4e6146e3895a4b55e2e1902972e78442f6
 
 **Assessify** is a **secure, intelligent, and multi-format web-based platform** designed to revolutionize the way **Computer Science Engineering exams** are conducted online.  
 By integrating **AI-driven proctoring**, a **Smart Teacher Dashboard**, and **multi-format answer support**, it ensures **academic integrity**, **accessibility**, and **fairness** — all within a seamless, real-time environment.
 
 ---
 
-## 🧠 Abstract
+## Abstract
 
 Traditional online exam systems often fail to ensure integrity or support diverse question formats.  
 **Assessify** bridges this gap with an **AI-powered, real-time proctoring system** and an **interactive exam workspace** where students can:
@@ -20,36 +24,36 @@ Built using modern technologies such as **React.js**, **Node.js**, and **MongoDB
 
 ---
 
-## ⚙️ Tech Stack
+## Tech Stack
 
 | Layer | Technologies Used |
 |-------|-------------------|
-| **Frontend** | React.js, Tailwind CSS, CodeMirror |
+| **Frontend** | React.js, Tailwind CSS, CodeMirror, Socket-client |
 | **Backend** | Node.js, Express.js, Socket.io |
 | **Database** | MongoDB, Cloudinary |
 | **AI Monitoring** | TensorFlow, MediaPipe |
 
 ---
 
-## 🔒 Key Features
+## Key Features
 
-### 👨‍💻 For Students
-- 🧩 **Multi-format Answer Interface** — Code, Text, MCQs, and Diagram editors in a unified workspace  
-- 🧠 **Lockdown Mode** — Prevents tab switching, external application access etc.
-- 📸 **AI Proctoring** — Webcam-based anomaly detection to maintain exam integrity  
+### Students
+- **Multi-format Answer Interface** — Code, Text, MCQs, and Diagram editors in a unified workspace  
+- **Lockdown Mode** — Prevents tab switching, external application access etc.
+- **AI Proctoring** — Webcam-based anomaly detection to maintain exam integrity  
 
-### 👩‍🏫 For Teachers
-- 🖥️ **Live Dashboard** — Monitor active students, alerts, and submissions in real time  
-- ⚡ **Alerts** — Suspicious activities flagged automatically  
-- 🧾 **Exam Management** — Create, schedule, and manage exams with full administrative control  
+### Teachers
+- **Live Dashboard** — Monitor active students, alerts, and submissions in real time  
+- **Alerts** — Suspicious activities flagged automatically  
+- **Exam Management** — Create, schedule, and manage exams with full administrative control  
 
 ---
 
-## 🧩 Modules Overview
+## Modules Overview
 
 | Module  | Description |
 |--------|-------------|
-| **Authentication** | Secure login system for teachers and students |
+| **Authentication** | Secure login system for teachers |
 | **Exam Creation** | Create questions in text, code, MCQs, or diagram formats |
 | **Exam Workspace** | Unified and responsive student interface with integrated editors |
 | **AI Proctoring** | Real-time anomaly detection using webcam input |
@@ -58,9 +62,9 @@ Built using modern technologies such as **React.js**, **Node.js**, and **MongoDB
 
 ---
 
-## 💻 Installation & Setup
+## Installation & Setup
 
-### 🚀 Steps
+### Steps
 
 Prerequisites
 - Node.js and npm 
@@ -148,18 +152,19 @@ Notes
 - Replace placeholder secrets with secure values.
 - If using MongoDB Atlas, whitelist your server IP / add proper network & user credentials.
 
-This should be placed into the README under "Installation & Setup" to provide a clear, professional developer onboarding flow.
-| Name              | Role                                | Responsibilities                                            |
-| ----------------- | ----------------------------------- | ----------------------------------------------------------- |
-| **Peer Faizan**   | Project Lead / Full Stack Developer | System architecture, backend APIs, and frontend integration |
-| **Mohsin Ashraf** | AI Engineer / UI-UX Designer        | AI proctoring model development and user interface design   |
-| **Waseem Shabir** | Frontend Developer / AI Engineer    | Frontend responsiveness, and AI integration                 |
+## License
+This project is licensed under the MIT License.
 
+<<<<<<< HEAD
 
 ## 📜 License
 This project is licensed under the MIT License — see the LICENSE file for details.
 
 ## 🏁 Conclusion
 Assessify is a next-generation online programming examination system that blends security, flexibility, and AI intelligence.
+=======
+## Conclusion
+CodeFusion is a next-generation online programming examination system that blends security, flexibility, and AI intelligence.
+>>>>>>> e6899e4e6146e3895a4b55e2e1902972e78442f6
 By providing a unified platform for multi-format exams and real-time monitoring, it advances the future of fair, scalable, and intelligent remote assessments.
 
