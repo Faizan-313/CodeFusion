@@ -41,7 +41,7 @@ const verifyEmail = async (req, res) => {
             email: user.email
         },process.env.TEMP_TOKEN_SECRET,
         {
-            expiresIn: "10m"
+            expiresIn: "5m"
         })
 
         await AuthReset.create({
@@ -57,7 +57,7 @@ const verifyEmail = async (req, res) => {
                 Your reset verification code is : ${resetCode}.`,
             html: `<p>Hello <strong>${user.name}</strong>
                 <p>Your reset verification code is: <strong>${resetCode}</strong></p>
-                <p>The code will expire in <strong>10 minutes</strong></p>`
+                <p>The code will expire in <strong>5 minutes</strong></p>`
         });
 
         if (!emailResult.success) {
