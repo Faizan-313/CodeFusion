@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
-    Search, ClipboardCheck, AlertCircle, Loader2, ChevronLeft, ChevronRight
+    Search, ClipboardCheck, AlertCircle, Loader2, ChevronLeft, ChevronRight, Sparkles, Clock, Lock
 } from "lucide-react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useTeacher } from "../../context/TeacherContext";
@@ -10,6 +10,7 @@ import StudentRow, { StudentTableHeader } from "./components/StudentRow";
 function AppearedStudentList() {
     const [search, setSearch] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
+    const [evaluating, setEvaluating] = useState(false);
     const { examId } = useParams();
     const navigate = useNavigate();
     const { fetchStudents, students, studentsLoading, studentsError, studentsPagination } = useTeacher();
@@ -25,6 +26,7 @@ function AppearedStudentList() {
     const exam = particularExamDetails || {};
 
     const handleEvaluate = (studentId) => {
+        if (evaluating) return;
         navigate(`/teacher/evalvate/${examId}/${studentId}`);
     };
     
@@ -36,6 +38,13 @@ function AppearedStudentList() {
         )
         : [];
 
+    const pendingCount = useMemo(() => {
+        if (!Array.isArray(students)) return 0;
+        return students.filter(
+            (s) => s?.examsAttempted?.[0]?.evaluateStatus !== "Evaluated"
+        ).length;
+    }, [students]);
+
     const handlePreviousPage = () => {
         if (currentPage > 1) {
             setCurrentPage(currentPage - 1);
@@ -46,6 +55,21 @@ function AppearedStudentList() {
         if (currentPage < studentsPagination.pages) {
             setCurrentPage(currentPage + 1);
         }
+    };
+
+    // TODO: trigger the backend job to auto-evaluate every pending paper for THIS exam.
+    // The job is long-running (can take hours); the UI must stay locked until it completes.
+    const handleAutoEvaluation = () => {
+        if (evaluating || pendingCount === 0) return;
+        const confirmed = window.confirm(
+            `Auto Evaluate ${pendingCount} pending paper${pendingCount > 1 ? "s" : ""} for "${exam.title || "this exam"}"?\n\n` +
+            `This may take several hours. Manual evaluation will be locked until it finishes.`
+        );
+        if (!confirmed) return;
+        setEvaluating(true);
+        setTimeout(() => {
+            setEvaluating(false);
+        }, 10000);
     };
 
     if (studentsLoading) {
@@ -76,23 +100,92 @@ function AppearedStudentList() {
                             </p>
                         </div>
 
-                        <div className="relative w-full lg:w-80">
-                            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500 w-5 h-5" />
-                            <input
-                                type="text"
-                                placeholder="Search by name or roll number..."
-                                value={search}
-                                onChange={(e) => setSearch(e.target.value)}
-                                className="w-full pl-12 pr-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl 
-                                    bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 
-                                    placeholder-gray-500 dark:placeholder-gray-400
-                                    shadow-sm hover:shadow-md
-                                    focus:ring-2 focus:ring-[#5c8374] focus:border-[#5c8374] dark:focus:ring-[#9ec8b9]
-                                    outline-none transition-all duration-200"
-                            />
+                        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full lg:w-auto">
+                            <div className="relative w-full sm:w-72">
+                                <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500 w-5 h-5" />
+                                <input
+                                    type="text"
+                                    placeholder="Search by name or roll number..."
+                                    value={search}
+                                    onChange={(e) => setSearch(e.target.value)}
+                                    className="w-full pl-12 pr-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl 
+                                        bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 
+                                        placeholder-gray-500 dark:placeholder-gray-400
+                                        shadow-sm hover:shadow-md
+                                        focus:ring-2 focus:ring-[#5c8374] focus:border-[#5c8374] dark:focus:ring-[#9ec8b9]
+                                        outline-none transition-all duration-200"
+                                />
+                            </div>
+
+                            <button
+                                onClick={handleAutoEvaluation}
+                                disabled={evaluating || pendingCount === 0}
+                                title={
+                                    evaluating
+                                        ? "Auto evaluation is already in progress"
+                                        : pendingCount === 0
+                                            ? "No pending papers to auto-evaluate"
+                                            : `Auto-evaluate all ${pendingCount} pending paper${pendingCount > 1 ? "s" : ""} for this exam`
+                                }
+                                className="relative inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl font-semibold text-white whitespace-nowrap
+                                    bg-gradient-to-r from-indigo-600 to-emerald-700 hover:from-indigo-700 hover:to-emerald-600
+                                    focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:ring-offset-2 dark:focus:ring-offset-gray-900
+                                    shadow-md hover:shadow-xl transition-all duration-200 cursor-pointer
+                                    disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:shadow-md"
+                            >
+                                {evaluating ? (
+                                    <>
+                                        <Loader2 className="w-5 h-5 animate-spin" />
+                                        <span>Evaluating...</span>
+                                    </>
+                                ) : (
+                                    <>
+                                        <Sparkles className="w-5 h-5" />
+                                        <span>Auto Evaluate</span>
+                                        {pendingCount > 0 && (
+                                            <span className="ml-1 inline-flex items-center justify-center min-w-[1.5rem] h-6 px-1.5 text-xs font-bold rounded-full bg-white/20 backdrop-blur-sm">
+                                                {pendingCount}
+                                            </span>
+                                        )}
+                                    </>
+                                )}
+                            </button>
                         </div>
                     </div>
                 </div>
+
+                {evaluating && (
+                    <div
+                        role="status"
+                        aria-live="polite"
+                        className="mb-6 overflow-hidden rounded-2xl border border-indigo-200 dark:border-indigo-800 bg-gradient-to-r from-indigo-50 via-white to-emerald-50 dark:from-indigo-950/40 dark:via-gray-800 dark:to-emerald-950/40 shadow-md"
+                    >
+                        <div className="h-1 w-full bg-gradient-to-r from-indigo-500 via-emerald-500 to-indigo-500 bg-[length:200%_100%] animate-pulse" />
+                        <div className="p-5 flex flex-col sm:flex-row sm:items-center gap-4">
+                            <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-gradient-to-br from-indigo-600 to-emerald-700 flex items-center justify-center shadow-md">
+                                <Loader2 className="w-6 h-6 text-white animate-spin" />
+                            </div>
+                            <div className="flex-1 min-w-0">
+                                <div className="flex items-center gap-2 mb-1">
+                                    <h3 className="text-base font-bold text-gray-900 dark:text-white">
+                                        Auto Evaluation in Progress
+                                    </h3>
+                                    <span className="inline-flex items-center gap-1 px-2 py-0.5 text-xs font-semibold rounded-full bg-indigo-100 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-300">
+                                        <Clock className="w-3 h-3" />
+                                        Running
+                                    </span>
+                                </div>
+                                <p className="text-sm text-gray-600 dark:text-gray-300">
+                                    Evaluating <span className="font-semibold">{pendingCount}</span> pending paper{pendingCount !== 1 ? "s" : ""} for this exam. This may take several hours.
+                                </p>
+                                <p className="mt-1 text-xs text-gray-500 dark:text-gray-400 flex items-center gap-1.5">
+                                    <Lock className="w-3 h-3" />
+                                    Manual evaluation is locked until this finishes.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                )}
 
                 <div className="mb-8">
                     <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl shadow-lg overflow-hidden">
@@ -199,6 +292,7 @@ function AppearedStudentList() {
                                             student={student}
                                             index={index}
                                             onEvaluate={handleEvaluate}
+                                            autoEvaluating={evaluating}
                                         />
                                     ))}
                                 </tbody>

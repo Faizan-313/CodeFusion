@@ -1,24 +1,33 @@
 import {
-    User, ChevronRight
+    User, ChevronRight, Loader2
 } from "lucide-react";
 
-function StudentRow({ student, onEvaluate, index }) {
+function StudentRow({ student, onEvaluate, index, autoEvaluating = false }) {
     const evaluationStatus = student.examsAttempted[0].evaluateStatus;
     const totalScore = student.examsAttempted[0].totalScore;
     const totalMarks = student.examsAttempted[0].examId.totalMarks;
     const percentage = ((totalScore / totalMarks) * 100).toFixed(1);
 
-    const statusConfig = evaluationStatus === "Evaluated"
+    const isPending = evaluationStatus !== "Evaluated";
+    const isQueued = autoEvaluating && isPending;
+
+    const statusConfig = !isPending
         ? {
             color: "bg-emerald-50 dark:bg-emerald-900/20 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800",
             label: "Evaluated",
             dot: "bg-emerald-500"
         }
-        : {
-            color: "bg-amber-50 dark:bg-amber-900/20 text-amber-700 dark:text-amber-400 border border-amber-200 dark:border-amber-800",
-            label: "Pending",
-            dot: "bg-amber-500"
-        };
+        : isQueued
+            ? {
+                color: "bg-indigo-50 dark:bg-indigo-900/20 text-indigo-700 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-800",
+                label: "Auto Evaluating",
+                dot: "bg-indigo-500"
+            }
+            : {
+                color: "bg-amber-50 dark:bg-amber-900/20 text-amber-700 dark:text-amber-400 border border-amber-200 dark:border-amber-800",
+                label: "Pending",
+                dot: "bg-amber-500"
+            };
 
     // Grade calculation with visual feedback
     const getGradeColor = (percent) => {
@@ -102,18 +111,28 @@ function StudentRow({ student, onEvaluate, index }) {
             </td>
 
             <td className="px-4 py-3 text-center">
-                {evaluationStatus === "Evaluated" ? (
+                {!isPending ? (
                     <button
                         onClick={() => onEvaluate(student._id, student)}
-                        className="flex items-center justify-center gap-1 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-medium px-3 py-1.5 rounded-lg transition-all focus:ring-2 focus:ring-emerald-400 focus:ring-offset-2 dark:focus:ring-offset-gray-800"
+                        className="inline-flex items-center justify-center gap-1 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-medium px-3 py-1.5 rounded-lg transition-all focus:ring-2 focus:ring-emerald-400 focus:ring-offset-2 dark:focus:ring-offset-gray-800"
                     >
                         Review
                         <ChevronRight className="w-4 h-4" />
                     </button>
+                ) : isQueued ? (
+                    <button
+                        type="button"
+                        disabled
+                        title="Auto evaluation is in progress for this paper"
+                        className="inline-flex items-center justify-center gap-1.5 bg-indigo-100 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800 text-sm font-medium px-3 py-1.5 rounded-lg cursor-not-allowed"
+                    >
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                        Evaluating
+                    </button>
                 ) : (
                     <button
                         onClick={() => onEvaluate(student._id, student)}
-                        className="flex items-center justify-center gap-1 bg-[#5c8374] hover:bg-[#1b4242] text-white text-sm font-medium px-3 py-1.5 rounded-lg transition-all focus:ring-2 focus:ring-[#9ec8b9] focus:ring-offset-2 dark:focus:ring-offset-gray-800"
+                        className="inline-flex items-center justify-center gap-1 bg-[#5c8374] hover:bg-[#1b4242] text-white text-sm font-medium px-3 py-1.5 rounded-lg transition-all focus:ring-2 focus:ring-[#9ec8b9] focus:ring-offset-2 dark:focus:ring-offset-gray-800"
                     >
                         Evaluate
                         <ChevronRight className="w-4 h-4" />
@@ -153,7 +172,7 @@ export function StudentTableHeader() {
                 <th className="px-3 py-3 text-left text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wide">
                     Status
                 </th>
-                <th className="px-3 py-3 text-left text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wide">
+                <th className="px-3 py-3 text-center text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wide">
                     Action
                 </th>
             </tr>
